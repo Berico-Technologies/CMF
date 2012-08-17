@@ -4,12 +4,12 @@ import cmf.bus.core.IEnvelope;
 import cmf.bus.core.IReceiveHandler;
 import cmf.bus.core.IMessageBusService;
 import cmf.bus.core.IRegistration;
-import cmf.bus.core.ISendModule;
+import cmf.bus.core.ISendModuleCollection;
 import cmf.bus.core.ITransportProvider;
 
 public class MessageBusService implements IMessageBusService {
 
-    private ISendModule sendModule;
+    private ISendModuleCollection sendModuleCollection;
     private ITransportProvider transportProvider;
 
     public MessageBusService() {
@@ -28,12 +28,12 @@ public class MessageBusService implements IMessageBusService {
 
     @Override
     public void send(IEnvelope envelope) {
-        sendModule.send(envelope);
+        sendModuleCollection.send(envelope);
         transportProvider.send(envelope);
     }
 
-    public void setSendModule(ISendModule sendModule) {
-        this.sendModule = sendModule;
+    public void setSendModuleCollection(ISendModuleCollection sendModuleCollection) {
+        this.sendModuleCollection = sendModuleCollection;
     }
 
     public void setTransportProvider(ITransportProvider transportProvider) {

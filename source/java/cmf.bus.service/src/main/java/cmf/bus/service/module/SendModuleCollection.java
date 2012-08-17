@@ -4,8 +4,9 @@ import java.util.Collection;
 
 import cmf.bus.core.IEnvelope;
 import cmf.bus.core.ISendModule;
+import cmf.bus.core.ISendModuleCollection;
 
-public class SendModuleCollection implements ISendModule {
+public class SendModuleCollection implements ISendModuleCollection {
 
     private Collection<ISendModule> sendModuleCollection;
 

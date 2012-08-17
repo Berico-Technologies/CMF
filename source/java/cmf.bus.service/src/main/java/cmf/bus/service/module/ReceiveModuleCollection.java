@@ -4,8 +4,9 @@ import java.util.Collection;
 
 import cmf.bus.core.IEnvelope;
 import cmf.bus.core.IReceiveModule;
+import cmf.bus.core.IReceiveModuleCollection;
 
-public class ReceiveModuleCollection implements IReceiveModule {
+public class ReceiveModuleCollection implements IReceiveModuleCollection {
 
     private Collection<IReceiveModule> receiveModuleCollection;
 

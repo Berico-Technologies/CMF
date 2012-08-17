@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import cmf.bus.core.IEnvelope;
 import cmf.bus.core.IReceiveHandler;
+import cmf.bus.core.IReceiveModuleCollection;
 import cmf.bus.core.IRegistration;
 import cmf.bus.core.IRoute;
 import cmf.bus.core.ITopologyProvider;
@@ -12,9 +13,14 @@ import cmf.bus.core.ITransportProvider;
 public class ExchangeBroker implements ITransportProvider {
 
     private ITopologyProvider topologyProvider;
+    private IReceiveModuleCollection receiveModuleCollection;
 
     public ExchangeBroker() {
 
+    }
+
+    public void setReceiveModuleCollection(IReceiveModuleCollection receiveModuleCollection) {
+        this.receiveModuleCollection = receiveModuleCollection;
     }
 
     public void setTopologyProvider(ITopologyProvider topologyProvider) {
