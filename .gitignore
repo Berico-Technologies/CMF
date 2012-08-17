@@ -1,6 +1,89 @@
-# Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
-bin
-obj
+#OS junk files
+[Tt]humbs.db
+*.DS_Store
 
-# mstest test results
-TestResults
+# Ignore eclipse project files
+.project
+.settings
+.classpath
+target/
+[Bb]uild/
+[Bb]in/
+
+*.tar
+*.tgz
+*.tar.gz
+*.jar
+*.war
+*.class
+.gpush.settings
+*.roo
+.springBeans
+
+# Ignore guvnor cache folder
+.guvnorinfo
+
+# Ignore bundler config
+/.bundle
+
+# Ignore the default SQLite database.
+/db/*.sqlite3
+
+# Ignore all logfiles and tempfiles.
+/log/*.log
+/tmp
+
+#ignore sass cache
+.sass-cache
+
+#ignore Torquebox-generated knob files
+*.knob
+
+# docco docs
+/app/assets/javascripts/docs
+
+# precompiled assets
+/public/assets
+
+# Bundle package output
+/vendor/cache
+
+# Custom
+/app/osd/xml_raw
+
+#Visual Studio files
+*.Publish.xml
+*.[Oo]bj
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.[Cc]ache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.sdf
+*.opensdf
+*.unsuccessfulbuild
+ipch/
+[Oo]bj/
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+Ankh.NoLoad
+packages/
+
+# Emacs temporary #foo# files
+\#*
+
+#gradle
+.gradle/
