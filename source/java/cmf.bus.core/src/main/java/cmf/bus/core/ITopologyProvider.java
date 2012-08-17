@@ -1,8 +1,9 @@
-package cmf.bus.core.transport;
+package cmf.bus.core;
 
 import java.util.Collection;
 
-public interface ITopologyProvider {
+
+public interface ITopologyProvider extends IRegistrationHandler, ISendHandler {
 
     Collection<IRoute> getSendRoutes(String registrationKey);
 

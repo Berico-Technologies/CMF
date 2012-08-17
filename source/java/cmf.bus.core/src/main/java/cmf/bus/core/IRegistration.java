@@ -6,8 +6,8 @@ public interface IRegistration {
 
     void setRegistrationKey(String registrationKey);
 
-    IEnvelopeHandler getEnvelopeHandler();
+    IReceiveHandler getReceiveHandler();
 
-    void setEnvelopeHandler(IEnvelopeHandler envelopeHandler);
+    void setReceiveHandler(IReceiveHandler receiveHandler);
 
 }
