@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>16ee46f2-2c11-4752-8096-9d6148f8bae1</ProjectGuid>
+    <ProjectGuid>{5386254B-6A77-4244-9364-1013899A2B11}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>cmf.bus</RootNamespace>
@@ -40,8 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="core\Envelope.cs" />
+    <Compile Include="core\IEnvelopeBus.cs" />
+    <Compile Include="core\IEnvelopeProcessor.cs" />
+    <Compile Include="core\IEnvelopeReceiver.cs" />
+    <Compile Include="core\IEnvelopeSender.cs" />
+    <Compile Include="core\IRegistration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="transport\IInboundTransporter.cs" />
+    <Compile Include="transport\IOutboundTransporter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
