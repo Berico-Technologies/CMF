@@ -5,10 +5,10 @@ using System.Text;
 
 namespace cmf.bus.core
 {
-    public interface IRegistration
+    public enum DeliveryOutcome
     {
-        string Topic { get; set; }
-
-        DeliveryOutcome Handle(Envelope env);
+        Exception,
+        Acknowledge,
+        Reject
     }
 }

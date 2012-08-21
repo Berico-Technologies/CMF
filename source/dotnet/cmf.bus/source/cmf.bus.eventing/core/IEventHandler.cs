@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace cmf.bus.core
+using cmf.bus.core;
+
+namespace cmf.bus.eventing.core
 {
-    public interface IRegistration
+    public interface IEventHandler
     {
         string Topic { get; set; }
 
-        DeliveryOutcome Handle(Envelope env);
+        DeliveryOutcome Handle(object ev);
     }
 }

@@ -5,10 +5,8 @@ using System.Text;
 
 namespace cmf.bus.core
 {
-    public interface IRegistration
+    public interface IEnvelopeDispatcher
     {
-        string Topic { get; set; }
-
-        DeliveryOutcome Handle(Envelope env);
+        void Dispatch(Envelope env, IEnumerable<IRegistration> registeredHandlers);
     }
 }
