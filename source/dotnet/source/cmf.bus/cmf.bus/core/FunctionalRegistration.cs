@@ -12,11 +12,19 @@ namespace cmf.bus.core
 
         public string Topic { get; set; }
 
+        public Predicate<Envelope> TransportFilter { get; set; }
+
 
         public FunctionalRegistration(string topic, Func<Envelope, DeliveryOutcome> handlerFunction)
         {
             this.Topic = topic;
             _handlerFunction = handlerFunction;
+        }
+
+        public FunctionalRegistration(string topic, Func<Envelope, DeliveryOutcome> handlerFunction, Predicate<Envelope> transportFilter)
+            : this(topic, handlerFunction)
+        {
+            this.TransportFilter = transportFilter;
         }
 
 

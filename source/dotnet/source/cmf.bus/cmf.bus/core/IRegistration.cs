@@ -9,6 +9,8 @@ namespace cmf.bus.core
     {
         string Topic { get; set; }
 
+        Predicate<Envelope> TransportFilter { get; set; }
+
         DeliveryOutcome Handle(Envelope env);
     }
 }

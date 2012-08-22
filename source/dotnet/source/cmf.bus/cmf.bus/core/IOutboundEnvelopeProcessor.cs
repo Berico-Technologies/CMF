@@ -5,8 +5,8 @@ using System.Text;
 
 namespace cmf.bus.core
 {
-    public interface IEnvelopeProcessor
+    public interface IOutboundEnvelopeProcessor
     {
-        void Process(Envelope envelope, IDictionary<string, object> context);
+        void ProcessOutbound(Envelope envelope, IDictionary<string, object> context);
     }
 }

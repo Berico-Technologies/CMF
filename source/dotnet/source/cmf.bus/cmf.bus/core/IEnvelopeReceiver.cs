@@ -11,7 +11,5 @@ namespace cmf.bus.core
 
 
         void Register(IRegistration registration);
-
-        void Register(string topic, Func<Envelope, DeliveryOutcome> handler);
     }
 }

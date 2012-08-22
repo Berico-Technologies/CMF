@@ -12,6 +12,6 @@ namespace cmf.bus.core
 
         void Send(Envelope env);
 
-        void Register(string topic);
+        void Register(IRegistration registration);
     }
 }

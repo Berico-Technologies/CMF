@@ -15,8 +15,8 @@ namespace cmf.bus.support
         public event Action<Envelope, Exception> OnFailedEnvelope;
 
 
-        protected SortedDictionary<int, IEnvelopeProcessor> _inboundChain;
-        protected SortedDictionary<int, IEnvelopeProcessor> _outboundChain;
+        protected SortedDictionary<int, IInboundEnvelopeProcessor> _inboundChain;
+        protected SortedDictionary<int, IOutboundEnvelopeProcessor> _outboundChain;
         protected ITransportProvider _txProvider;
         protected IEnvelopeDispatcher _envDispatcher;
         protected ILog _log;
@@ -26,13 +26,13 @@ namespace cmf.bus.support
 
 
         public DefaultEnvelopeBus(
-            IDictionary<int, IEnvelopeProcessor> inboundProcessorChain,
-            IDictionary<int, IEnvelopeProcessor> outboundProcessorChain,
+            IDictionary<int, IInboundEnvelopeProcessor> inboundProcessorChain,
+            IDictionary<int, IOutboundEnvelopeProcessor> outboundProcessorChain,
             ITransportProvider transportProvider,
             IEnvelopeDispatcher envelopeDispatcher)
         {
-            _inboundChain = new SortedDictionary<int, IEnvelopeProcessor>(inboundProcessorChain);
-            _outboundChain = new SortedDictionary<int, IEnvelopeProcessor>(outboundProcessorChain);
+            _inboundChain = new SortedDictionary<int, IInboundEnvelopeProcessor>(inboundProcessorChain);
+            _outboundChain = new SortedDictionary<int, IOutboundEnvelopeProcessor>(outboundProcessorChain);
 
             _envDispatcher = envelopeDispatcher;
             _txProvider = transportProvider;
@@ -50,7 +50,7 @@ namespace cmf.bus.support
             if (null == env) { throw new ArgumentNullException("Cannot send a null envelope"); }
             
             // send the envelope through the outbound chain
-            this.ProcessEnvelope(env, _outboundChain);
+            this.ProcessOutbound(env, _outboundChain);
 
             // send the envelope to the transport provider
             _txProvider.Send(env);
@@ -65,28 +65,42 @@ namespace cmf.bus.support
             if (null == registration) { throw new ArgumentNullException("Cannot register with a null registration"); }
             
             _log.Debug("Registration received for: " + registration.Topic);
-            _txProvider.Register(registration.Topic);
+            _txProvider.Register(registration);
             _log.Info("Registered for: " + registration.Topic);
         }
-        
+
         public virtual void Register(string topic, Func<Envelope, DeliveryOutcome> handler)
         {
             this.Register(new FunctionalRegistration(topic, handler));
         }
 
 
-        protected virtual void ProcessEnvelope(Envelope env, SortedDictionary<int, IEnvelopeProcessor> processorChain)
+        protected virtual void ProcessOutbound(Envelope env, SortedDictionary<int, IOutboundEnvelopeProcessor> processorChain)
         {
-            _log.Debug("Envelope before processor chain: " + env.ToString());
+            _log.Debug("Envelope before outbound processor chain: " + env.ToString());
 
             IDictionary<string, object> processorContext = new Dictionary<string, object>();
 
-            foreach (IEnvelopeProcessor processor in processorChain.Values)
+            foreach (IOutboundEnvelopeProcessor processor in processorChain.Values)
             {
-                processor.Process(env, processorContext);
+                processor.ProcessOutbound(env, processorContext);
             }
 
-            _log.Debug("Envelope after processor chain: " + env.ToString());
+            _log.Debug("Envelope after outbound processor chain: " + env.ToString());
+        }
+
+        protected virtual void ProcessInbound(Envelope env, SortedDictionary<int, IInboundEnvelopeProcessor> processorChain)
+        {
+            _log.Debug("Envelope before inbound processor chain: " + env.ToString());
+
+            IDictionary<string, object> processorContext = new Dictionary<string, object>();
+
+            foreach (IInboundEnvelopeProcessor processor in processorChain.Values)
+            {
+                processor.ProcessInbound(env, processorContext);
+            }
+
+            _log.Debug("Envelope after inbound processor chain: " + env.ToString());
         }
 
         protected virtual void _txProvider_OnEnvelopeReceived(Envelope env)
@@ -103,7 +117,7 @@ namespace cmf.bus.support
                 else // we do have handlers
                 {
                     // send the envelope through the inbound processing chain
-                    this.ProcessEnvelope(env, _inboundChain);
+                    this.ProcessInbound(env, _inboundChain);
 
                     // the dispatcher encapsulates the logic of giving the envelope to handlers
                     _envDispatcher.Dispatch(env, registeredHandlers);
