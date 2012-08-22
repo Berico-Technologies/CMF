@@ -5,7 +5,7 @@ using System.Text;
 
 namespace cmf.bus.core
 {
-    public interface ITransportProvider
+    public interface ITransportProvider : IDisposable
     {
         event Action<Envelope> OnEnvelopeReceived;
 

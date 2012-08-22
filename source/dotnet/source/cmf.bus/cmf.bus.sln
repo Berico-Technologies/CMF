@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.bus", "cmf.bus\cmf.bus.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.bus.eventing", "cmf.bus.eventing\cmf.bus.eventing.csproj", "{213E5B98-3FFB-47FE-BC6F-68B84C82150E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.bus.rabbit", "cmf.bus.rabbit\cmf.bus.rabbit.csproj", "{6C5BAB3E-ECFF-4214-8BF9-7C9EF762DB84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.bus.tests", "cmf.bus.tests\cmf.bus.tests.csproj", "{D451532A-AE82-4301-B9A2-6484509AF4D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,14 @@ Global
 		{213E5B98-3FFB-47FE-BC6F-68B84C82150E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{213E5B98-3FFB-47FE-BC6F-68B84C82150E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{213E5B98-3FFB-47FE-BC6F-68B84C82150E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C5BAB3E-ECFF-4214-8BF9-7C9EF762DB84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C5BAB3E-ECFF-4214-8BF9-7C9EF762DB84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C5BAB3E-ECFF-4214-8BF9-7C9EF762DB84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C5BAB3E-ECFF-4214-8BF9-7C9EF762DB84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D451532A-AE82-4301-B9A2-6484509AF4D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D451532A-AE82-4301-B9A2-6484509AF4D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D451532A-AE82-4301-B9A2-6484509AF4D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D451532A-AE82-4301-B9A2-6484509AF4D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
