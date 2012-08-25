@@ -2,17 +2,33 @@ package cmf.bus.core;
 
 public interface IEnvelope {
 
-    public static final String MESSAGE_ID = "cmf.bus.message_id";
-    public static final String MESSAGE_CORRELATION_ID = "cmf.bus.message_correlation_id";
-    public static final String MESSAGE_TYPE = "cmf.bus.message_type";
-    public static final String TIMESTAMP = "cmf.bus.timestamp";
+    public static final String CORRELATION_ID = "bus.envelope.correlation_id";
+    public static final String ID = "bus.envelope.id";
+    public static final String REPLYING_TO = "bus.envelope.replying_to";
+    public static final String TIMESTAMP = "bus.envelope.timestamp";
+
+    String getCorrelationId();
 
     String getHeader(String key);
 
-    void setHeader(String key, String value);
+    String getId();
 
     byte[] getPayload();
 
+    String getReplyingTo();
+
+    String getTimestamp();
+
+    void setCorrelationId(String correlationId);
+
+    void setHeader(String key, String value);
+
+    void setId(String id);
+
     void setPayload(byte[] payload);
+
+    void setReplyingTo(String replyingTo);
+
+    void setTimestamp(String timestamp);
 
 }

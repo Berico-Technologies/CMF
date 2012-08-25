@@ -6,9 +6,13 @@
         <artifactId>cmf.bus</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>cmf.bus.core</artifactId>
+    <artifactId>cmf.bus.pubsub</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>cmf</groupId>
+            <artifactId>cmf.bus.core</artifactId>
+        </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -18,8 +22,8 @@
             <artifactId>commons-codec</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
         </dependency>
     </dependencies>
 </project>

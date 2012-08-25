@@ -1,6 +1,6 @@
 package cmf.bus.core;
 
-public interface ITransportProvider {
+public interface IEnvelopeBus {
 
     void register(IRegistration registration);
 

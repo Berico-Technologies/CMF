@@ -2,12 +2,12 @@ package cmf.bus.core;
 
 public interface IRegistration {
 
-    String getRegistrationKey();
+    IEnvelopeHandler getEnvelopeHandler();
 
-    void setRegistrationKey(String registrationKey);
+    ITransportFilter getTransportFilter();
 
-    IReceiveHandler getReceiveHandler();
+    void setEnvelopeHandler(IEnvelopeHandler envelopeHandler);
 
-    void setReceiveHandler(IReceiveHandler receiveHandler);
+    void setTransportFilter(ITransportFilter transportFilter);
 
 }
