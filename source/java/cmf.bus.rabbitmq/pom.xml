@@ -6,9 +6,17 @@
         <artifactId>cmf.bus</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>cmf.bus.core</artifactId>
+    <artifactId>cmf.bus.rabbitmq</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>cmf</groupId>
+            <artifactId>cmf.bus.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cmf</groupId>
+            <artifactId>cmf.bus.pubsub</artifactId>
+        </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -18,8 +26,9 @@
             <artifactId>commons-codec</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

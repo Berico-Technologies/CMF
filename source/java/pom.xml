@@ -5,8 +5,14 @@
     <groupId>cmf</groupId>
     <artifactId>cmf.bus</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>MessageBus</name>
+    <name>Common Messaging Framework</name>
     <packaging>pom</packaging>
+
+    <modules>
+        <module>cmf.bus.core</module>
+        <module>cmf.bus.pubsub</module>
+        <module>cmf.bus.rabbitmq</module>
+    </modules>
 
     <properties>
         <bundle.vendor>Berico Technologies</bundle.vendor>
@@ -21,6 +27,18 @@
             <dependency>
                 <groupId>cmf</groupId>
                 <artifactId>cmf.bus.core</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>cmf</groupId>
+                <artifactId>cmf.bus.pubsub</artifactId>
+                <version>${project.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>cmf</groupId>
+                <artifactId>cmf.bus.rabbitmq</artifactId>
                 <version>${project.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -216,6 +234,12 @@
                 <version>1.0.0</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.1</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -360,8 +384,4 @@
             </dependencies>
         </profile>
     </profiles>
-
-    <modules>
-        <module>cmf.bus.core</module>
-    </modules>
 </project>
