@@ -1,40 +1,51 @@
 package cmf.bus.rabbitmq.transport;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.UUID;
-
-import org.apache.commons.lang.StringUtils;
 
 import cmf.bus.core.DeliveryOutcome;
 import cmf.bus.core.IEnvelopeHandler;
-import cmf.bus.core.IRegistration;
-import cmf.bus.core.serialize.ISerializer;
+import cmf.bus.core.serializer.ISerializer;
 import cmf.bus.pubsub.Envelope;
-import cmf.bus.pubsub.Registration;
-import cmf.bus.pubsub.transport.Route;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.ShutdownListener;
-import com.rabbitmq.client.ShutdownSignalException;
 
 public class Queue extends DefaultConsumer {
 
     private String consumerTag;
-    private String queueName;
     private IEnvelopeHandler envelopeHandler;
+    private String queueName;
     private ISerializer serializer;
-
-    public void setSerializer(ISerializer serializer) {
-        this.serializer = serializer;
-    }
 
     public Queue(Channel channel, String queueName, IEnvelopeHandler envelopeHandler) {
         super(channel);
         this.queueName = queueName;
         this.envelopeHandler = envelopeHandler;
+    }
+
+    private void ackFailure(long deliveryTag) {
+        try {
+            getChannel().basicAck(deliveryTag, false);
+        } catch (IOException e) {
+            throw new RuntimeException("Error reject acking envelope", e);
+        }
+    }
+
+    private void ackRetry(long deliveryTag) {
+        try {
+            getChannel().basicAck(deliveryTag, true);
+        } catch (IOException e) {
+            throw new RuntimeException("Error retry acking envelope", e);
+        }
+    }
+
+    private void ackSuccess(long deliveryTag) {
+        try {
+            getChannel().basicAck(deliveryTag, false);
+        } catch (IOException e) {
+            throw new RuntimeException("Error accept acking envelope", e);
+        }
     }
 
     public void bind(String exchangeName, String routingKey) {
@@ -46,40 +57,24 @@ public class Queue extends DefaultConsumer {
         }
     }
 
-    @SuppressWarnings("unused")
-    private void ackFailure(long deliveryTag) {
+    @Override
+    protected void finalize() {
         try {
-            getChannel().basicAck(deliveryTag, false);
+            getChannel().basicCancel(consumerTag);
+            getChannel().close();
         } catch (IOException e) {
-            throw new RuntimeException("Error reject acking envelope", e);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private void ackSuccess(long deliveryTag) {
-        try {
-            getChannel().basicAck(deliveryTag, false);
-        } catch (IOException e) {
-            throw new RuntimeException("Error accept acking envelope", e);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private void ackRetry(long deliveryTag) {
-        try {
-            getChannel().basicAck(deliveryTag, true);
-        } catch (IOException e) {
-            throw new RuntimeException("Error retry acking envelope", e);
+            throw new RuntimeException("Error trying to stop consuming", e);
         }
     }
 
     @Override
     public void handleDelivery(String consumerTag, com.rabbitmq.client.Envelope rabbitEnvelope,
                     BasicProperties properties, byte[] body) {
+        long deliveryTag = 0;
+        DeliveryOutcome deliveryOutcome = DeliveryOutcome.Acknowledge;
         try {
             super.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
-            long deliveryTag = rabbitEnvelope.getDeliveryTag();
-            DeliveryOutcome deliveryOutcome = DeliveryOutcome.Acknowledge;
+            deliveryTag = rabbitEnvelope.getDeliveryTag();
             Envelope envelope = serializer.byteDeserialize(body, Envelope.class);
             deliveryOutcome = envelopeHandler.receive(envelope);
         } catch (Exception e) {
@@ -108,14 +103,8 @@ public class Queue extends DefaultConsumer {
         }
     }
 
-    @Override
-    protected void finalize() {
-        try {
-            getChannel().basicCancel(consumerTag);
-            getChannel().close();
-        } catch (IOException e) {
-            throw new RuntimeException("Error trying to stop consuming", e);
-        }
+    public void setSerializer(ISerializer serializer) {
+        this.serializer = serializer;
     }
 
 }

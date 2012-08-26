@@ -3,14 +3,14 @@ package cmf.bus.pubsub.event;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import cmf.bus.pubsub.Envelope;
-import cmf.bus.pubsub.EnvelopeBus;
 import cmf.bus.core.DeliveryOutcome;
 import cmf.bus.core.IEnvelope;
 import cmf.bus.core.IEnvelopeHandler;
 import cmf.bus.core.event.IEventBus;
 import cmf.bus.core.event.IEventHandler;
-import cmf.bus.core.serialize.ISerializer;
+import cmf.bus.core.serializer.ISerializer;
+import cmf.bus.pubsub.Envelope;
+import cmf.bus.pubsub.EnvelopeBus;
 
 public class EventBus implements IEventBus {
 
@@ -50,12 +50,12 @@ public class EventBus implements IEventBus {
         envelopeBus.send(envelope);
     }
 
-    public void setSerializer(ISerializer serializer) {
-        this.serializer = serializer;
-    }
-
     public void setEnvelopeBus(EnvelopeBus envelopeBus) {
         this.envelopeBus = envelopeBus;
+    }
+
+    public void setSerializer(ISerializer serializer) {
+        this.serializer = serializer;
     }
 
 }
