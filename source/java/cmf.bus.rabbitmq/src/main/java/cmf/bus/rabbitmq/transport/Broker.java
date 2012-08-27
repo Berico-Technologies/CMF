@@ -62,7 +62,7 @@ public class Broker implements IBroker {
             createExchange(exchangeName);
             exchangesKnownToExist.add(exchangeName);
             // /* TODO
-            // * add a binding equal to the subscription queueName for each exchange to allow bi-directional comms
+            // * add a binding equal to the registration queueName for each exchange to allow bi-directional comms
             // */
             // broker.bindQueue(queueName, exchangeName, queueName);
         }

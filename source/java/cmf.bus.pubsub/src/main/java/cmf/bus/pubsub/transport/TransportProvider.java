@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import cmf.bus.core.IEnvelope;
 import cmf.bus.core.IRegistration;
-import cmf.bus.core.ITransportProvider;
+import cmf.bus.core.transport.ITransportProvider;
 import cmf.bus.pubsub.Envelope;
 import cmf.bus.pubsub.Registration;
 
@@ -18,7 +18,7 @@ public class TransportProvider implements ITransportProvider {
         if (!(registration instanceof Registration)) {
             throw new IllegalArgumentException("Registration must be of type PubSubRegistration");
         }
-        Collection<Route> routes = topologyProvider.getReceiveRoutes((Registration) registration);
+        Collection<Route> routes = topologyProvider.getReceiveRouteCollection((Registration) registration);
         broker.register((Registration) registration, routes);
     }
 
@@ -27,7 +27,7 @@ public class TransportProvider implements ITransportProvider {
         if (!(envelope instanceof Envelope)) {
             throw new IllegalArgumentException("Envelope must be of type PubSubEnvelope");
         }
-        Collection<Route> routes = topologyProvider.getSendRoutes((Envelope) envelope);
+        Collection<Route> routes = topologyProvider.getSendRouteCollection((Envelope) envelope);
         broker.send((Envelope) envelope, routes);
     }
 

@@ -30,26 +30,26 @@ public class TopologyProvider {
         return profile;
     }
 
-    public Collection<Route> getReceiveRoutes(Registration registration) {
-        Collection<Route> receiveRoutes = null;
+    public Collection<Route> getReceiveRouteCollection(Registration registration) {
+        Collection<Route> receiveRouteCollection = null;
         try {
-            receiveRoutes = topologyRegistry.getReceiveRoutes(registration.getTopic());
+            receiveRouteCollection = topologyRegistry.getReceiveRouteCollection(registration.getTopic());
         } catch (Exception e) {
-            receiveRoutes = new LinkedList<Route>();
+            receiveRouteCollection = new LinkedList<Route>();
         }
 
-        return receiveRoutes;
+        return receiveRouteCollection;
     }
 
-    public Collection<Route> getSendRoutes(Envelope envelope) {
-        Collection<Route> sendRoutes = null;
+    public Collection<Route> getSendRouteCollection(Envelope envelope) {
+        Collection<Route> sendRouteCollection = null;
         try {
-            sendRoutes = topologyRegistry.getReceiveRoutes(envelope.getTopic());
+            sendRouteCollection = topologyRegistry.getReceiveRouteCollection(envelope.getTopic());
         } catch (Exception e) {
-            sendRoutes = new LinkedList<Route>();
+            sendRouteCollection = new LinkedList<Route>();
         }
 
-        return sendRoutes;
+        return sendRouteCollection;
     }
 
     public void setEventBus(EventBus eventBus) {

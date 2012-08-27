@@ -8,11 +8,11 @@ public class TopologyRegistry {
     private Map<String, Collection<Route>> receiveRouteMap;
     private Map<String, Collection<Route>> sendRouteMap;
 
-    public Collection<Route> getReceiveRoutes(String key) {
+    public Collection<Route> getReceiveRouteCollection(String key) {
         return receiveRouteMap.get(key);
     }
 
-    public Collection<Route> getSendRoutes(String key) {
+    public Collection<Route> getSendRouteCollection(String key) {
         return sendRouteMap.get(key);
     }
 

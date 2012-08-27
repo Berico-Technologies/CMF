@@ -2,6 +2,6 @@ package cmf.bus.core;
 
 public interface IEnvelopeHandler {
 
-    DeliveryOutcome receive(IEnvelope envelope) throws Exception;
+    DeliveryOutcome receive(IEnvelope envelope);
 
 }

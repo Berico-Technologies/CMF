@@ -12,8 +12,8 @@ public class Route {
     }
 
     public Route(String exchangeName, String routingKey) {
-        this.exchangeName = exchangeName;
-        this.routingKey = routingKey;
+        setExchangeName(exchangeName);
+        setRoutingKey(routingKey);
     }
 
     @Override
@@ -72,6 +72,9 @@ public class Route {
     }
 
     public void setRoutingKey(String routingKey) {
+        if (StringUtils.isBlank(routingKey)) {
+            throw new IllegalArgumentException("Route exchange routingKey cannot be set to null or an empty string");
+        }
         this.routingKey = routingKey;
     }
 

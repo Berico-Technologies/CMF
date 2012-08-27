@@ -1,10 +1,10 @@
 package cmf.bus.pubsub;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import cmf.bus.core.IEnvelope;
@@ -16,6 +16,27 @@ public class Envelope implements IEnvelope {
     protected Map<String, String> headers = new HashMap<String, String>();
 
     protected byte[] payload = {};
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Envelope)) {
+            return false;
+        }
+        Envelope other = (Envelope) obj;
+        if (!Arrays.equals(payload, other.payload)) {
+            return false;
+        } else if (!Arrays.equals(headers.values().toArray(), other.headers.values().toArray())) {
+            return false;
+        }
+
+        return true;
+    }
 
     @Override
     public String getCorrelationId() {
@@ -74,8 +95,8 @@ public class Envelope implements IEnvelope {
 
     @Override
     public void setPayload(byte[] payload) {
-        if (ArrayUtils.isEmpty(payload)) {
-            throw new IllegalArgumentException("Envelope payload cannot be set to null or an empty array");
+        if (payload == null) {
+            throw new IllegalArgumentException("Envelope payload cannot be set to null");
         }
         this.payload = payload;
     }
