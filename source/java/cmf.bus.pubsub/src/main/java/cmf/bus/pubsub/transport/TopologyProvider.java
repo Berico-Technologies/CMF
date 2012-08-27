@@ -44,7 +44,7 @@ public class TopologyProvider {
     public Collection<Route> getSendRouteCollection(Envelope envelope) {
         Collection<Route> sendRouteCollection = null;
         try {
-            sendRouteCollection = topologyRegistry.getReceiveRouteCollection(envelope.getTopic());
+            sendRouteCollection = topologyRegistry.getSendRouteCollection(envelope.getTopic());
         } catch (Exception e) {
             sendRouteCollection = new LinkedList<Route>();
         }
