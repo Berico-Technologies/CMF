@@ -3,9 +3,9 @@ package cmf.bus.rabbitmq.transport;
 import java.io.IOException;
 
 import cmf.bus.core.DeliveryOutcome;
+import cmf.bus.core.Envelope;
 import cmf.bus.core.IEnvelopeHandler;
 import cmf.bus.core.serializer.ISerializer;
-import cmf.bus.pubsub.Envelope;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
@@ -76,7 +76,7 @@ public class Queue extends DefaultConsumer {
             super.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
             deliveryTag = rabbitEnvelope.getDeliveryTag();
             Envelope envelope = serializer.byteDeserialize(body, Envelope.class);
-            deliveryOutcome = envelopeHandler.receive(envelope);
+            deliveryOutcome = envelopeHandler.handleEnvelope(envelope);
         } catch (Exception e) {
             deliveryOutcome = DeliveryOutcome.Exception;
         }

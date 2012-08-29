@@ -4,6 +4,6 @@ import cmf.bus.core.DeliveryOutcome;
 
 public interface IEventHandler<EVENT> {
 
-    DeliveryOutcome receive(EVENT event);
+    DeliveryOutcome handleEvent(EVENT event);
 
 }
