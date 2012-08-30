@@ -1,12 +1,8 @@
 package cmf.bus.core.transport;
 
-import cmf.bus.core.IEnvelope;
-import cmf.bus.core.IRegistration;
+import cmf.bus.core.IEnvelopeReceiver;
+import cmf.bus.core.IEnvelopeSender;
 
-public interface ITransportProvider {
-
-    void register(IRegistration registration);
-
-    void send(IEnvelope envelope);
+public interface ITransportProvider extends IEnvelopeReceiver, IEnvelopeSender {
 
 }

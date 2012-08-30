@@ -7,21 +7,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-import cmf.bus.pubsub.Envelope;
-import cmf.bus.pubsub.Registration;
-import cmf.bus.pubsub.transport.IBroker;
-import cmf.bus.pubsub.transport.Route;
+import cmf.bus.core.IEnvelope;
+import cmf.bus.core.IRegistration;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class Broker implements IBroker {
+public class Broker {
 
+    public static final int DEFAULT_QUEUE_LIFETIME = 1000 * 60 * 30; // 30 minute lifetime
     private static final String TOPIC_EXCHANGE_TYPE = "topic";
 
     private Channel channel;
@@ -86,9 +86,9 @@ public class Broker implements IBroker {
         }
     }
 
-    @Override
-    public void register(Registration registration, Collection<Route> routes) {
-        String queueName = registration.getQueueName();
+    public void register(IRegistration registration, Collection<Route> routes) {
+        String queueName = UUID.randomUUID().toString();
+//        String queueName = registration.getQueueName();
         Map<String, Object> params = new HashMap<String, Object>();
         Queue queue = null;
         params.put("x-expires", queueLifetime);
@@ -112,19 +112,18 @@ public class Broker implements IBroker {
         }
     }
 
-    @Override
-    public void send(Envelope envelope, Collection<Route> routes) {
+    public void send(IEnvelope envelope, Collection<Route> routes) {
         if (envelope.getTimestamp() == null) {
             envelope.setTimestamp(Calendar.getInstance().getTime().toString());
         }
         for (Route route : routes) {
             String exchangeName = getExchangeName(route);
 
-            String replyingTo = envelope.getReplyingTo();
+            String correlation = envelope.getCorrelationId();
             String routingKey = route.getRoutingKey();
             String topic = null;
-            if (!StringUtils.isBlank(replyingTo)) {
-                topic = replyingTo;
+            if (!StringUtils.isBlank(correlation)) {
+                topic = correlation;
             } else if (!StringUtils.isBlank(routingKey)) {
                 topic = routingKey;
             } else {
@@ -139,7 +138,6 @@ public class Broker implements IBroker {
         }
     }
 
-    @Override
     public void setQueueLifetime(int queueLifetime) {
         this.queueLifetime = queueLifetime;
     }

@@ -4,7 +4,7 @@ public interface IEnvelope {
 
     public static final String CORRELATION_ID = "bus.envelope.correlation_id";
     public static final String ID = "bus.envelope.id";
-    public static final String REPLYING_TO = "bus.envelope.replying_to";
+    public static final String TOPIC = "bus.envelope.topic";
     public static final String TIMESTAMP = "bus.envelope.timestamp";
 
     String getCorrelationId();
@@ -14,8 +14,6 @@ public interface IEnvelope {
     String getId();
 
     byte[] getPayload();
-
-    String getReplyingTo();
 
     String getTimestamp();
 
@@ -27,8 +25,10 @@ public interface IEnvelope {
 
     void setPayload(byte[] payload);
 
-    void setReplyingTo(String replyingTo);
-
     void setTimestamp(String timestamp);
+    
+    String getTopic();
+    
+    void setTopic(String topic);
 
 }

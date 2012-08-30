@@ -4,10 +4,10 @@ public interface IRegistration {
 
     IEnvelopeHandler getEnvelopeHandler();
 
-    ITransportFilter getTransportFilter();
-
     void setEnvelopeHandler(IEnvelopeHandler envelopeHandler);
 
-    void setTransportFilter(ITransportFilter transportFilter);
-
+    String getTopic();
+    
+    void setTopic(String topic);
+    
 }

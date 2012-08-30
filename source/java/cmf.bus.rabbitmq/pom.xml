@@ -14,10 +14,6 @@
             <artifactId>cmf.bus.core</artifactId>
         </dependency>
         <dependency>
-            <groupId>cmf</groupId>
-            <artifactId>cmf.bus.pubsub</artifactId>
-        </dependency>
-        <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>

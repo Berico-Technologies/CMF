@@ -1,9 +1,5 @@
 package cmf.bus.core;
 
-public interface IEnvelopeBus {
-
-    void register(IRegistration registration);
-
-    void send(IEnvelope envelope);
+public interface IEnvelopeBus extends IEnvelopeReceiver, IEnvelopeSender {
 
 }

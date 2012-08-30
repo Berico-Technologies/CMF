@@ -10,7 +10,6 @@
 
     <modules>
         <module>cmf.bus.core</module>
-        <module>cmf.bus.pubsub</module>
         <module>cmf.bus.rabbitmq</module>
     </modules>
 
@@ -20,6 +19,7 @@
         <slf4j.version>1.6.4</slf4j.version>
         <java.version>1.6</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencyManagement>
@@ -27,12 +27,6 @@
             <dependency>
                 <groupId>cmf</groupId>
                 <artifactId>cmf.bus.core</artifactId>
-                <version>${project.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>cmf</groupId>
-                <artifactId>cmf.bus.pubsub</artifactId>
                 <version>${project.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -46,13 +40,13 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.10</version>
-                <scope>provided</scope>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>1.9.0</version>
-                <scope>provided</scope>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
