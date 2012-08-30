@@ -47,15 +47,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnvelopeHeaderConstants.cs" />
     <Compile Include="Exchange.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="ITopologyService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RabbitTransportProvider.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\cmf.bus.eventing\cmf.bus.eventing.csproj">
-      <Project>{213E5B98-3FFB-47FE-BC6F-68B84C82150E}</Project>
-      <Name>cmf.bus.eventing</Name>
+    <ProjectReference Include="..\cmf.bus.berico\cmf.bus.berico.csproj">
+      <Project>{D96A6D2B-E427-406A-BD73-9961447B3557}</Project>
+      <Name>cmf.bus.berico</Name>
     </ProjectReference>
     <ProjectReference Include="..\cmf.bus\cmf.bus.csproj">
       <Project>{5386254B-6A77-4244-9364-1013899A2B11}</Project>

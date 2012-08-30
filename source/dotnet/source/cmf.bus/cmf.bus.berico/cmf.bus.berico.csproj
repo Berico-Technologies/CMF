@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5386254B-6A77-4244-9364-1013899A2B11}</ProjectGuid>
+    <ProjectGuid>{D96A6D2B-E427-406A-BD73-9961447B3557}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>cmf.bus</RootNamespace>
-    <AssemblyName>cmf.bus</AssemblyName>
+    <RootNamespace>cmf.bus.berico</RootNamespace>
+    <AssemblyName>cmf.bus.berico</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,18 +40,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Envelope.cs" />
-    <Compile Include="IEnvelopeBus.cs" />
-    <Compile Include="IEnvelopeReceiver.cs" />
-    <Compile Include="IEnvelopeSender.cs" />
-    <Compile Include="IRegistration.cs" />
+    <Compile Include="DefaultEnvelopeBus.cs" />
+    <Compile Include="IEnvelopeDispatcher.cs" />
+    <Compile Include="IInboundEnvelopeProcessor.cs" />
+    <Compile Include="IOutboundEnvelopeProcessor.cs" />
+    <Compile Include="ITransportProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="support\InMemoryEnvelopeBus.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\cmf.bus\cmf.bus.csproj">
+      <Project>{5386254B-6A77-4244-9364-1013899A2B11}</Project>
+      <Name>cmf.bus</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(SolutionDir)\..\..\libraries</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

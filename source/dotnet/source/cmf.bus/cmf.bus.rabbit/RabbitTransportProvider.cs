@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 using Common.Logging;
 using RabbitMQ.Client;
 
-using cmf.bus.core;
-using System.Security.Cryptography;
-using System.DirectoryServices.AccountManagement;
+using cmf.bus;
+using cmf.bus.berico;
 
 namespace cmf.bus.rabbit
 {
     public class RabbitTransportProvider : ITransportProvider
     {
-        public event Action<Envelope> OnEnvelopeReceived;
+        public event Action<IEnvelopeDispatcher> OnEnvelopeReceived;
 
 
         private ITopologyService _topoSvc;
@@ -125,6 +126,12 @@ namespace cmf.bus.rabbit
         {
             RSACryptoServiceProvider rsaProvider = cert.PrivateKey as RSACryptoServiceProvider;
             return rsaProvider.SignData(data, new SHA1CryptoServiceProvider());
+        }
+
+
+        public void Register(IRegistration registration)
+        {
+            throw new NotImplementedException();
         }
     }
 }

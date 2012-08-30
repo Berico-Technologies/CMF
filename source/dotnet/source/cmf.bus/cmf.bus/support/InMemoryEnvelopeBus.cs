@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using cmf.bus.core;
+using cmf.bus;
 
 namespace cmf.bus.support
 {
@@ -36,30 +36,26 @@ namespace cmf.bus.support
     /// </summary>
     public class InMemoryEnvelopeBus : IEnvelopeBus
     {
-        public event Action<Envelope, Exception> OnFailedEnvelope;
+        protected List<IRegistration> _registrationList;
 
-
-        protected Dictionary<string, IList<IRegistration>> _registrar;
-        
-        private object _registrarLock = new object();
+        private object _registrationListLock = new object();
 
 
         public InMemoryEnvelopeBus()
         {
-            _registrar = new Dictionary<string, IList<IRegistration>>();
+            _registrationList = new List<IRegistration>();
         }
 
 
         public virtual void Send(Envelope env)
         {
-            IList<IRegistration> handlerList = null;
+            IEnumerable<IRegistration> handlerList = null;
 
-            lock (_registrarLock)
+            lock (_registrationListLock)
             {
-                if (_registrar.ContainsKey(env.GetMessageTopic()))
-                {
-                    handlerList = _registrar[env.GetMessageTopic()];
-                }
+                handlerList = from reg in _registrationList
+                              where ((null != reg.Filter) && (reg.Filter(env)))
+                              select reg;
             }
 
             this.Dispatch(env, handlerList);
@@ -67,24 +63,14 @@ namespace cmf.bus.support
 
         public virtual void Register(IRegistration registration)
         {
-            lock (_registrarLock)
+            lock (_registrationListLock)
             {
-                if (false == _registrar.ContainsKey(registration.Topic))
-                {
-                    _registrar.Add(registration.Topic, new List<IRegistration>());
-                }
-
-                _registrar[registration.Topic].Add(registration);
+                _registrationList.Add(registration);
             }
         }
 
-        public virtual void Register(string topic, Func<Envelope, DeliveryOutcome> handler)
-        {
-            this.Register(new FunctionalRegistration(topic, handler));
-        }
 
-
-        protected virtual void Dispatch(Envelope env, IList<IRegistration> handlerList)
+        protected virtual void Dispatch(Envelope env, IEnumerable<IRegistration> handlerList)
         {
             Thread dispatchThread = new Thread(new ThreadStart(delegate () {
                 handlerList.ToList().ForEach(handler =>
@@ -95,25 +81,12 @@ namespace cmf.bus.support
                     }
                     catch (Exception ex)
                     {
-                        this.Raise_OnFailedEnvelope(env, ex);
+                        handler.HandleFailed(env, ex);
                     }
                 });
             }));
 
             dispatchThread.Start();
-        }
-
-
-        private void Raise_OnFailedEnvelope(Envelope env, Exception ex)
-        {
-            if (null != this.OnFailedEnvelope)
-            {
-                foreach (Delegate d in this.OnFailedEnvelope.GetInvocationList())
-                {
-                    try { d.DynamicInvoke(env, ex); }
-                    catch { }
-                }
-            }
         }
     }
 }

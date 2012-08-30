@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5386254B-6A77-4244-9364-1013899A2B11}</ProjectGuid>
+    <ProjectGuid>{24D9184A-81B9-4D67-86E4-1B8B4EAB27BB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>cmf.bus</RootNamespace>
-    <AssemblyName>cmf.bus</AssemblyName>
+    <RootNamespace>cmf.eventing.berico</RootNamespace>
+    <AssemblyName>cmf.eventing.berico</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,18 +40,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Envelope.cs" />
-    <Compile Include="IEnvelopeBus.cs" />
-    <Compile Include="IEnvelopeReceiver.cs" />
-    <Compile Include="IEnvelopeSender.cs" />
-    <Compile Include="IRegistration.cs" />
+    <Compile Include="DefaultEventBus.cs" />
+    <Compile Include="EventRegistration.cs" />
+    <Compile Include="IInboundEventProcessor.cs" />
+    <Compile Include="IOutboundEventProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="support\InMemoryEnvelopeBus.cs" />
+    <Compile Include="TypedEventHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\cmf.bus.berico\cmf.bus.berico.csproj">
+      <Project>{D96A6D2B-E427-406A-BD73-9961447B3557}</Project>
+      <Name>cmf.bus.berico</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\cmf.bus\cmf.bus.csproj">
+      <Project>{5386254B-6A77-4244-9364-1013899A2B11}</Project>
+      <Name>cmf.bus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\cmf.eventing\cmf.eventing.csproj">
+      <Project>{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}</Project>
+      <Name>cmf.eventing</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)$(TargetName).* $(SolutionDir)\..\..\libraries</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
