@@ -35,23 +35,27 @@ namespace cmf.eventing.berico
         }
 
 
-        public virtual void Handle(Envelope env)
+        public virtual object Handle(Envelope env)
         {
-            object empty = null;
+            object ev = null;
+            object result = null;
 
             try
             {
-                this.ProcessInbound(ref empty, ref env);
+                this.ProcessInbound(ref ev, ref env);
+                result = _handler.Handle(ev, env.Headers);
             }
             catch (Exception ex)
             {
-                this.HandleFailed(env, ex);
+                result = this.HandleFailed(env, ex);
             }
+
+            return result;
         }
 
-        public virtual void HandleFailed(Envelope env, Exception ex)
+        public virtual object HandleFailed(Envelope env, Exception ex)
         {
-            _handler.HandleFailed(env, ex);
+            return _handler.HandleFailed(env, ex);
         }
 
 

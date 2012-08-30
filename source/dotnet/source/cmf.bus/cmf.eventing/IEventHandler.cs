@@ -13,8 +13,8 @@ namespace cmf.eventing
         string Topic { get; }
 
 
-        void Handle(object ev, IDictionary<string, string> headers);
+        object Handle(object ev, IDictionary<string, string> headers);
 
-        void HandleFailed(Envelope env, Exception ex);
+        object HandleFailed(Envelope env, Exception ex);
     }
 }

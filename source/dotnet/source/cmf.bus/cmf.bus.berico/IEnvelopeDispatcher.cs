@@ -10,8 +10,10 @@ namespace cmf.bus.berico
         Envelope Envelope { get; }
 
 
-        void Dispatch(Envelope env);
+        object Dispatch();
 
-        void Fail(Exception ex);
+        object Dispatch(Envelope env);
+
+        object Fail(Exception ex);
     }
 }

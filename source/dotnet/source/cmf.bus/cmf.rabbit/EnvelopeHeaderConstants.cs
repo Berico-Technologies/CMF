@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace cmf.bus.rabbit
+namespace cmf.rabbit
 {
     public static class EnvelopeHeaderConstants
     {
@@ -13,4 +13,3 @@ namespace cmf.bus.rabbit
         public static readonly string MESSAGE_CORRELATION_ID = "cmf.bus.message.correlation_id";
     }
 }
-

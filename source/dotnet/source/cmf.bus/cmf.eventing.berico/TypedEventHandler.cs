@@ -9,8 +9,8 @@ namespace cmf.eventing.berico
 {
     public class TypedEventHandler<TEvent> : IEventHandler where TEvent : class
     {
-        protected Action<TEvent, IDictionary<string, string>> _handler;
-        protected Action<Envelope, Exception> _failHandler;
+        protected Func<TEvent, IDictionary<string, string>, object> _handler;
+        protected Func<Envelope, Exception, object> _failHandler;
 
 
         public string Topic
@@ -19,28 +19,40 @@ namespace cmf.eventing.berico
         }
 
 
-        public TypedEventHandler(Action<TEvent, IDictionary<string, string>> handler)
+        public TypedEventHandler(Action<TEvent, IDictionary<string, string>> noReturnHandler)
+        {
+            _handler = new Func<TEvent,IDictionary<string,string>,object>(delegate (TEvent ev, IDictionary<string, string> headers) {
+                noReturnHandler(ev, headers);
+                return null;
+            });
+        }
+
+        public TypedEventHandler(Func<TEvent, IDictionary<string, string>, object> handler)
         {
             _handler = handler;
         }
 
         public TypedEventHandler(
-            Action<TEvent, IDictionary<string, string>> handler,
-            Action<Envelope, Exception> failHandler)
+            Func<TEvent, IDictionary<string, string>, object> handler,
+            Func<Envelope, Exception, object> failHandler)
             : this(handler)
         {
             _failHandler = failHandler;
         }
 
 
-        public void Handle(object ev, IDictionary<string, string> headers)
+        public object Handle(object ev, IDictionary<string, string> headers)
         {
-            _handler(ev as TEvent, headers);
+            return _handler(ev as TEvent, headers);
         }
 
-        public void HandleFailed(Envelope env, Exception ex)
+        public object HandleFailed(Envelope env, Exception ex)
         {
-            if (null != _failHandler) { _failHandler(env, ex); }
+            object result = null;
+
+            if (null != _failHandler) { result = _failHandler(env, ex); }
+
+            return result;
         }
     }
 }

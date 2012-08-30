@@ -31,14 +31,14 @@ namespace cmf.bus
         /// </summary>
         /// <param name="env">The envelope you should handle</param>
         /// <returns></returns>
-        void Handle(Envelope env);
+        object Handle(Envelope env);
 
         /// <summary>
         /// The method that handles failed envelopes.
         /// </summary>
         /// <param name="env">The envelope that failed</param>
         /// <param name="ex">The exception that caused the envelope to fail</param>
-        void HandleFailed(Envelope env, Exception ex);
+        object HandleFailed(Envelope env, Exception ex);
     }
 }
 
