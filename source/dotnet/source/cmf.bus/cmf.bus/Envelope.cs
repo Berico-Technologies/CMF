@@ -16,6 +16,12 @@ namespace cmf.bus
             this.Headers = new Dictionary<string, string>();
         }
 
+        public Envelope(IDictionary<string, string> headers, byte[] payload)
+        {
+            this.Headers = headers;
+            this.Payload = payload;
+        }
+
 
         public override string ToString()
         {

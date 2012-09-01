@@ -15,7 +15,7 @@ namespace cmf.bus.support
     /// <para>
     /// All registrations are held in-memory and all sent envelopes are
     /// delivered only to those registrations. There is no communication 
-    /// external to the process using this component, and no processing chain.
+    /// external to the process using this component.
     /// </para>
     /// <para>
     /// When an envelope is 'sent', a background thread is created to dispatch

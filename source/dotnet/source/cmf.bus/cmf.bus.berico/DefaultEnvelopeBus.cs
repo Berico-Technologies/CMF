@@ -10,21 +10,16 @@ namespace cmf.bus.berico
 {
     public class DefaultEnvelopeBus : IEnvelopeBus
     {
-        protected SortedDictionary<int, IInboundEnvelopeProcessor> _inboundChain;
-        protected SortedDictionary<int, IOutboundEnvelopeProcessor> _outboundChain;
         protected ITransportProvider _txProvider;
 
+        public SortedDictionary<int, IInboundEnvelopeProcessor> InboundChain { get; set; }
+        public SortedDictionary<int, IOutboundEnvelopeProcessor> OutboundChain { get; set; }
 
-        public DefaultEnvelopeBus(
-            IDictionary<int, IInboundEnvelopeProcessor> inboundProcessorChain,
-            IDictionary<int, IOutboundEnvelopeProcessor> outboundProcessorChain,
-            ITransportProvider transportProvider)
+
+        public DefaultEnvelopeBus(ITransportProvider transportProvider)
         {
-            _inboundChain = new SortedDictionary<int, IInboundEnvelopeProcessor>(inboundProcessorChain);
-            _outboundChain = new SortedDictionary<int, IOutboundEnvelopeProcessor>(outboundProcessorChain);
-
             _txProvider = transportProvider;
-            _txProvider.OnEnvelopeReceived += new Action<IEnvelopeDispatcher>(_txProvider_OnEnvelopeReceived);
+            _txProvider.OnEnvelopeReceived += this.Handle_Dispatcher;
         }
 
 
@@ -34,7 +29,7 @@ namespace cmf.bus.berico
             if (null == env) { throw new ArgumentNullException("Cannot send a null envelope"); }
             
             // send the envelope through the outbound chain
-            this.ProcessOutbound(ref env, _outboundChain);
+            this.ProcessOutbound(ref env, this.OutboundChain);
 
             // send the envelope to the transport provider
             _txProvider.Send(env);
@@ -48,9 +43,29 @@ namespace cmf.bus.berico
             _txProvider.Register(registration);
         }
 
+        public virtual void Handle_Dispatcher(IEnvelopeDispatcher dispatcher)
+        {
+            try
+            {
+                Envelope env = dispatcher.Envelope;
+
+                // send the envelope through the inbound processing chain
+                this.ProcessInbound(ref env, this.InboundChain);
+
+                // the dispatcher encapsulates the logic of giving the envelope to handlers
+                dispatcher.Dispatch(env);
+            }
+            catch (Exception ex)
+            {
+                dispatcher.Fail(ex);
+            }
+        }
+
 
         protected virtual void ProcessOutbound(ref Envelope env, SortedDictionary<int, IOutboundEnvelopeProcessor> processorChain)
         {
+            if ((null == processorChain) || (0 == processorChain.Count)) { return; }
+
             IDictionary<string, object> processorContext = new Dictionary<string, object>();
 
             foreach (IOutboundEnvelopeProcessor processor in processorChain.Values)
@@ -61,29 +76,13 @@ namespace cmf.bus.berico
 
         protected virtual void ProcessInbound(ref Envelope env, SortedDictionary<int, IInboundEnvelopeProcessor> processorChain)
         {
+            if ((null == processorChain) || (0 == processorChain.Count)) { return; }
+
             IDictionary<string, object> processorContext = new Dictionary<string, object>();
 
             foreach (IInboundEnvelopeProcessor processor in processorChain.Values)
             {
                 processor.ProcessInbound(ref env, ref processorContext);
-            }
-        }
-
-        protected virtual void _txProvider_OnEnvelopeReceived(IEnvelopeDispatcher dispatcher)
-        {
-            try
-            {
-                Envelope env = dispatcher.Envelope;
-
-                // send the envelope through the inbound processing chain
-                this.ProcessInbound(ref env, _inboundChain);
-
-                // the dispatcher encapsulates the logic of giving the envelope to handlers
-                dispatcher.Dispatch(env);
-            }
-            catch (Exception ex)
-            {
-                dispatcher.Fail(ex);
             }
         }
     }

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 
 using RabbitMQ.Client;
 
@@ -37,7 +39,28 @@ namespace cmf.rabbit
 
         public void Send(Envelope env)
         {
-            throw new NotImplementedException();
+            // first, get the topology based on the headers
+            RoutingInfo routing = _topoSvc.GetRoutingInfo(env.Headers);
+
+            // next, pull out all the producer exchanges
+            IEnumerable<Exchange> exchanges =
+                from route in routing.Routes
+                select route.ProducerExchange;
+
+            // for each exchange, send the envelope
+            foreach (Exchange ex in exchanges)
+            {
+                IConnection conn = this.GetConnection(ex);
+
+                using (IModel channel = conn.CreateModel())
+                {
+                    IBasicProperties props = channel.CreateBasicProperties();
+                    props.Headers = env.Headers as IDictionary;
+
+                    channel.ExchangeDeclare(ex.Name, ex.ExchangeType, ex.IsDurable, ex.IsAutoDelete, ex.Arguments);
+                    channel.BasicPublish(ex.Name, ex.RoutingKey, props, env.Payload);
+                }
+            }
         }
 
         public void Register(IRegistration registration)
@@ -50,16 +73,23 @@ namespace cmf.rabbit
                 from route in routing.Routes
                 select route.ConsumerExchange;
 
-            // next, get a connection to each of those exchanges
-            IEnumerable<IConnection> connections = this.GetConnections(exchanges);
+            foreach (Exchange ex in exchanges)
+            {
+                IConnection conn = this.GetConnection(ex);
 
-            // create and start a listener
-            RabbitListener listener = new RabbitListener(registration, connections);
-            listener.OnClose += _listeners.Remove;
-            listener.Start();
+                // create a listener
+                RabbitListener listener = new RabbitListener(registration, ex, conn);
+                listener.OnEnvelopeReceived += this.listener_OnEnvelopeReceived;
+                listener.OnClose += _listeners.Remove;
 
-            // store the listener
-            _listeners.Add(registration, listener);
+                // put it on another thread so as not to block this one
+                Thread listenerThread = new Thread(listener.Start);
+                listenerThread.Name = string.Format("{0} on {1}:{2}{3}", ex.QueueName, ex.HostName, ex.Port, ex.VirtualHost);
+                listenerThread.Start();
+
+                // store the listener
+                _listeners.Add(registration, listener);
+            }
         }
 
         public void Dispose()
@@ -68,6 +98,18 @@ namespace cmf.rabbit
             GC.SuppressFinalize(this);
         }
 
+
+        protected virtual void listener_OnEnvelopeReceived(IEnvelopeDispatcher dispatcher)
+        {
+            if (null != this.OnEnvelopeReceived)
+            {
+                foreach (Delegate d in this.OnEnvelopeReceived.GetInvocationList())
+                {
+                    try { d.DynamicInvoke(dispatcher); }
+                    catch { }
+                }
+            }
+        }
 
         protected virtual void Dispose(bool disposing)
         {
@@ -111,6 +153,8 @@ namespace cmf.rabbit
 
         protected virtual IConnection CreateConnection(Exchange ex)
         {
+            IConnection conn = null;
+
             // use the cert provider to get the certificate to connect with
             X509Certificate2 cert = _certProvider.GetCertificate(ex.HostName, ex.Port);
 
@@ -122,15 +166,20 @@ namespace cmf.rabbit
             cf.VirtualHost = ex.VirtualHost;
             cf.Port = ex.Port;
 
-            // now, let's set the connection factory's ssl-specific settings
-            // NOTE: it's absolutely required that what you set as Ssl.ServerName be
-            //       what's on your rabbitmq server's certificate (its CN - common name)
-            cf.Ssl.Certs = new X509CertificateCollection(new X509Certificate[] { cert });
-            cf.Ssl.ServerName = ex.HostName;
-            cf.Ssl.Enabled = true;
+            if (null != cert)
+            {
+                // now, let's set the connection factory's ssl-specific settings
+                // NOTE: it's absolutely required that what you set as Ssl.ServerName be
+                //       what's on your rabbitmq server's certificate (its CN - common name)
+                cf.Ssl.Certs = new X509CertificateCollection(new X509Certificate[] { cert });
+                cf.Ssl.ServerName = ex.HostName;
+                cf.Ssl.Enabled = true;
+            }
 
-            // we're ready to create an SSL connection to the rabbitmq server
-            return cf.CreateConnection();
+            // we either now create an SSL connection or a default "guest/guest" connection
+            conn = cf.CreateConnection();
+
+            return conn;
         }
     }
 }

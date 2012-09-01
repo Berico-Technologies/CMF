@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5386254B-6A77-4244-9364-1013899A2B11}</ProjectGuid>
+    <ProjectGuid>{1553D312-9ABE-42FA-9A25-09BE1AE5EB67}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>cmf.bus</RootNamespace>
-    <AssemblyName>cmf.bus</AssemblyName>
+    <RootNamespace>cmf.tests</RootNamespace>
+    <AssemblyName>cmf.tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq">
+      <HintPath>..\..\..\libraries\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\libraries\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,19 +46,41 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Envelope.cs" />
-    <Compile Include="IEnvelopeBus.cs" />
-    <Compile Include="IEnvelopeReceiver.cs" />
-    <Compile Include="IEnvelopeSender.cs" />
-    <Compile Include="IRegistration.cs" />
+    <Compile Include="DefaultEnvelopeBusTests.cs" />
+    <Compile Include="InMemoryEnvBusTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="support\InMemoryEnvelopeBus.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\cmf.bus.berico\cmf.bus.berico.csproj">
+      <Project>{D96A6D2B-E427-406A-BD73-9961447B3557}</Project>
+      <Name>cmf.bus.berico</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\cmf.bus\cmf.bus.csproj">
+      <Project>{5386254B-6A77-4244-9364-1013899A2B11}</Project>
+      <Name>cmf.bus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\cmf.eventing.berico\cmf.eventing.berico.csproj">
+      <Project>{24D9184A-81B9-4D67-86E4-1B8B4EAB27BB}</Project>
+      <Name>cmf.eventing.berico</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\cmf.eventing\cmf.eventing.csproj">
+      <Project>{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}</Project>
+      <Name>cmf.eventing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\cmf.rabbit\cmf.rabbit.csproj">
+      <Project>{8CB67E8B-14B4-4C67-A23E-5C61EE17C8C2}</Project>
+      <Name>cmf.rabbit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\cmf.security\cmf.security.csproj">
+      <Project>{8F0CF566-2D0B-46DF-97F3-2AFD0D318FDF}</Project>
+      <Name>cmf.security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\cmf.topology\cmf.topology.csproj">
+      <Project>{53BC4193-6598-4102-9FBB-DA8B033E4077}</Project>
+      <Name>cmf.topology</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
