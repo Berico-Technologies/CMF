@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.StringUtils;
 
-import cmf.bus.core.IEnvelope;
+import cmf.bus.core.Envelope;
 
 public class SigningEnvelopeProcessor implements IInboundEnvelopeProcessor, IOutboundEnvelopeProcessor {
 
@@ -17,7 +17,7 @@ public class SigningEnvelopeProcessor implements IInboundEnvelopeProcessor, IOut
     }
 
     @Override
-    public void processInbound(IEnvelope envelope, Map<String, Object> context) {
+    public void processInbound(Envelope envelope, Map<String, Object> context) {
         // TODO: how to get public key? maybe this is a requirement for context
         String publicKey = "public key";
         String signature = envelope.getHeader(SIGNATURE_HEADER);
@@ -29,7 +29,7 @@ public class SigningEnvelopeProcessor implements IInboundEnvelopeProcessor, IOut
     }
 
     @Override
-    public void processOutbound(IEnvelope envelope, Map<String, Object> context) {
+    public void processOutbound(Envelope envelope, Map<String, Object> context) {
         // TODO: how to get private key? maybe this is a requirement for context
         String privateKey = "private key";
         byte[] clearText = envelope.getPayload();

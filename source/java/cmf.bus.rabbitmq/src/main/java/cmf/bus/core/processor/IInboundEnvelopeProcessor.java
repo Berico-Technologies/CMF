@@ -2,10 +2,10 @@ package cmf.bus.core.processor;
 
 import java.util.Map;
 
-import cmf.bus.core.IEnvelope;
+import cmf.bus.core.Envelope;
 
 public interface IInboundEnvelopeProcessor {
 
-    void processInbound(IEnvelope envelope, Map<String, Object> context);
+    void processInbound(Envelope envelope, Map<String, Object> context);
 
 }

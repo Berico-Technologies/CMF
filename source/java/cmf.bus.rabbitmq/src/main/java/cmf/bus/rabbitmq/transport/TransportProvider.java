@@ -3,7 +3,7 @@ package cmf.bus.rabbitmq.transport;
 import java.util.Collection;
 
 import cmf.bus.core.Envelope;
-import cmf.bus.core.IEnvelope;
+import cmf.bus.core.Envelope;
 import cmf.bus.core.IRegistration;
 import cmf.bus.core.Registration;
 import cmf.bus.core.transport.ITransportProvider;
@@ -20,7 +20,7 @@ public class TransportProvider implements ITransportProvider {
     }
 
     @Override
-    public void send(IEnvelope envelope) {
+    public void send(Envelope envelope) {
         Collection<Route> routes = topologyProvider.getSendRouteCollection((Envelope) envelope);
         broker.send(envelope, routes);
     }

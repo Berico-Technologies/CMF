@@ -2,7 +2,7 @@ package cmf.bus.core.processor;
 
 import java.util.Map;
 
-import cmf.bus.core.IEnvelope;
+import cmf.bus.core.Envelope;
 
 public class EncryptionEnvelopeProcessor implements IInboundEnvelopeProcessor, IOutboundEnvelopeProcessor {
 
@@ -13,7 +13,7 @@ public class EncryptionEnvelopeProcessor implements IInboundEnvelopeProcessor, I
     }
 
     @Override
-    public void processInbound(IEnvelope envelope, Map<String, Object> context) {
+    public void processInbound(Envelope envelope, Map<String, Object> context) {
         // TODO: how to get private key? maybe this is a requirement for context
         String privateKey = "private key";
         byte[] cypherText = envelope.getPayload();
@@ -22,7 +22,7 @@ public class EncryptionEnvelopeProcessor implements IInboundEnvelopeProcessor, I
     }
 
     @Override
-    public void processOutbound(IEnvelope envelope, Map<String, Object> context) {
+    public void processOutbound(Envelope envelope, Map<String, Object> context) {
         // TODO: how to get public key? maybe this is a requirement for context
         String publicKey = "public key";
         byte[] clearText = envelope.getPayload();

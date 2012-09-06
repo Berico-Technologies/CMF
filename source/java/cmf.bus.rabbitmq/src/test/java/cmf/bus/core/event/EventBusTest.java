@@ -12,7 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import cmf.bus.core.IEnvelope;
+import cmf.bus.core.Envelope;
 import cmf.bus.core.IEnvelopeBus;
 import cmf.bus.core.IRegistration;
 import cmf.bus.core.event.EventBus;
@@ -22,7 +22,7 @@ import cmf.bus.core.serializer.ISerializer;
 public class EventBusTest {
 
     @Mock
-    private IEnvelope envelope;
+    private Envelope envelope;
     @Mock
     private IEnvelopeBus envelopeBus;
     private EventBus eventBus;
@@ -61,12 +61,12 @@ public class EventBusTest {
     @Test
     public void sendCallsEnvelopeBusSend() {
         eventBus.send(new Object());
-        verify(envelopeBus).send(any(IEnvelope.class));
+        verify(envelopeBus).send(any(Envelope.class));
     }
     
     @Test(expected = RuntimeException.class)
     public void envelopeBusSendExceptionThrows() {
-        doThrow(RuntimeException.class).when(envelopeBus).send(any(IEnvelope.class));
+        doThrow(RuntimeException.class).when(envelopeBus).send(any(Envelope.class));
         eventBus.send(envelope);
     }
 

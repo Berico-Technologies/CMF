@@ -5,7 +5,7 @@ import org.joda.time.DateTimeZone;
 
 import cmf.bus.core.DeliveryOutcome;
 import cmf.bus.core.Envelope;
-import cmf.bus.core.IEnvelope;
+import cmf.bus.core.Envelope;
 import cmf.bus.core.IEnvelopeBus;
 import cmf.bus.core.IEnvelopeHandler;
 import cmf.bus.core.Registration;
@@ -22,7 +22,7 @@ public class EventBus implements IEventBus {
         IEnvelopeHandler envelopeHandler = new IEnvelopeHandler() {
 
             @Override
-            public DeliveryOutcome handleEnvelope(IEnvelope envelope) {
+            public DeliveryOutcome handleEnvelope(Envelope envelope) {
                 EVENT event = serializer.byteDeserialize(envelope.getPayload(), type);
 
                 return eventHandler.handleEvent(event);

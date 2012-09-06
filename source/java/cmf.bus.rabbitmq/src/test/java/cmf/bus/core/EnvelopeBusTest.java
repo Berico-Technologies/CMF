@@ -18,7 +18,7 @@ import org.mockito.stubbing.Answer;
 
 import cmf.bus.core.DeliveryOutcome;
 import cmf.bus.core.EnvelopeBus;
-import cmf.bus.core.IEnvelope;
+import cmf.bus.core.Envelope;
 import cmf.bus.core.IEnvelopeHandler;
 import cmf.bus.core.IRegistration;
 import cmf.bus.core.processor.IInboundEnvelopeProcessor;
@@ -31,7 +31,7 @@ public class EnvelopeBusTest {
     @Mock
     private Map<String, Object> context;
     @Mock
-    private IEnvelope envelope;
+    private Envelope envelope;
     private EnvelopeBus envelopeBus;
     @Mock
     private IInboundEnvelopeProcessor inboundEnvelopeProcessor;
@@ -62,7 +62,7 @@ public class EnvelopeBusTest {
         registration.setEnvelopeHandler(new IEnvelopeHandler() {
 
             @Override
-            public DeliveryOutcome handleEnvelope(IEnvelope envelope) {
+            public DeliveryOutcome handleEnvelope(Envelope envelope) {
                 return DeliveryOutcome.Acknowledge;
             }
             
@@ -77,14 +77,14 @@ public class EnvelopeBusTest {
 
     @Test
     public void inboundExceptionDoesntThrow() {
-        doThrow(RuntimeException.class).when(inboundEnvelopeProcessor).processInbound(any(IEnvelope.class), any(Map.class));
+        doThrow(RuntimeException.class).when(inboundEnvelopeProcessor).processInbound(any(Envelope.class), any(Map.class));
         envelopeBus.register(registration);
         envelopeBusRegistrationEnvelopeHandler.handleEnvelope(envelope);
     }
 
     @Test(expected = RuntimeException.class)
     public void outboundExceptionThrows() {
-        doThrow(RuntimeException.class).when(outboundEnvelopeProcessor).processOutbound(any(IEnvelope.class), any(Map.class));
+        doThrow(RuntimeException.class).when(outboundEnvelopeProcessor).processOutbound(any(Envelope.class), any(Map.class));
         envelopeBus.send(envelope);
     }
 
@@ -92,7 +92,7 @@ public class EnvelopeBusTest {
     public void receiveCallsProcessors() {
         envelopeBus.register(registration);
         envelopeBusRegistrationEnvelopeHandler.handleEnvelope(envelope);
-        verify(inboundEnvelopeProcessor).processInbound(any(IEnvelope.class), any(Map.class));
+        verify(inboundEnvelopeProcessor).processInbound(any(Envelope.class), any(Map.class));
     }
 
     @Test
@@ -104,13 +104,13 @@ public class EnvelopeBusTest {
     @Test
     public void sendCallsProcessors() {
         envelopeBus.send(envelope);
-        verify(outboundEnvelopeProcessor).processOutbound(any(IEnvelope.class), any(Map.class));
+        verify(outboundEnvelopeProcessor).processOutbound(any(Envelope.class), any(Map.class));
     }
 
     @Test
     public void sendCallsTransportSend() {
         envelopeBus.send(envelope);
-        verify(transportProvider).send(any(IEnvelope.class));
+        verify(transportProvider).send(any(Envelope.class));
     }
 
     @Test(expected = RuntimeException.class)
@@ -121,7 +121,7 @@ public class EnvelopeBusTest {
 
     @Test(expected = RuntimeException.class)
     public void transportSendExceptionThrows() {
-        doThrow(RuntimeException.class).when(transportProvider).send(any(IEnvelope.class));
+        doThrow(RuntimeException.class).when(transportProvider).send(any(Envelope.class));
         envelopeBus.send(envelope);
     }
 

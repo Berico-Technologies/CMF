@@ -2,6 +2,5 @@ package cmf.bus.core;
 
 public interface IEnvelopeSender {
 
-    void send(IEnvelope envelope);
-    
+    void send(Envelope envelope);
 }

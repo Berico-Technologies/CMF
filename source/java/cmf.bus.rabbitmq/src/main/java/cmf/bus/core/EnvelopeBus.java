@@ -20,7 +20,7 @@ public class EnvelopeBus implements IEnvelopeBus {
         IEnvelopeHandler busEnvelopeHandler = new IEnvelopeHandler() {
 
             @Override
-            public DeliveryOutcome handleEnvelope(IEnvelope envelope) {
+            public DeliveryOutcome handleEnvelope(Envelope envelope) {
                 DeliveryOutcome deliveryOutcome = DeliveryOutcome.Acknowledge;
                 try {
                     Map<String, Object> context = new HashMap<String, Object>();
@@ -49,7 +49,7 @@ public class EnvelopeBus implements IEnvelopeBus {
     }
     
     @Override
-    public void send(IEnvelope envelope) {
+    public void send(Envelope envelope) {
         Map<String, Object> context = new HashMap<String, Object>();
         for (IOutboundEnvelopeProcessor outboundEnvelopeProcessor : outboundProcessorCollection) {
             outboundEnvelopeProcessor.processOutbound(envelope, context);

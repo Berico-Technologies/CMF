@@ -1,13 +1,14 @@
 package cmf.bus.core;
 
+import java.util.Map;
+
 public interface IRegistration {
 
-    IEnvelopeHandler getEnvelopeHandler();
+    Object handle(Envelope envelope);
 
-    void setEnvelopeHandler(IEnvelopeHandler envelopeHandler);
-
-    String getTopic();
+    Object handleFailed(Envelope envelope, Exception e);
     
-    void setTopic(String topic);
+    boolean filter(Envelope envelope);
     
+    Map<String, String> info();
 }

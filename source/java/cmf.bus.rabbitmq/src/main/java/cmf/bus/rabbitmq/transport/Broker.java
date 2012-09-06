@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-import cmf.bus.core.IEnvelope;
+import cmf.bus.core.Envelope;
 import cmf.bus.core.IRegistration;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -112,7 +112,7 @@ public class Broker {
         }
     }
 
-    public void send(IEnvelope envelope, Collection<Route> routes) {
+    public void send(Envelope envelope, Collection<Route> routes) {
         if (envelope.getTimestamp() == null) {
             envelope.setTimestamp(Calendar.getInstance().getTime().toString());
         }

@@ -7,14 +7,14 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import cmf.bus.core.IEnvelope;
+import cmf.bus.core.Envelope;
 import cmf.bus.core.IEnvelopeHandler;
 import cmf.bus.core.Registration;
 
 public class RegistrationTest {
 
     @Mock
-    private IEnvelope envelope;
+    private Envelope envelope;
     @Mock
     private IEnvelopeHandler envelopeHandler;
     private String topic = "topic";
