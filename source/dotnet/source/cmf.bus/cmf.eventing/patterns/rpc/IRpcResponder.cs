@@ -7,6 +7,6 @@ namespace cmf.eventing.patterns.rpc
 {
     public interface IRpcResponder
     {
-        void RespondTo(Guid requestId, object response);
+        void RespondTo(IDictionary<string, string> headers, object response);
     }
 }
