@@ -12,8 +12,8 @@ using RabbitMQ.Client;
 
 using cmf.bus;
 using cmf.bus.berico;
-using cmf.security;
-using cmf.topology;
+using cmf.rabbit.security;
+using cmf.rabbit.topology;
 
 namespace cmf.rabbit
 {
@@ -156,7 +156,7 @@ namespace cmf.rabbit
             IConnection conn = null;
 
             // use the cert provider to get the certificate to connect with
-            X509Certificate2 cert = _certProvider.GetCertificate(ex.HostName, ex.Port);
+            X509Certificate2 cert = _certProvider.GetCertificate();
 
             // we use the rabbit connection factory, just like normal
             ConnectionFactory cf = new ConnectionFactory();

@@ -11,7 +11,7 @@ namespace cmf.eventing.berico
     {
         protected IEventHandler _handler;
         protected IDictionary<string, string> _registrationInfo;
-        protected SortedDictionary<int, IInboundEventProcessor> _inboundChain;
+        protected IEnumerable<IInboundEventProcessor> _inboundChain;
 
 
         public virtual Predicate<Envelope> Filter
@@ -25,7 +25,7 @@ namespace cmf.eventing.berico
         }
 
 
-        public EventRegistration(IEventHandler handler, SortedDictionary<int, IInboundEventProcessor> inboundChain)
+        public EventRegistration(IEventHandler handler, IEnumerable<IInboundEventProcessor> inboundChain)
         {
             _handler = handler;
             _inboundChain = inboundChain;
@@ -63,7 +63,7 @@ namespace cmf.eventing.berico
         {
             IDictionary<string, object> processorContext = new Dictionary<string, object>();
 
-            foreach (IInboundEventProcessor processor in _inboundChain.Values)
+            foreach (IInboundEventProcessor processor in _inboundChain)
             {
                 processor.ProcessInbound(ref ev, ref env, ref processorContext);
             }

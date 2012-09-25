@@ -71,14 +71,6 @@
       <Project>{8CB67E8B-14B4-4C67-A23E-5C61EE17C8C2}</Project>
       <Name>cmf.rabbit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\cmf.security\cmf.security.csproj">
-      <Project>{8F0CF566-2D0B-46DF-97F3-2AFD0D318FDF}</Project>
-      <Name>cmf.security</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\cmf.topology\cmf.topology.csproj">
-      <Project>{53BC4193-6598-4102-9FBB-DA8B033E4077}</Project>
-      <Name>cmf.topology</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

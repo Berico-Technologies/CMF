@@ -14,7 +14,7 @@ using RabbitMQ.Client.Exceptions;
 
 using cmf.bus;
 using cmf.bus.berico;
-using cmf.topology;
+using cmf.rabbit.topology;
 
 namespace cmf.rabbit
 {

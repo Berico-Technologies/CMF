@@ -12,8 +12,8 @@ namespace cmf.bus.berico
     {
         protected ITransportProvider _txProvider;
 
-        public SortedDictionary<int, IInboundEnvelopeProcessor> InboundChain { get; set; }
-        public SortedDictionary<int, IOutboundEnvelopeProcessor> OutboundChain { get; set; }
+        public IDictionary<int, IInboundEnvelopeProcessor> InboundChain { get; set; }
+        public IDictionary<int, IOutboundEnvelopeProcessor> OutboundChain { get; set; }
 
 
         public DefaultEnvelopeBus(ITransportProvider transportProvider)
@@ -29,7 +29,7 @@ namespace cmf.bus.berico
             if (null == env) { throw new ArgumentNullException("Cannot send a null envelope"); }
             
             // send the envelope through the outbound chain
-            this.ProcessOutbound(ref env, this.OutboundChain);
+            this.ProcessOutbound(ref env, this.OutboundChain.Sort());
 
             // send the envelope to the transport provider
             _txProvider.Send(env);
@@ -50,7 +50,7 @@ namespace cmf.bus.berico
                 Envelope env = dispatcher.Envelope;
 
                 // send the envelope through the inbound processing chain
-                this.ProcessInbound(ref env, this.InboundChain);
+                this.ProcessInbound(ref env, this.InboundChain.Sort());
 
                 // the dispatcher encapsulates the logic of giving the envelope to handlers
                 dispatcher.Dispatch(env);
@@ -62,28 +62,48 @@ namespace cmf.bus.berico
         }
 
 
-        protected virtual void ProcessOutbound(ref Envelope env, SortedDictionary<int, IOutboundEnvelopeProcessor> processorChain)
+        protected virtual void ProcessOutbound(ref Envelope env, IEnumerable<IOutboundEnvelopeProcessor> processorChain)
         {
-            if ((null == processorChain) || (0 == processorChain.Count)) { return; }
+            if ((null == processorChain) || (0 == processorChain.Count())) { return; }
 
             IDictionary<string, object> processorContext = new Dictionary<string, object>();
 
-            foreach (IOutboundEnvelopeProcessor processor in processorChain.Values)
+            foreach (IOutboundEnvelopeProcessor processor in processorChain)
             {
                 processor.ProcessOutbound(ref env, ref processorContext);
             }
         }
 
-        protected virtual void ProcessInbound(ref Envelope env, SortedDictionary<int, IInboundEnvelopeProcessor> processorChain)
+        protected virtual void ProcessInbound(ref Envelope env, IEnumerable<IInboundEnvelopeProcessor> processorChain)
         {
-            if ((null == processorChain) || (0 == processorChain.Count)) { return; }
+            if ((null == processorChain) || (0 == processorChain.Count())) { return; }
 
             IDictionary<string, object> processorContext = new Dictionary<string, object>();
 
-            foreach (IInboundEnvelopeProcessor processor in processorChain.Values)
+            foreach (IInboundEnvelopeProcessor processor in processorChain)
             {
                 processor.ProcessInbound(ref env, ref processorContext);
             }
+        }
+    }
+
+
+
+
+    public static class ChainExtensions
+    {
+        public static IEnumerable<IOutboundEnvelopeProcessor> Sort(this IDictionary<int, IOutboundEnvelopeProcessor> chain)
+        {
+            return chain
+                .OrderBy(kvp => kvp.Key)
+                .Select<KeyValuePair<int, IOutboundEnvelopeProcessor>, IOutboundEnvelopeProcessor>(kvp => kvp.Value);
+        }
+
+        public static IEnumerable<IInboundEnvelopeProcessor> Sort(this IDictionary<int, IInboundEnvelopeProcessor> chain)
+        {
+            return chain
+                .OrderBy(kvp => kvp.Key)
+                .Select<KeyValuePair<int, IInboundEnvelopeProcessor>, IInboundEnvelopeProcessor>(kvp => kvp.Value);
         }
     }
 }

@@ -12,18 +12,15 @@ namespace cmf.eventing.berico
     public class DefaultEventBus : IEventBus
     {
         protected DefaultEnvelopeBus _envBus;
-        protected SortedDictionary<int, IInboundEventProcessor> _inboundChain;
-        protected SortedDictionary<int, IOutboundEventProcessor> _outboundChain;
 
 
-        public DefaultEventBus(
-            DefaultEnvelopeBus envBus,
-            IDictionary<int, IInboundEventProcessor> inboundProcessorChain,
-            IDictionary<int, IOutboundEventProcessor> outboundProcessorChain)
+        public IDictionary<int, IInboundEventProcessor> InboundChain { get; set; }
+        public IDictionary<int, IOutboundEventProcessor> OutboundChain { get; set; }
+
+
+        public DefaultEventBus(DefaultEnvelopeBus envBus)
         {
             _envBus = envBus;
-            _inboundChain = new SortedDictionary<int, IInboundEventProcessor>(inboundProcessorChain);
-            _outboundChain = new SortedDictionary<int, IOutboundEventProcessor>(outboundProcessorChain);
         }
 
 
@@ -40,7 +37,7 @@ namespace cmf.eventing.berico
 
         public void Subscribe(IEventHandler handler)
         {
-            EventRegistration registration = new EventRegistration(handler, _inboundChain);
+            EventRegistration registration = new EventRegistration(handler, this.InboundChain.Sort());
 
             _envBus.Register(registration);
         }
@@ -55,10 +52,30 @@ namespace cmf.eventing.berico
         {
             IDictionary<string, object> processorContext = new Dictionary<string, object>();
 
-            foreach (IOutboundEventProcessor processor in _outboundChain.Values)
+            foreach (IOutboundEventProcessor processor in this.OutboundChain.Sort())
             {
                 processor.ProcessOutbound(ref ev, ref env, processorContext);
             }
+        }
+    }
+
+
+
+
+    public static class ChainExtensions
+    {
+        public static IEnumerable<IOutboundEventProcessor> Sort(this IDictionary<int, IOutboundEventProcessor> chain)
+        {
+            return chain
+                .OrderBy(kvp => kvp.Key)
+                .Select<KeyValuePair<int, IOutboundEventProcessor>, IOutboundEventProcessor>(kvp => kvp.Value);
+        }
+
+        public static IEnumerable<IInboundEventProcessor> Sort(this IDictionary<int, IInboundEventProcessor> chain)
+        {
+            return chain
+                .OrderBy(kvp => kvp.Key)
+                .Select<KeyValuePair<int, IInboundEventProcessor>, IInboundEventProcessor>(kvp => kvp.Value);
         }
     }
 }

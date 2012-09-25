@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultEnvelopeBus.cs" />
+    <Compile Include="EnvelopeHeaderConstants.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="IEnvelopeDispatcher.cs" />
     <Compile Include="IInboundEnvelopeProcessor.cs" />
     <Compile Include="IOutboundEnvelopeProcessor.cs" />
