@@ -19,7 +19,7 @@ namespace cmf.tests
         MockRepository _mocker;
 
 
-        [TestFixtureSetUp]
+        [SetUp]
         public void Setup()
         {
             _mocker = new MockRepository(MockBehavior.Loose);
@@ -57,7 +57,26 @@ namespace cmf.tests
         }
 
         [TestCase]
-        public void Should_Send_Envelopes_When_OutboundChain_Is_Null()
+        public void Should_Send_Envelopes_Even_When_OutboundChain_Is_Null()
+        {
+            Envelope env = new Envelope() { Payload = Encoding.UTF8.GetBytes("Test") };
+
+            Mock<ITransportProvider> txMock = _mocker.Create<ITransportProvider>();
+
+            DefaultEnvelopeBus bus = new DefaultEnvelopeBus(txMock.Object);
+            bus.InboundChain = null;
+            bus.OutboundChain = null;
+
+            bus.Send(env);
+
+            txMock.Verify(tx => tx.Send(env), Times.Once());
+        }
+
+        public void Should_Send_Outgoing_Envelopes_Through_the_Chain()
+        {
+        }
+
+        public void Should_Send_Incoming_Envelopes_Through_the_Chain()
         {
         }
     }

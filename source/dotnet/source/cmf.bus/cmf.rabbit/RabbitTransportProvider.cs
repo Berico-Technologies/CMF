@@ -33,6 +33,7 @@ namespace cmf.rabbit
             _topoSvc = topologyService;
             _certProvider = certProvider;
 
+            _connections = new Dictionary<Exchange, IConnection>();
             _listeners = new Dictionary<IRegistration, RabbitListener>();
         }
 

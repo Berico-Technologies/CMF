@@ -15,12 +15,12 @@ namespace cmf.rabbit.topology
         public int Port { get; protected set; }
 
 
-        public SimpleTopologyService(string name = "", string hostname = "localhost", string vhost = "/", int port = 5672)
+        public SimpleTopologyService(string name, string hostname, string vhost, int port)
         {
-            this.Name = name;
-            this.Hostname = hostname;
-            this.VirtualHost = vhost;
-            this.Port = port;
+            this.Name = name ?? string.Empty;
+            this.Hostname = hostname ?? "localhost";
+            this.VirtualHost = vhost ?? "/";
+            this.Port = (port == 0) ? 5672 : port;
         }
 
 
