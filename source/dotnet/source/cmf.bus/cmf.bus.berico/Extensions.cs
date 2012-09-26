@@ -104,5 +104,39 @@ namespace cmf.bus.berico
             headers.SetMessageId(Guid.Parse(id));
         }
 
+
+        public static string GetMessageType(this Envelope env)
+        {
+            string msgType = null;
+
+            if (env.Headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_TYPE))
+            {
+                msgType = env.Headers[EnvelopeHeaderConstants.MESSAGE_TYPE];
+            }
+
+            return msgType;
+        }
+
+        public static void SetMessageType(this Envelope env, string messageType)
+        {
+            env.Headers[EnvelopeHeaderConstants.MESSAGE_TYPE] = messageType;
+        }
+
+        public static string GetMessageType(this IDictionary<string, string> headers)
+        {
+            string msgType = null;
+
+            if (headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_TYPE))
+            {
+                msgType = headers[EnvelopeHeaderConstants.MESSAGE_TYPE];
+            }
+
+            return msgType;
+        }
+
+        public static void SetMessageType(this IDictionary<string, string> headers, string messageType)
+        {
+            headers[EnvelopeHeaderConstants.MESSAGE_TYPE] = messageType;
+        }
     }
 }
