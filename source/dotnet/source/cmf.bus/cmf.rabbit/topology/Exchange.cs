@@ -34,14 +34,14 @@ namespace cmf.rabbit.topology
             : this()
         {
             this.Name = name;
-            this.HostName = HostName;
+            this.HostName = hostName;
             this.VirtualHost = vHost;
             this.Port = port;
             this.RoutingKey = routingKey;
             this.QueueName = queueName;
             this.ExchangeType = exchangeType;
             this.IsDurable = isDurable;
-            this.IsAutoDelete = IsAutoDelete;
+            this.IsAutoDelete = autoDelete;
             this.Arguments = arguments;
         }
     }
