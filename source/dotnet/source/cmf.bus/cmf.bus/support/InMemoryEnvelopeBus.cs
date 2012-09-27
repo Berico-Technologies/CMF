@@ -88,5 +88,10 @@ namespace cmf.bus.support
 
             dispatchThread.Start();
         }
+
+        public void Dispose()
+        {
+            // nothing to dispose
+        }
     }
 }

@@ -172,6 +172,7 @@ namespace cmf.rabbit
                 // now, let's set the connection factory's ssl-specific settings
                 // NOTE: it's absolutely required that what you set as Ssl.ServerName be
                 //       what's on your rabbitmq server's certificate (its CN - common name)
+                cf.AuthMechanisms = new AuthMechanismFactory[] { new ExternalMechanismFactory() };
                 cf.Ssl.Certs = new X509CertificateCollection(new X509Certificate[] { cert });
                 cf.Ssl.ServerName = ex.HostName;
                 cf.Ssl.Enabled = true;

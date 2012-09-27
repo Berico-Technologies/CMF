@@ -61,6 +61,11 @@ namespace cmf.bus.berico
             }
         }
 
+        public void Dispose()
+        {
+            _txProvider.Dispose();
+        }
+
 
         protected virtual void ProcessOutbound(ref Envelope env, IEnumerable<IOutboundEnvelopeProcessor> processorChain)
         {
@@ -94,16 +99,30 @@ namespace cmf.bus.berico
     {
         public static IEnumerable<IOutboundEnvelopeProcessor> Sort(this IDictionary<int, IOutboundEnvelopeProcessor> chain)
         {
-            return chain
-                .OrderBy(kvp => kvp.Key)
-                .Select<KeyValuePair<int, IOutboundEnvelopeProcessor>, IOutboundEnvelopeProcessor>(kvp => kvp.Value);
+            IEnumerable<IOutboundEnvelopeProcessor> sortedChain = new List<IOutboundEnvelopeProcessor>();
+
+            if (null != chain)
+            {
+                sortedChain = chain
+                    .OrderBy(kvp => kvp.Key)
+                    .Select<KeyValuePair<int, IOutboundEnvelopeProcessor>, IOutboundEnvelopeProcessor>(kvp => kvp.Value);
+            }
+
+            return sortedChain;
         }
 
         public static IEnumerable<IInboundEnvelopeProcessor> Sort(this IDictionary<int, IInboundEnvelopeProcessor> chain)
         {
-            return chain
-                .OrderBy(kvp => kvp.Key)
-                .Select<KeyValuePair<int, IInboundEnvelopeProcessor>, IInboundEnvelopeProcessor>(kvp => kvp.Value);
+            IEnumerable<IInboundEnvelopeProcessor> sortedChain = new List<IInboundEnvelopeProcessor>();
+
+            if (null != chain)
+            {
+                sortedChain = chain
+                    .OrderBy(kvp => kvp.Key)
+                    .Select<KeyValuePair<int, IInboundEnvelopeProcessor>, IInboundEnvelopeProcessor>(kvp => kvp.Value);
+            }
+
+            return sortedChain;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using cmf.bus;
+using cmf.bus.berico;
 
 namespace cmf.eventing.berico
 {
@@ -31,7 +32,7 @@ namespace cmf.eventing.berico
             _inboundChain = inboundChain;
 
             _registrationInfo = new Dictionary<string, string>();
-            _registrationInfo.Add("topic", handler.Topic);
+            _registrationInfo.SetMessageTopic(handler.Topic);
         }
 
 

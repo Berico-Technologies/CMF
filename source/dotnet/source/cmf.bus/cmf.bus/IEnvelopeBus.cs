@@ -5,7 +5,7 @@ using System.Text;
 
 namespace cmf.bus
 {
-    public interface IEnvelopeBus : IEnvelopeSender, IEnvelopeReceiver
+    public interface IEnvelopeBus : IEnvelopeSender, IEnvelopeReceiver, IDisposable
     {
     }
 }

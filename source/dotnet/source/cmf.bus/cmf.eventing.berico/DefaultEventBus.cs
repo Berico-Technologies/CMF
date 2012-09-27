@@ -47,6 +47,11 @@ namespace cmf.eventing.berico
             this.Subscribe(new TypedEventHandler<TEvent>(handler));
         }
 
+        public void Dispose()
+        {
+            _envBus.Dispose();
+        }
+
 
         protected virtual void ProcessOutbound(object ev, Envelope env)
         {
@@ -66,16 +71,30 @@ namespace cmf.eventing.berico
     {
         public static IEnumerable<IOutboundEventProcessor> Sort(this IDictionary<int, IOutboundEventProcessor> chain)
         {
-            return chain
-                .OrderBy(kvp => kvp.Key)
-                .Select<KeyValuePair<int, IOutboundEventProcessor>, IOutboundEventProcessor>(kvp => kvp.Value);
+            IEnumerable<IOutboundEventProcessor> sortedChain = new List<IOutboundEventProcessor>();
+
+            if (null != chain)
+            {
+                sortedChain = chain
+                    .OrderBy(kvp => kvp.Key)
+                    .Select<KeyValuePair<int, IOutboundEventProcessor>, IOutboundEventProcessor>(kvp => kvp.Value);
+            }
+
+            return sortedChain;
         }
 
         public static IEnumerable<IInboundEventProcessor> Sort(this IDictionary<int, IInboundEventProcessor> chain)
         {
-            return chain
-                .OrderBy(kvp => kvp.Key)
-                .Select<KeyValuePair<int, IInboundEventProcessor>, IInboundEventProcessor>(kvp => kvp.Value);
+            IEnumerable<IInboundEventProcessor> sortedChain = new List<IInboundEventProcessor>();
+
+            if (null != chain)
+            {
+                sortedChain = chain
+                    .OrderBy(kvp => kvp.Key)
+                    .Select<KeyValuePair<int, IInboundEventProcessor>, IInboundEventProcessor>(kvp => kvp.Value);
+            }
+
+            return sortedChain;
         }
     }
 }
