@@ -5,13 +5,12 @@ import java.util.List;
 
 import cmf.bus.berico.rabbit.ITopologyProvider;
 import cmf.bus.berico.rabbit.Route;
-import cmf.bus.berico.rabbit.TopologyRegistry;
 
 public class InMemoryTopologyProvider implements ITopologyProvider {
 
-    private TopologyRegistry topologyRegistry;
+    private InMemoryTopologyRegistry topologyRegistry;
 
-    public InMemoryTopologyProvider(String profile, TopologyRegistry topologyRegistry) {
+    public InMemoryTopologyProvider(String profile, InMemoryTopologyRegistry topologyRegistry) {
         this.topologyRegistry = topologyRegistry;
     }
 

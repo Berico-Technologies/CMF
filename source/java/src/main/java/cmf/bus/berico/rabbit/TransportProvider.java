@@ -14,7 +14,6 @@ import cmf.bus.berico.ITransportProvider;
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 
 public class TransportProvider implements ITransportProvider {
 
