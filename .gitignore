@@ -72,6 +72,8 @@ target/
 *.lib
 *.sbr
 *.sdf
+*.exe*
+*.pdb*
 *.opensdf
 *.unsuccessfulbuild
 ipch/

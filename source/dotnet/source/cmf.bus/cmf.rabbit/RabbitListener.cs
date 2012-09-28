@@ -45,6 +45,7 @@ namespace cmf.rabbit
 
         public void Start()
         {
+            _log.Debug("Enter Start");
             _shouldContinue = true;
 
             using (IModel channel = _connection.CreateModel())
@@ -60,6 +61,7 @@ namespace cmf.rabbit
                 // and tell it to start consuming messages, storing the consumer tag
                 string consumerTag = channel.BasicConsume(_exchange.QueueName, false, consumer);
 
+                _log.Debug("Will now continuously listen for events");
                 while (_shouldContinue)
                 {
                     try
@@ -74,7 +76,14 @@ namespace cmf.rabbit
                         env.Payload = e.Body;
                         foreach (DictionaryEntry entry in props.Headers)
                         {
-                            try { env.Headers.Add((string)entry.Key, Encoding.UTF8.GetString((byte[])entry.Value)); }
+                            try
+                            {
+                                string key = entry.Key as string;
+                                string value = Encoding.UTF8.GetString((byte[])entry.Value);
+                                _log.Debug("Adding header to envelope: {" + key + ":" + value + "}");
+
+                                env.Headers.Add(key, value);
+                            }
                             catch { }
                         }
 
@@ -89,15 +98,20 @@ namespace cmf.rabbit
                     }
                     catch { }
                 }
+                _log.Debug("No longer listening for events");
 
                 try { channel.BasicCancel(consumerTag); }
                 catch (OperationInterruptedException) { }
             }
+
+            _log.Debug("Leave Start");
         }
 
         public void Stop()
         {
+            _log.Debug("Enter Stop");
             _shouldContinue = false;
+            _log.Debug("Leave Stop");
         }
 
 
@@ -113,6 +127,7 @@ namespace cmf.rabbit
         protected virtual void LogMessage(BasicDeliverEventArgs eventArgs)
         {
             StringBuilder buffer = new StringBuilder();
+            buffer.Append("Got a message from the queue: ");
 
             using (StringWriter writer = new StringWriter(buffer))
             {

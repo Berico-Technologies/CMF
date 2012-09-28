@@ -8,6 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 
+using Common.Logging;
 using RabbitMQ.Client;
 
 using cmf.bus;
@@ -26,6 +27,7 @@ namespace cmf.rabbit
         protected IDictionary<Exchange, IConnection> _connections;
         protected ITopologyService _topoSvc;
         protected ICertificateProvider _certProvider;
+        protected ILog _log;
 
 
         public RabbitTransportProvider(ITopologyService topologyService, ICertificateProvider certProvider)
@@ -35,11 +37,15 @@ namespace cmf.rabbit
 
             _connections = new Dictionary<Exchange, IConnection>();
             _listeners = new Dictionary<IRegistration, RabbitListener>();
+
+            _log = LogManager.GetLogger(this.GetType());
         }
 
 
         public void Send(Envelope env)
         {
+            _log.Debug("Enter Send");
+
             // first, get the topology based on the headers
             RoutingInfo routing = _topoSvc.GetRoutingInfo(env.Headers);
 
@@ -51,6 +57,7 @@ namespace cmf.rabbit
             // for each exchange, send the envelope
             foreach (Exchange ex in exchanges)
             {
+                _log.Debug("Sending to exchange: " + ex.ToString());
                 IConnection conn = this.GetConnection(ex);
 
                 using (IModel channel = conn.CreateModel())
@@ -62,10 +69,14 @@ namespace cmf.rabbit
                     channel.BasicPublish(ex.Name, ex.RoutingKey, props, env.Payload);
                 }
             }
+
+            _log.Debug("Leave Send");
         }
 
         public void Register(IRegistration registration)
         {
+            _log.Debug("Enter Register");
+
             // first, get the topology based on the registration info
             RoutingInfo routing = _topoSvc.GetRoutingInfo(registration.Info);
 
@@ -91,6 +102,8 @@ namespace cmf.rabbit
                 // store the listener
                 _listeners.Add(registration, listener);
             }
+
+            _log.Debug("Leave Register");
         }
 
         public void Dispose()
@@ -114,6 +127,8 @@ namespace cmf.rabbit
 
         protected virtual void Dispose(bool disposing)
         {
+            _log.Debug("Enter Dispose");
+
             if (disposing)
             {
                 // get rid of managed resources
@@ -124,6 +139,8 @@ namespace cmf.rabbit
                 catch { }
             }
             // get rid of unmanaged resources
+
+            _log.Debug("Leave Dispose");
         }
 
         protected virtual IEnumerable<IConnection> GetConnections(IEnumerable<Exchange> exchanges)
@@ -154,6 +171,8 @@ namespace cmf.rabbit
 
         protected virtual IConnection CreateConnection(Exchange ex)
         {
+            _log.Debug("Enter CreateConnection");
+
             IConnection conn = null;
 
             // use the cert provider to get the certificate to connect with
@@ -169,6 +188,8 @@ namespace cmf.rabbit
 
             if (null != cert)
             {
+                _log.Info("A certificate was located with subject: " + cert.Subject);
+
                 // now, let's set the connection factory's ssl-specific settings
                 // NOTE: it's absolutely required that what you set as Ssl.ServerName be
                 //       what's on your rabbitmq server's certificate (its CN - common name)
@@ -181,6 +202,7 @@ namespace cmf.rabbit
             // we either now create an SSL connection or a default "guest/guest" connection
             conn = cf.CreateConnection();
 
+            _log.Debug("Leave CreateConnection");
             return conn;
         }
     }

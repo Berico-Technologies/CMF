@@ -134,7 +134,7 @@ namespace cmf.examples.duplex
                 case "cmf.examples.messages.EventTypeA":
                     eventMsg = new EventTypeA() { Message = message };
                     break;
-                case "cmf.exmaples.messages.EventTypeB":
+                case "cmf.examples.messages.EventTypeB":
                     eventMsg = new EventTypeB() { Message = message };
                     break;
                 default:

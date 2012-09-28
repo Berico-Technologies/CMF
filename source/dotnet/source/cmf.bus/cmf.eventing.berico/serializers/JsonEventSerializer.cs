@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
+using Common.Logging;
 using Newtonsoft.Json;
 
 using cmf.bus;
@@ -13,7 +14,16 @@ namespace cmf.eventing.berico.serializers
 {
     public class JsonEventSerializer : IInboundEventProcessor, IOutboundEventProcessor
     {
-        public void ProcessInbound(ref object ev, ref Envelope env, ref IDictionary<string, object> context)
+        protected ILog _log;
+
+
+        public JsonEventSerializer()
+        {
+            _log = LogManager.GetLogger(this.GetType());
+        }
+
+
+        public virtual void ProcessInbound(ref object ev, ref Envelope env, ref IDictionary<string, object> context)
         {
             // get the topic from the headers on the envelope
             string eventTopic = env.GetMessageTopic();
@@ -32,13 +42,19 @@ namespace cmf.eventing.berico.serializers
             {
                 // and see if it can get us our Type
                 eventType = ass.GetType(eventTopic);
-                if (null != eventType) { break; }
+                if (null != eventType)
+                {
+                    _log.Debug("Found type " + eventTopic + " in assembly " + ass.FullName);
+                    break;
+                }
             }
 
 
             if (null != eventType) // if we did get a Type, we can deserialize the event
             {
-                ev = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(env.Payload), eventType);
+                string jsonString = Encoding.UTF8.GetString(env.Payload);
+                _log.Debug("Will attempt to deserialize: " + jsonString);
+                ev = JsonConvert.DeserializeObject(jsonString, eventType);
             }
             else // otherwise, throw an exception
             {
@@ -46,16 +62,15 @@ namespace cmf.eventing.berico.serializers
             }
         }
 
-        public void ProcessOutbound(ref object ev, ref Envelope env, IDictionary<string, object> context)
+        public virtual void ProcessOutbound(ref object ev, ref Envelope env, IDictionary<string, object> context)
         {
             // first, serialize the event (make it pretty!)
             string json = JsonConvert.SerializeObject(ev, Formatting.Indented);
 
+            _log.Debug("Serialized event: " + json);
+
             // next, convert the string into bytes using UTF-8
             env.Payload = new UTF8Encoding().GetBytes(json);
-
-            // finally, store the event's Type on the envelope's header
-            env.SetMessageType(ev.GetType().FullName);
         }
     }
 }

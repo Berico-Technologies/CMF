@@ -35,10 +35,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="cmf.eventing">
-      <HintPath>bin\Debug\libraries\cmf.eventing.dll</HintPath>
+      <HintPath>..\..\..\build\cmf.eventing.dll</HintPath>
     </Reference>
     <Reference Include="Spring.Core">
-      <HintPath>bin\Debug\libraries\Spring.Core.dll</HintPath>
+      <HintPath>..\..\..\libraries\Spring.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -93,6 +93,10 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetDir)$(TargetName).exe* $(SolutionDir)..\..\
+copy $(TargetDir)$(TargetName).pdb $(SolutionDir)..\..\</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -44,5 +44,25 @@ namespace cmf.rabbit.topology
             this.IsAutoDelete = autoDelete;
             this.Arguments = arguments;
         }
+
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("{");
+            sb.AppendFormat("Name:{0},", this.Name);
+            sb.AppendFormat("HostName:{0},", this.HostName);
+            sb.AppendFormat("VirtualHost:{0},", this.VirtualHost);
+            sb.AppendFormat("Port:{0},", this.Port);
+            sb.AppendFormat("RoutingKey:{0},", this.RoutingKey);
+            sb.AppendFormat("QueueName:{0},", this.QueueName);
+            sb.AppendFormat("ExchangeType:{0},", this.ExchangeType);
+            sb.AppendFormat("IsDurable:{0},", this.IsDurable);
+            sb.AppendFormat("IsAutoDelete:{0},", this.IsAutoDelete);
+
+            sb.Append("}");
+            return sb.ToString();
+        }
     }
 }

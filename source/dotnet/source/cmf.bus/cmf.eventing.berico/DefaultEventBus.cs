@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Common.Logging;
+
 using cmf.bus;
 using cmf.bus.berico;
 using cmf.eventing;
@@ -12,6 +14,7 @@ namespace cmf.eventing.berico
     public class DefaultEventBus : IEventBus
     {
         protected DefaultEnvelopeBus _envBus;
+        protected ILog _log;
 
 
         public IDictionary<int, IInboundEventProcessor> InboundChain { get; set; }
@@ -21,25 +24,39 @@ namespace cmf.eventing.berico
         public DefaultEventBus(DefaultEnvelopeBus envBus)
         {
             _envBus = envBus;
+            _log = LogManager.GetLogger(this.GetType());
         }
 
 
         public void Publish(object ev)
         {
+            _log.Debug("Enter Publish");
+
             if (null == ev) { throw new ArgumentNullException("Cannot publish a null event"); }
 
-            Envelope env = new Envelope();
+            try
+            {
+                Envelope env = new Envelope();
+                this.ProcessOutbound(ev, env);
+                _envBus.Send(env);
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Exception publishing an event", ex);
+                throw;
+            }
 
-            this.ProcessOutbound(ev, env);
-
-            _envBus.Send(env);
+            _log.Debug("Leave Publish");
         }
 
         public void Subscribe(IEventHandler handler)
         {
-            EventRegistration registration = new EventRegistration(handler, this.InboundChain.Sort());
+            _log.Debug("Enter Subscribe");
 
+            EventRegistration registration = new EventRegistration(handler, this.InboundChain.Sort());
             _envBus.Register(registration);
+
+            _log.Debug("Leave Subscribe");
         }
 
         public void Subscribe<TEvent>(Action<TEvent, IDictionary<string, string>> handler) where TEvent : class
@@ -49,6 +66,7 @@ namespace cmf.eventing.berico
 
         public void Dispose()
         {
+            _log.Info("The event bus client will now be disposed");
             _envBus.Dispose();
         }
 
