@@ -91,8 +91,18 @@
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-jdk14</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.0.6</version>
             </dependency>
             <dependency>
                 <groupId>joda-time</groupId>
@@ -122,10 +132,12 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -138,14 +150,32 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -287,18 +317,8 @@
                             <supportedProjectType>war</supportedProjectType>
                         </supportedProjectTypes>
                         <instructions>
-                            <Import-Package>!*</Import-Package>
-                            <Embed-Dependency>*;scope=compile</Embed-Dependency>
-                            <Embed-Transitive>true</Embed-Transitive>
+                            <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
                         </instructions>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>net.flybyte.virgo</groupId>
-                    <artifactId>virgo-maven-plugin</artifactId>
-                    <version>1.0.1-SNAPSHOT</version>
-                    <configuration>
-                        <virgoRoot>/Users/amartin/Servers/virgo</virgoRoot>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -389,4 +409,15 @@
         <developerConnection>scm:git:git@github.com:jar349/cmf.bus.git</developerConnection>
         <url>https://github.com/jar349/cmf.bus/tree/develop</url>
     </scm>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://berico.jira.com</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>TeamCity</system>
+        <url>http://user:password@teamcity.osd.mil/</url>
+    </ciManagement>
+
 </project>

@@ -42,6 +42,13 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
         this.transportProvider = transportProvider;
     }
 
+    public DefaultEnvelopeBus(ITransportProvider transportProvider, List<IInboundEnvelopeProcessor> inboundProcessors,
+                    List<IOutboundEnvelopeProcessor> outboundProcessors) {
+        this.transportProvider = transportProvider;
+        this.inboundProcessors = inboundProcessors;
+        this.outboundProcessors = outboundProcessors;
+    }
+
     protected void processInbound(Envelope envelope) {
         Map<String, Object> context = new HashMap<String, Object>();
         for (IInboundEnvelopeProcessor inboundEnvelopeProcessor : inboundProcessors) {
