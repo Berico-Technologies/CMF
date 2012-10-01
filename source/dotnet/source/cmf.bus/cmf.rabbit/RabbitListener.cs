@@ -87,7 +87,11 @@ namespace cmf.rabbit
                             catch { }
                         }
 
-                        this.OnEnvelopeReceived(new RabbitEnvelopeDispatcher(_registration, env, channel, e.DeliveryTag));
+                        if (this.ShouldRaiseEvent(_registration.Filter, env))
+                        {
+                            RabbitEnvelopeDispatcher dispatcher = new RabbitEnvelopeDispatcher(_registration, env, channel, e.DeliveryTag);
+                            this.OnEnvelopeReceived(dispatcher);
+                        }
                     }
                     catch (OperationInterruptedException)
                     {
@@ -114,6 +118,12 @@ namespace cmf.rabbit
             _log.Debug("Leave Stop");
         }
 
+
+        protected virtual bool ShouldRaiseEvent(Predicate<Envelope> filter, Envelope env)
+        {
+            // if there's no filter, the client wants it.  Otherwise, see if they want it.
+            return (null == filter) ? true : filter(env);
+        }
 
         protected virtual void Raise_OnCloseEvent(IRegistration registration)
         {

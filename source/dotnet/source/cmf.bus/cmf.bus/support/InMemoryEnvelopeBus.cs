@@ -69,6 +69,14 @@ namespace cmf.bus.support
             }
         }
 
+        public virtual void Unregister(IRegistration registration)
+        {
+            lock (_registrationListLock)
+            {
+                _registrationList.Remove(registration);
+            }
+        }
+
 
         protected virtual void Dispatch(Envelope env, IEnumerable<IRegistration> handlerList)
         {

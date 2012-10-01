@@ -53,11 +53,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultEventBus.cs" />
+    <Compile Include="DefaultRpcBus.cs" />
     <Compile Include="EventRegistration.cs" />
     <Compile Include="IInboundEventProcessor.cs" />
     <Compile Include="IOutboundEventProcessor.cs" />
     <Compile Include="OutboundHeadersProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RpcRegistration.cs" />
     <Compile Include="serializers\JsonEventSerializer.cs" />
     <Compile Include="TypedEventHandler.cs" />
   </ItemGroup>

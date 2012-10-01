@@ -38,9 +38,16 @@ namespace cmf.bus.berico
         public virtual void Register(IRegistration registration)
         {
             // guard clause
-            if (null == registration) { throw new ArgumentNullException("Cannot register with a null registration"); }
+            if (null == registration) { throw new ArgumentNullException("Cannot register a null registration"); }
             
             _txProvider.Register(registration);
+        }
+
+        public virtual void Unregister(IRegistration registration)
+        {
+            if (null == registration) { throw new ArgumentNullException("Cannot unregister a null registration"); }
+
+            _txProvider.Unregister(registration);
         }
 
         public virtual void Handle_Dispatcher(IEnvelopeDispatcher dispatcher)

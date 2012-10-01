@@ -105,6 +105,61 @@ namespace cmf.bus.berico
         }
 
 
+        public static Guid GetCorrelationId(this Envelope env)
+        {
+            Guid id = Guid.Empty;
+
+            if ((null != env.Headers) &&
+                (env.Headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID)))
+            {
+                id = Guid.Parse(env.Headers[EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID]);
+            }
+
+            return id;
+        }
+
+        public static void SetCorrelationId(this Envelope env, Guid id)
+        {
+            if (null == env.Headers) { env.Headers = new Dictionary<string, string>(); }
+
+            env.Headers[EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID] = id.ToString();
+        }
+
+        public static void SetCorrelationId(this Envelope env, string id)
+        {
+            // using un-safe Guid.Parse because I want invalid guid strings
+            // to throw an exception
+            env.SetCorrelationId(Guid.Parse(id));
+        }
+
+        public static Guid GetCorrelationId(this IDictionary<string, string> headers)
+        {
+            Guid id = Guid.Empty;
+
+            if ((null != headers) &&
+                (headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID)))
+            {
+                id = Guid.Parse(headers[EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID]);
+            }
+
+            return id;
+        }
+
+        public static void SetCorrelationId(this IDictionary<string, string> headers, Guid id)
+        {
+            if (null == headers) { headers = new Dictionary<string, string>(); }
+
+            headers[EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID] = id.ToString();
+        }
+
+        public static void SetCorrelationId(this IDictionary<string, string> headers, string id)
+        {
+            // using un-safe Guid.Parse because I want invalid guid strings
+            // to throw an exception
+            headers.SetCorrelationId(Guid.Parse(id));
+        }
+
+
         public static string GetMessageType(this Envelope env)
         {
             string msgType = null;

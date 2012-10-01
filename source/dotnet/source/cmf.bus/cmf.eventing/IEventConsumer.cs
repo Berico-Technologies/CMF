@@ -7,7 +7,7 @@ using cmf.bus;
 
 namespace cmf.eventing
 {
-    public interface IEventConsumer
+    public interface IEventConsumer : IDisposable
     {
         void Subscribe(IEventHandler handler);
 

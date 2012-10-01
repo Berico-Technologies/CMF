@@ -106,6 +106,17 @@ namespace cmf.rabbit
             _log.Debug("Leave Register");
         }
 
+        public virtual void Unregister(IRegistration registration)
+        {
+            if (_listeners.ContainsKey(registration))
+            {
+                RabbitListener listener = _listeners[registration];
+                listener.Stop();
+
+                _listeners.Remove(registration);
+            }
+        }
+
         public void Dispose()
         {
             Dispose(true);

@@ -27,7 +27,7 @@ namespace cmf.rabbit.topology
         public RoutingInfo GetRoutingInfo(IDictionary<string, string> routingHints)
         {
             string topic = routingHints.GetMessageTopic();
-
+        
             Exchange theOneExchange = new Exchange(
                 this.Name, 
                 this.Hostname, 

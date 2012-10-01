@@ -8,5 +8,7 @@ namespace cmf.bus
     public interface IEnvelopeReceiver
     {
         void Register(IRegistration registration);
+
+        void Unregister(IRegistration registration);
     }
 }

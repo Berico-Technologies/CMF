@@ -5,7 +5,7 @@ using System.Text;
 
 namespace cmf.eventing
 {
-    public interface IEventProducer
+    public interface IEventProducer : IDisposable
     {
         void Publish(object ev);
     }

@@ -13,5 +13,7 @@ namespace cmf.bus.berico
         void Send(Envelope env);
 
         void Register(IRegistration registration);
+
+        void Unregister(IRegistration registration);
     }
 }

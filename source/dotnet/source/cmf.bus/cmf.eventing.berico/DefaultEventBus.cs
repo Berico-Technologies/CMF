@@ -28,7 +28,7 @@ namespace cmf.eventing.berico
         }
 
 
-        public void Publish(object ev)
+        public virtual void Publish(object ev)
         {
             _log.Debug("Enter Publish");
 
@@ -49,7 +49,7 @@ namespace cmf.eventing.berico
             _log.Debug("Leave Publish");
         }
 
-        public void Subscribe(IEventHandler handler)
+        public virtual void Subscribe(IEventHandler handler)
         {
             _log.Debug("Enter Subscribe");
 
@@ -59,12 +59,12 @@ namespace cmf.eventing.berico
             _log.Debug("Leave Subscribe");
         }
 
-        public void Subscribe<TEvent>(Action<TEvent, IDictionary<string, string>> handler) where TEvent : class
+        public virtual void Subscribe<TEvent>(Action<TEvent, IDictionary<string, string>> handler) where TEvent : class
         {
             this.Subscribe(new TypedEventHandler<TEvent>(handler));
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             _log.Info("The event bus client will now be disposed");
             _envBus.Dispose();
