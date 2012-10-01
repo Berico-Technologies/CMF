@@ -42,7 +42,7 @@
             this._eventTypeCbo = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this._clearLogBtn = new System.Windows.Forms.Button();
-            this._log = new System.Windows.Forms.RichTextBox();
+            this._output = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -67,7 +67,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.groupBox3);
-            this.splitContainer1.Size = new System.Drawing.Size(658, 392);
+            this.splitContainer1.Size = new System.Drawing.Size(1050, 392);
             this.splitContainer1.SplitterDistance = 150;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -81,7 +81,7 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Location = new System.Drawing.Point(379, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(267, 135);
+            this.groupBox2.Size = new System.Drawing.Size(659, 135);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Event Subscriptions";
@@ -195,10 +195,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this._clearLogBtn);
-            this.groupBox3.Controls.Add(this._log);
+            this.groupBox3.Controls.Add(this._output);
             this.groupBox3.Location = new System.Drawing.Point(12, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(634, 223);
+            this.groupBox3.Size = new System.Drawing.Size(1026, 223);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Received Events";
@@ -206,7 +206,7 @@
             // _clearLogBtn
             // 
             this._clearLogBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this._clearLogBtn.Location = new System.Drawing.Point(553, 194);
+            this._clearLogBtn.Location = new System.Drawing.Point(945, 194);
             this._clearLogBtn.Name = "_clearLogBtn";
             this._clearLogBtn.Size = new System.Drawing.Size(75, 23);
             this._clearLogBtn.TabIndex = 1;
@@ -214,22 +214,22 @@
             this._clearLogBtn.UseVisualStyleBackColor = true;
             this._clearLogBtn.Click += new System.EventHandler(this._clearLogBtn_Click);
             // 
-            // _log
+            // _output
             // 
-            this._log.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this._output.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._log.Location = new System.Drawing.Point(6, 19);
-            this._log.Name = "_log";
-            this._log.Size = new System.Drawing.Size(622, 169);
-            this._log.TabIndex = 0;
-            this._log.Text = "";
+            this._output.Location = new System.Drawing.Point(6, 19);
+            this._output.Name = "_output";
+            this._output.Size = new System.Drawing.Size(1014, 169);
+            this._output.TabIndex = 0;
+            this._output.Text = "";
             // 
             // DuplexEventForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(658, 392);
+            this.ClientSize = new System.Drawing.Size(1050, 392);
             this.Controls.Add(this.splitContainer1);
             this.Name = "DuplexEventForm";
             this.Text = ".NET Event Consumer & Producer";
@@ -263,7 +263,7 @@
         private System.Windows.Forms.ComboBox _eventTypeCbo;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button _clearLogBtn;
-        private System.Windows.Forms.RichTextBox _log;
+        private System.Windows.Forms.RichTextBox _output;
     }
 }
 

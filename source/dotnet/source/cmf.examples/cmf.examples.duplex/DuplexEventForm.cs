@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using Common.Logging;
+
 using cmf.eventing;
 using cmf.examples.messages;
 
@@ -14,17 +16,23 @@ namespace cmf.examples.duplex
 {
     public partial class DuplexEventForm : Form
     {
+        protected ILog _log;
+
+
         public IEventBus EventBus { protected get; set; }
 
 
         public DuplexEventForm()
         {
             InitializeComponent();
+
+            _log = LogManager.GetLogger(this.GetType());
         }
 
 
         public void Handle_EventTypeA(EventTypeA message, IDictionary<string, string> headers)
         {
+            _log.Debug("Recieved an event of Type A with headers: " + headers.Flatten());
             try
             {
                 this.Log(
@@ -43,6 +51,8 @@ namespace cmf.examples.duplex
 
         public void Handle_EventTypeB(EventTypeB message, IDictionary<string, string> headers)
         {
+            _log.Debug("Recieved an event of Type B with headers: " + headers.Flatten());
+
             try
             {
                 this.Log(
@@ -62,10 +72,10 @@ namespace cmf.examples.duplex
 
         protected void Log(string message)
         {
-            StringBuilder sb = new StringBuilder(_log.Text);
+            StringBuilder sb = new StringBuilder(_output.Text);
             sb.Insert(0, string.Format("{0}{1}", message, Environment.NewLine));
 
-            _log.Text = sb.ToString();
+            _output.Text = sb.ToString();
         }
 
         protected void InformUser(string message)
@@ -154,7 +164,7 @@ namespace cmf.examples.duplex
 
         private void _clearLogBtn_Click(object sender, EventArgs e)
         {
-            _log.Clear();
+            _output.Clear();
         }
 
         private void DuplexEventForm_FormClosed(object sender, FormClosedEventArgs e)

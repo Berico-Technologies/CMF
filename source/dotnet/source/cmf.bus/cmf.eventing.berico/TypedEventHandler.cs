@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Common.Logging;
+
 using cmf.bus;
+using cmf.bus.berico;
 
 namespace cmf.eventing.berico
 {
@@ -11,6 +14,7 @@ namespace cmf.eventing.berico
     {
         protected Func<TEvent, IDictionary<string, string>, object> _handler;
         protected Func<Envelope, Exception, object> _failHandler;
+        protected ILog _log;
 
 
         public string Topic
@@ -25,11 +29,15 @@ namespace cmf.eventing.berico
                 noReturnHandler(ev, headers);
                 return null;
             });
+
+            _log = LogManager.GetLogger(this.GetType());
         }
 
         public TypedEventHandler(Func<TEvent, IDictionary<string, string>, object> handler)
         {
             _handler = handler;
+
+            _log = LogManager.GetLogger(this.GetType());
         }
 
         public TypedEventHandler(
@@ -43,6 +51,14 @@ namespace cmf.eventing.berico
 
         public object Handle(object ev, IDictionary<string, string> headers)
         {
+            if (null == ev)
+            {
+                throw new ArgumentNullException("Cannot handle a null event");
+            }
+
+            _log.Debug(string.Format("Raising event of type {0} to consumer (requesting {1}) with headers {2}", 
+                ev.GetType().FullName, this.Topic, headers.Flatten()));
+
             return _handler(ev as TEvent, headers);
         }
 

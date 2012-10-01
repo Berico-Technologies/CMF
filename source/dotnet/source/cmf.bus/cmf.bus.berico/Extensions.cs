@@ -138,5 +138,22 @@ namespace cmf.bus.berico
         {
             headers[EnvelopeHeaderConstants.MESSAGE_TYPE] = messageType;
         }
+
+
+        public static string Flatten(this IDictionary<string, string> hash, string separator = ",")
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("[");
+            hash.ToList().ForEach(kvp => sb.AppendFormat("{0}{{{1}:{2}}}", separator, kvp.Key, kvp.Value));
+
+            if (sb.Length > 0)
+            {
+                sb.Remove(0, separator.Length);
+            }
+
+            sb.Append("]");
+            return sb.ToString();
+        }
     }
 }

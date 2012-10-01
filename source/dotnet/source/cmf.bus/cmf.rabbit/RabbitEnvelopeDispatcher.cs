@@ -54,6 +54,7 @@ namespace cmf.rabbit
             {
                 // this may be null, or it may be any other kind of object
                 maybeNull = _registration.Handle(env);
+                _log.Debug("Dispatched envelope to registration");
             }
             catch (Exception ex)
             {

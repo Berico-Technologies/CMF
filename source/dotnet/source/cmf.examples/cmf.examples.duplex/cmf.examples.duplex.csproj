@@ -37,6 +37,10 @@
     <Reference Include="cmf.eventing">
       <HintPath>..\..\..\build\cmf.eventing.dll</HintPath>
     </Reference>
+    <Reference Include="Common.Logging, Version=1.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libraries\Common.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="Spring.Core">
       <HintPath>..\..\..\libraries\Spring.Core.dll</HintPath>
     </Reference>

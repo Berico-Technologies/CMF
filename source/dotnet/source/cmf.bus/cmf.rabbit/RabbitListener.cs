@@ -61,7 +61,7 @@ namespace cmf.rabbit
                 // and tell it to start consuming messages, storing the consumer tag
                 string consumerTag = channel.BasicConsume(_exchange.QueueName, false, consumer);
 
-                _log.Debug("Will now continuously listen for events");
+                _log.Debug("Will now continuously listen for events using routing key: " + _exchange.RoutingKey);
                 while (_shouldContinue)
                 {
                     try
