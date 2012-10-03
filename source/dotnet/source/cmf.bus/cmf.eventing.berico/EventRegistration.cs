@@ -43,34 +43,36 @@ namespace cmf.eventing.berico
 
         public virtual object Handle(Envelope env)
         {
-            _log.Debug("Enter Handle");
+            _log.Trace("Enter Handle");
 
             object ev = null;
             object result = null;
 
-            try
+            if (this.ProcessInbound(ref ev, ref env))
             {
-                this.ProcessInbound(ref ev, ref env);
-                result = _handler.Handle(ev, env.Headers);
-            }
-            catch (Exception ex)
-            {
-                _log.Warn("Caught an exception while handling an event", ex);
-                result = this.HandleFailed(env, ex);
+                try
+                {
+                    result = _handler.Handle(ev, env.Headers);
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn("Caught an exception while handling an event", ex);
+                    result = this.HandleFailed(env, ex);
+                }
             }
 
-            _log.Debug("Leave Handle");
+            _log.Trace("Leave Handle");
             return result;
         }
 
         public virtual object HandleFailed(Envelope env, Exception ex)
         {
-            _log.Debug("Enter HandleFailed");
+            _log.Trace("Enter HandleFailed");
 
             // either log & return or log & throw
             try
             {
-                _log.Debug("Leave HandleFailed");
+                _log.Trace("Leave HandleFailed");
                 return _handler.HandleFailed(env, ex);
             }
             catch (Exception failedToFail)
@@ -81,14 +83,30 @@ namespace cmf.eventing.berico
         }
 
 
-        protected virtual void ProcessInbound(ref object ev, ref Envelope env)
+        protected virtual bool ProcessInbound(ref object ev, ref Envelope env)
         {
+            bool processed = true;
             IDictionary<string, object> processorContext = new Dictionary<string, object>();
 
-            foreach (IInboundEventProcessor processor in _inboundChain)
+            try
             {
-                processor.ProcessInbound(ref ev, ref env, ref processorContext);
+                foreach (IInboundEventProcessor processor in _inboundChain)
+                {
+                    if (!processor.ProcessInbound(ref ev, ref env, ref processorContext))
+                    {
+                        processed = false;
+                        _log.Info(string.Format("A processor of type {0} halted the inbound processing chain", processor.GetType().FullName));
+                        break;
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                _log.Error("Caught an exception while sending an inbound event through the processing chain", ex);
+                processed = false;
+            }
+
+            return processed;
         }
     }
 }

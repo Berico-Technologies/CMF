@@ -9,14 +9,16 @@ namespace cmf.rabbit.topology
 {
     public class SimpleTopologyService : ITopologyService
     {
+        public string ClientProfile { get; protected set; }
         public string Name { get; protected set; }
         public string Hostname { get; protected set; }
         public string VirtualHost { get; protected set; }
         public int Port { get; protected set; }
 
 
-        public SimpleTopologyService(string name, string hostname, string vhost, int port)
+        public SimpleTopologyService(string clientProfile, string name, string hostname, string vhost, int port)
         {
+            this.ClientProfile = string.IsNullOrEmpty(clientProfile) ? Guid.NewGuid().ToString() : clientProfile;
             this.Name = string.IsNullOrEmpty(name) ? "cmf.simple.exchange" : name;
             this.Hostname = string.IsNullOrEmpty(hostname) ? "localhost" : hostname;
             this.VirtualHost = string.IsNullOrEmpty(vhost) ? "/" : vhost;
@@ -34,7 +36,7 @@ namespace cmf.rabbit.topology
                 this.VirtualHost, 
                 this.Port,
                 topic, 
-                string.Format("{0}#{1}", this.Name, topic),
+                string.Format("{0}#{1}", this.ClientProfile, topic),
                 "topic", 
                 false, 
                 true);

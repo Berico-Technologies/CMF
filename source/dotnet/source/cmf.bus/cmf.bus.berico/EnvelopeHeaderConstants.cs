@@ -11,5 +11,11 @@ namespace cmf.bus.berico
         public static readonly string MESSAGE_TYPE = "cmf.bus.message.type";
         public static readonly string MESSAGE_ID = "cmf.bus.message.id";
         public static readonly string MESSAGE_CORRELATION_ID = "cmf.bus.message.correlation_id";
+        public static readonly string MESSAGE_PATTERN = "cmf.bus.message.pattern";
+        public static readonly string MESSAGE_PATTERN_PUBSUB = "cmf.bus.message.pattern#pub_sub";
+        public static readonly string MESSAGE_PATTERN_RPC = "cmf.bus.message.pattern#rpc";
+        public static readonly string MESSAGE_PATTERN_RPC_TIMEOUT = "cmf.bus.message.pattern#rpc.timeout";
+        public static readonly string MESSAGE_SENDER_IDENTITY = "cmf.bus.message.sender_identity";
+        public static readonly string MESSAGE_SENDER_SIGNATURE = "cmf.bus.message.sender_signature";
     }
 }

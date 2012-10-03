@@ -7,6 +7,6 @@ namespace cmf.bus.berico
 {
     public interface IInboundEnvelopeProcessor
     {
-        void ProcessInbound(ref Envelope envelope, ref IDictionary<string, object> context);
+        bool ProcessInbound(ref Envelope envelope, ref IDictionary<string, object> context);
     }
 }

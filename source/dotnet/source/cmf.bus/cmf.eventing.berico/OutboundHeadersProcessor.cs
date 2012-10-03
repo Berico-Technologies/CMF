@@ -3,23 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Common.Logging;
-
 using cmf.bus.berico;
 
 namespace cmf.eventing.berico
 {
     public class OutboundHeadersProcessor : IOutboundEventProcessor
     {
-        protected ILog _log;
-
-
-        public OutboundHeadersProcessor()
-        {
-            _log = LogManager.GetLogger(this.GetType());
-        }
-
-
         public virtual void ProcessOutbound(ref object ev, ref bus.Envelope env, IDictionary<string, object> context)
         {
             Guid messageId = env.GetMessageId();
@@ -38,13 +27,7 @@ namespace cmf.eventing.berico
             {
                 messageTopic = messageTopic + "#" + correlationId.ToString();
             }
-            env.SetMessageTopic(messageTopic);
-
-            _log.Debug(string.Format(
-                "Outgoing headers: {{type:{0},topic:{1},id:{2}}}", 
-                messageType, 
-                messageTopic, 
-                messageId.ToString()));
+            env.SetMessageTopic(messageTopic); 
         }
     }
 }

@@ -23,54 +23,81 @@ namespace cmf.eventing.berico.serializers
         }
 
 
-        public virtual void ProcessInbound(ref object ev, ref Envelope env, ref IDictionary<string, object> context)
+        public virtual bool ProcessInbound(ref object ev, ref Envelope env, ref IDictionary<string, object> context)
         {
-            // get the topic from the headers on the envelope
-            string eventTopic = env.GetMessageTopic();
-            // and make sure we get something
-            if (string.IsNullOrEmpty(eventTopic))
+            bool success = false;
+
+            try
             {
-                throw new Exception("Cannot deserialize an envelope that does not specify the event's topic");
-            }
+                // get the type from the headers on the envelope
+                string eventType = env.GetMessageType();
 
-
-            // start with a null Type
-            Type eventType = null;
-
-            // go through each assembly loaded into the app domain
-            foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                // and see if it can get us our Type
-                eventType = ass.GetType(eventTopic);
-                if (null != eventType)
+                // if no type, try the topic
+                if (string.IsNullOrEmpty(eventType))
                 {
-                    _log.Debug("Found type " + eventTopic + " in assembly " + ass.FullName);
-                    break;
+                    eventType = env.GetMessageTopic();
+                }
+
+                // and make sure we get something
+                if (string.IsNullOrEmpty(eventType))
+                {
+                    throw new Exception("Cannot deserialize an envelope that does not specify the event's topic");
+                }
+
+
+                // start with a null Type
+                Type type = null;
+
+                // go through each assembly loaded into the app domain
+                foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    // and see if it can get us our Type
+                    type = ass.GetType(eventType);
+                    if (null != type)
+                    {
+                        _log.Debug("Found type " + type + " in assembly " + ass.FullName);
+                        break;
+                    }
+                }
+
+
+                if (null != type) // if we did get a Type, we can deserialize the event
+                {
+                    string jsonString = Encoding.UTF8.GetString(env.Payload);
+                    _log.Debug("Will attempt to deserialize: " + jsonString);
+                    ev = JsonConvert.DeserializeObject(jsonString, type);
+
+                    success = true;
+                }
+                else // otherwise, throw an exception
+                {
+                    throw new Exception("Cannot deserialize an event of topic '" + type + "' because no Type could be found for it");
                 }
             }
-
-
-            if (null != eventType) // if we did get a Type, we can deserialize the event
+            catch (Exception ex)
             {
-                string jsonString = Encoding.UTF8.GetString(env.Payload);
-                _log.Debug("Will attempt to deserialize: " + jsonString);
-                ev = JsonConvert.DeserializeObject(jsonString, eventType);
+                _log.Error("Failed to deserialize an event", ex);
             }
-            else // otherwise, throw an exception
-            {
-                throw new Exception("Cannot deserialize an event of topic '" + eventTopic + "' because no Type could be found for it");
-            }
+
+            return success;
         }
 
         public virtual void ProcessOutbound(ref object ev, ref Envelope env, IDictionary<string, object> context)
         {
-            // first, serialize the event (make it pretty!)
-            string json = JsonConvert.SerializeObject(ev, Formatting.Indented);
+            try
+            {
+                // first, serialize the event (make it pretty!)
+                string json = JsonConvert.SerializeObject(ev, Formatting.Indented);
 
-            _log.Debug("Serialized event: " + json);
+                _log.Debug("Serialized event: " + json);
 
-            // next, convert the string into bytes using UTF-8
-            env.Payload = new UTF8Encoding().GetBytes(json);
+                // next, convert the string into bytes using UTF-8
+                env.Payload = new UTF8Encoding().GetBytes(json);
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Failed to serialize an event", ex);
+            }
         }
     }
 }

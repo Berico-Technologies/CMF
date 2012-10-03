@@ -9,6 +9,6 @@ namespace cmf.eventing.berico
 {
     public interface IInboundEventProcessor
     {
-        void ProcessInbound(ref object ev, ref Envelope env, ref IDictionary<string, object> context);
+        bool ProcessInbound(ref object ev, ref Envelope env, ref IDictionary<string, object> context);
     }
 }

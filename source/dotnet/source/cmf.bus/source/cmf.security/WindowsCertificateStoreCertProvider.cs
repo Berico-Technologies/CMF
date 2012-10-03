@@ -5,9 +5,9 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace cmf.rabbit.security
+namespace cmf.security
 {
-    public class WindowsCertificateStoreCertProvider : ICertificateProvider
+    class WindowsCertificateStoreCertProvider : ICertificateProvider
     {
         public X509Certificate2 GetCertificate()
         {
@@ -29,6 +29,35 @@ namespace cmf.rabbit.security
                     true)
                 .OfType<X509Certificate2>()
                 .FirstOrDefault();
+        }
+
+        public X509Certificate2 GetCertificateFor(string distinguishedName)
+        {
+            X509Certificate2 cert = null;
+
+            // remove any spaces after commas
+            string dn = distinguishedName.Replace(", ", ",");
+
+            PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
+            UserPrincipal user = UserPrincipal.FindByIdentity(ctx, IdentityType.DistinguishedName, dn);
+
+            if (null == user)
+            {
+                return null;
+            }
+            else
+            {
+                cert = user.Certificates
+                    .Find(
+                        X509FindType.FindBySubjectDistinguishedName,
+                        distinguishedName,
+                        true
+                    )
+                    .OfType<X509Certificate2>()
+                    .FirstOrDefault();
+            }
+
+            return cert;
         }
     }
 }

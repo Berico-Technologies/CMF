@@ -195,6 +195,170 @@ namespace cmf.bus.berico
         }
 
 
+        public static string GetMessagePattern(this Envelope env)
+        {
+            string msgPattern = null;
+
+            if (env.Headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_PATTERN))
+            {
+                msgPattern = env.Headers[EnvelopeHeaderConstants.MESSAGE_PATTERN];
+            }
+
+            return msgPattern;
+        }
+
+        public static void SetMessagePattern(this Envelope env, string pattern)
+        {
+            env.Headers[EnvelopeHeaderConstants.MESSAGE_PATTERN] = pattern;
+        }
+
+        public static string GetMessagePattern(this IDictionary<string, string> headers)
+        {
+            string msgPattern = null;
+
+            if (headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_PATTERN))
+            {
+                msgPattern = headers[EnvelopeHeaderConstants.MESSAGE_PATTERN];
+            }
+
+            return msgPattern;
+        }
+
+        public static void SetMessagePattern(this IDictionary<string, string> headers, string pattern)
+        {
+            headers[EnvelopeHeaderConstants.MESSAGE_PATTERN] = pattern;
+        }
+
+
+        public static TimeSpan GetRpcTimeout(this Envelope env)
+        {
+            TimeSpan timeout = TimeSpan.Zero;
+
+            if (env.Headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT))
+            {
+                string rpcTimeoutString = env.Headers[EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT];
+                timeout = new TimeSpan(long.Parse(rpcTimeoutString));
+            }
+
+            return timeout;
+        }
+
+        public static void SetRpcTimeout(this Envelope env, TimeSpan timeout)
+        {
+            env.Headers[EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT] = timeout.Ticks.ToString();
+        }
+
+        public static TimeSpan GetRpcTimeout(this IDictionary<string, string> headers)
+        {
+            TimeSpan timeout = TimeSpan.Zero;
+
+            if (headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT))
+            {
+                string rpcTimeoutString = headers[EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT];
+                timeout = new TimeSpan(long.Parse(rpcTimeoutString));
+            }
+
+            return timeout;
+        }
+
+        public static void SetRpcTimeout(this IDictionary<string, string> headers, TimeSpan timeout)
+        {
+            headers[EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT] = timeout.Ticks.ToString();
+        }
+
+
+        public static string GetSenderIdentity(this Envelope env)
+        {
+            string identity = null;
+
+            if (env.Headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY))
+            {
+                identity = env.Headers[EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY];
+            }
+
+            return identity;
+        }
+
+        public static void SetSenderIdentity(this Envelope env, string identity)
+        {
+            env.Headers[EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY] = identity;
+        }
+
+        public static string GetSenderIdentity(this IDictionary<string, string> headers)
+        {
+            string identity = null;
+
+            if (headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY))
+            {
+                identity = headers[EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY];
+            }
+
+            return identity;
+        }
+
+        public static void SetSenderIdentity(this IDictionary<string, string> headers, string identity)
+        {
+            headers[EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY] = identity;
+        }
+
+
+        public static byte[] GetDigitalSignature(this Envelope env)
+        {
+            byte[] signature = new byte[0];
+
+            if (env.Headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE))
+            {
+                string base64Signature = env.Headers[EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE];
+                signature = Convert.FromBase64String(base64Signature);
+            }
+
+            return signature;
+        }
+
+        public static void SetDigitalSignature(this Envelope env, byte[] signature)
+        {
+            env.Headers[EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE] = Convert.ToBase64String(signature);
+        }
+
+        public static byte[] GetDigitalSignature(this IDictionary<string, string> headers)
+        {
+            byte[] signature = new byte[0];
+
+            if (headers.ContainsKey(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE))
+            {
+                string base64Signature = headers[EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE];
+                signature = Convert.FromBase64String(base64Signature);
+            }
+
+            return signature;
+        }
+
+        public static void SetDigitalSignature(this IDictionary<string, string> headers, byte[] signature)
+        {
+            headers[EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE] = Convert.ToBase64String(signature);
+        }
+
+
+        public static bool IsRpc(this Envelope env)
+        {
+            return string.Equals(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC, env.GetMessagePattern());
+        }
+
+        public static bool IsPubSub(this Envelope env)
+        {
+            return string.Equals(EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB, env.GetMessagePattern());
+        }
+
+        public static bool IsRequest(this Envelope env)
+        {
+            // we assume that the envelope is holding a request if it is marked
+            // as an rpc message that has no correlation id set.
+            Guid correlationId = env.GetCorrelationId();
+
+            return ( (env.IsRpc()) && (Guid.Empty.Equals(correlationId)) );
+        }
+
+
         public static string Flatten(this IDictionary<string, string> hash, string separator = ",")
         {
             StringBuilder sb = new StringBuilder();
@@ -202,9 +366,9 @@ namespace cmf.bus.berico
             sb.Append("[");
             hash.ToList().ForEach(kvp => sb.AppendFormat("{0}{{{1}:{2}}}", separator, kvp.Key, kvp.Value));
 
-            if (sb.Length > 0)
+            if (sb.Length > 1)
             {
-                sb.Remove(0, separator.Length);
+                sb.Remove(1, separator.Length);
             }
 
             sb.Append("]");

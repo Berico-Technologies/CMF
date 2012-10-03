@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Common.Logging;
 
 using cmf.eventing;
+using cmf.eventing.patterns.rpc;
 using cmf.examples.messages;
 
 namespace cmf.examples.duplex
@@ -19,7 +20,7 @@ namespace cmf.examples.duplex
         protected ILog _log;
 
 
-        public IEventBus EventBus { protected get; set; }
+        public IRpcEventBus EventBus { protected get; set; }
 
 
         public DuplexEventForm()
@@ -69,6 +70,23 @@ namespace cmf.examples.duplex
             }
         }
 
+        public void Handle_ExampleRequest(ExampleRequest request, IDictionary<string, string> headers)
+        {
+            ExampleResponse response = new ExampleResponse();
+            response.OriginalMessage = request.Message;
+            response.ResponseMessage = string.Format("{0}, eh?  Fascinating.", request.Message);
+
+            try
+            {
+                this.Log(string.Format("Responding to {0} with {1}", response.OriginalMessage, response.ResponseMessage));
+                this.EventBus.RespondTo(headers, response);
+            }
+            catch (Exception ex)
+            {
+                this.Log(ex.ToString());
+            }
+        }
+
 
         protected void Log(string message)
         {
@@ -87,7 +105,7 @@ namespace cmf.examples.duplex
         {
             MessageBox.Show(message, "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
+        
 
         private void _typeAChk_CheckedChanged(object sender, EventArgs e)
         {
@@ -170,6 +188,43 @@ namespace cmf.examples.duplex
         private void DuplexEventForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.EventBus.Dispose();
+        }
+
+        private void _requestBtn_Click(object sender, EventArgs e)
+        {
+            string msg = _requestMessage.Text;
+
+            if (string.IsNullOrEmpty(msg))
+            {
+                this.InformUser("Please add a request message.  Just type in whatever you like.");
+                return;
+            }
+
+            ExampleRequest request = new ExampleRequest(msg);
+            TimeSpan fiveSeconds = new TimeSpan(0, 0, 5);
+
+            try
+            {
+                ExampleResponse response = this.EventBus.GetResponseTo<ExampleResponse>(request, fiveSeconds);
+
+                if (null == response)
+                {
+                    this.Log("Did not get a response to the request within 5 seconds.  Ensure there is another .NET Consumer & Producer running");
+                }
+                else
+                {
+                    this.Log(string.Format("Got a response to '{0}': '{1}'", response.OriginalMessage, response.ResponseMessage));
+                }
+            }
+            catch (Exception ex)
+            {
+                this.Log("Could not send the request: " + ex.ToString());
+            }
+        }
+
+        private void DuplexEventForm_Load(object sender, EventArgs e)
+        {
+            this.EventBus.Subscribe<ExampleRequest>(this.Handle_ExampleRequest);
         }
     }
 }

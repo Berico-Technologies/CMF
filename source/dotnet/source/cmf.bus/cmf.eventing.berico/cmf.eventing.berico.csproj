@@ -54,11 +54,13 @@
   <ItemGroup>
     <Compile Include="DefaultEventBus.cs" />
     <Compile Include="DefaultRpcBus.cs" />
+    <Compile Include="DigitalSignatureProcessor.cs" />
     <Compile Include="EventRegistration.cs" />
     <Compile Include="IInboundEventProcessor.cs" />
     <Compile Include="IOutboundEventProcessor.cs" />
     <Compile Include="OutboundHeadersProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RpcFilter.cs" />
     <Compile Include="RpcRegistration.cs" />
     <Compile Include="serializers\JsonEventSerializer.cs" />
     <Compile Include="TypedEventHandler.cs" />
@@ -75,6 +77,10 @@
     <ProjectReference Include="..\cmf.eventing\cmf.eventing.csproj">
       <Project>{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}</Project>
       <Name>cmf.eventing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\source\cmf.security\cmf.security.csproj">
+      <Project>{55E3C8AB-52AA-4170-8326-B09F795C9449}</Project>
+      <Name>cmf.security</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

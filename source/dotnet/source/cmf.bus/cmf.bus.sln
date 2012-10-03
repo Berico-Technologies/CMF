@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.rabbit", "cmf.rabbit\cm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.tests", "cmf.tests\cmf.tests.csproj", "{1553D312-9ABE-42FA-9A25-09BE1AE5EB67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.security", "source\cmf.security\cmf.security.csproj", "{55E3C8AB-52AA-4170-8326-B09F795C9449}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,16 @@ Global
 		{1553D312-9ABE-42FA-9A25-09BE1AE5EB67}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{1553D312-9ABE-42FA-9A25-09BE1AE5EB67}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{1553D312-9ABE-42FA-9A25-09BE1AE5EB67}.Release|x86.ActiveCfg = Release|Any CPU
+		{55E3C8AB-52AA-4170-8326-B09F795C9449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55E3C8AB-52AA-4170-8326-B09F795C9449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55E3C8AB-52AA-4170-8326-B09F795C9449}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{55E3C8AB-52AA-4170-8326-B09F795C9449}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{55E3C8AB-52AA-4170-8326-B09F795C9449}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{55E3C8AB-52AA-4170-8326-B09F795C9449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55E3C8AB-52AA-4170-8326-B09F795C9449}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55E3C8AB-52AA-4170-8326-B09F795C9449}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{55E3C8AB-52AA-4170-8326-B09F795C9449}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{55E3C8AB-52AA-4170-8326-B09F795C9449}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

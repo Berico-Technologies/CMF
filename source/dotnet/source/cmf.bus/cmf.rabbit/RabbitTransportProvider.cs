@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -13,8 +12,8 @@ using RabbitMQ.Client;
 
 using cmf.bus;
 using cmf.bus.berico;
-using cmf.rabbit.security;
 using cmf.rabbit.topology;
+using cmf.security;
 
 namespace cmf.rabbit
 {
@@ -44,7 +43,7 @@ namespace cmf.rabbit
 
         public void Send(Envelope env)
         {
-            _log.Debug("Enter Send");
+            _log.Trace("Enter Send");
 
             // first, get the topology based on the headers
             RoutingInfo routing = _topoSvc.GetRoutingInfo(env.Headers);
@@ -54,12 +53,15 @@ namespace cmf.rabbit
                 from route in routing.Routes
                 select route.ProducerExchange;
 
+            // get a certificate if we have one
+            X509Certificate2 cert = _certProvider.GetCertificate();
+
             // for each exchange, send the envelope
             foreach (Exchange ex in exchanges)
             {
                 _log.Debug("Sending to exchange: " + ex.ToString());
-                IConnection conn = this.GetConnection(ex);
-
+                IConnection conn = this.GetConnection(ex, cert);
+                
                 using (IModel channel = conn.CreateModel())
                 {
                     IBasicProperties props = channel.CreateBasicProperties();
@@ -70,12 +72,12 @@ namespace cmf.rabbit
                 }
             }
 
-            _log.Debug("Leave Send");
+            _log.Trace("Leave Send");
         }
 
         public void Register(IRegistration registration)
         {
-            _log.Debug("Enter Register");
+            _log.Trace("Enter Register");
 
             // first, get the topology based on the registration info
             RoutingInfo routing = _topoSvc.GetRoutingInfo(registration.Info);
@@ -85,9 +87,12 @@ namespace cmf.rabbit
                 from route in routing.Routes
                 select route.ConsumerExchange;
 
+            // get a certificate if we have one
+            X509Certificate2 cert = _certProvider.GetCertificate();
+
             foreach (Exchange ex in exchanges)
             {
-                IConnection conn = this.GetConnection(ex);
+                IConnection conn = this.GetConnection(ex, cert);
 
                 // create a listener
                 RabbitListener listener = new RabbitListener(registration, ex, conn);
@@ -103,7 +108,7 @@ namespace cmf.rabbit
                 _listeners.Add(registration, listener);
             }
 
-            _log.Debug("Leave Register");
+            _log.Trace("Leave Register");
         }
 
         public virtual void Unregister(IRegistration registration)
@@ -138,7 +143,7 @@ namespace cmf.rabbit
 
         protected virtual void Dispose(bool disposing)
         {
-            _log.Debug("Enter Dispose");
+            _log.Trace("Enter Dispose");
 
             if (disposing)
             {
@@ -151,19 +156,10 @@ namespace cmf.rabbit
             }
             // get rid of unmanaged resources
 
-            _log.Debug("Leave Dispose");
+            _log.Trace("Leave Dispose");
         }
 
-        protected virtual IEnumerable<IConnection> GetConnections(IEnumerable<Exchange> exchanges)
-        {
-            List<IConnection> connections = new List<IConnection>();
-
-            exchanges.ToList().ForEach(ex => connections.Add(this.GetConnection(ex)));
-
-            return connections;
-        }
-
-        protected virtual IConnection GetConnection(Exchange ex)
+        protected virtual IConnection GetConnection(Exchange ex, X509Certificate2 cert)
         {
             IConnection conn = null;
 
@@ -173,21 +169,18 @@ namespace cmf.rabbit
             }
             else
             {
-                conn = this.CreateConnection(ex);
+                conn = this.CreateConnection(ex, cert);
                 _connections[ex] = conn;
             }
 
             return conn;
         }
 
-        protected virtual IConnection CreateConnection(Exchange ex)
+        protected virtual IConnection CreateConnection(Exchange ex, X509Certificate2 cert)
         {
-            _log.Debug("Enter CreateConnection");
+            _log.Trace("Enter CreateConnection");
 
             IConnection conn = null;
-
-            // use the cert provider to get the certificate to connect with
-            X509Certificate2 cert = _certProvider.GetCertificate();
 
             // we use the rabbit connection factory, just like normal
             ConnectionFactory cf = new ConnectionFactory();
@@ -213,7 +206,7 @@ namespace cmf.rabbit
             // we either now create an SSL connection or a default "guest/guest" connection
             conn = cf.CreateConnection();
 
-            _log.Debug("Leave CreateConnection");
+            _log.Trace("Leave CreateConnection");
             return conn;
         }
     }

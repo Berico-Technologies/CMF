@@ -43,6 +43,11 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this._clearLogBtn = new System.Windows.Forms.Button();
             this._output = new System.Windows.Forms.RichTextBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this._requestMessage = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this._requestBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -50,17 +55,20 @@
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox4);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox2);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
             // 
@@ -73,15 +81,13 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this._typeBChk);
             this.groupBox2.Controls.Add(this._typeAChk);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Location = new System.Drawing.Point(379, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(659, 135);
+            this.groupBox2.Size = new System.Drawing.Size(265, 135);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Event Subscriptions";
@@ -225,6 +231,57 @@
             this._output.TabIndex = 0;
             this._output.Text = "";
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Controls.Add(this._requestBtn);
+            this.groupBox4.Controls.Add(this.label6);
+            this.groupBox4.Controls.Add(this.label5);
+            this.groupBox4.Controls.Add(this._requestMessage);
+            this.groupBox4.Location = new System.Drawing.Point(650, 12);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(388, 135);
+            this.groupBox4.TabIndex = 2;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Request/ Response";
+            // 
+            // _requestMessage
+            // 
+            this._requestMessage.Location = new System.Drawing.Point(130, 67);
+            this._requestMessage.Name = "_requestMessage";
+            this._requestMessage.Size = new System.Drawing.Size(252, 20);
+            this._requestMessage.TabIndex = 0;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 70);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(118, 13);
+            this.label5.TabIndex = 1;
+            this.label5.Text = "Add a request message";
+            // 
+            // label6
+            // 
+            this.label6.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.label6.Location = new System.Drawing.Point(9, 21);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(373, 41);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "In order to receive a response to your request, another .NET Event Consumer && Pr" +
+    "oducer must be running somewhere so that it can respond.";
+            // 
+            // _requestBtn
+            // 
+            this._requestBtn.Location = new System.Drawing.Point(307, 104);
+            this._requestBtn.Name = "_requestBtn";
+            this._requestBtn.Size = new System.Drawing.Size(75, 23);
+            this._requestBtn.TabIndex = 4;
+            this._requestBtn.Text = "Request";
+            this._requestBtn.UseVisualStyleBackColor = true;
+            this._requestBtn.Click += new System.EventHandler(this._requestBtn_Click);
+            // 
             // DuplexEventForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -234,6 +291,7 @@
             this.Name = "DuplexEventForm";
             this.Text = ".NET Event Consumer & Producer";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DuplexEventForm_FormClosed);
+            this.Load += new System.EventHandler(this.DuplexEventForm_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -243,6 +301,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox3.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -264,6 +324,11 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button _clearLogBtn;
         private System.Windows.Forms.RichTextBox _output;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button _requestBtn;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox _requestMessage;
     }
 }
 

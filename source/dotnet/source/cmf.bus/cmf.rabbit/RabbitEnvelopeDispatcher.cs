@@ -40,14 +40,14 @@ namespace cmf.rabbit
 
         public virtual void Dispatch()
         {
-            _log.Debug("Enter Dispatch()");
+            _log.Trace("Enter Dispatch()");
             this.Dispatch(this.Envelope);
-            _log.Debug("Leave Dispatch()");
+            _log.Trace("Leave Dispatch()");
         }
 
         public virtual void Dispatch(Envelope env)
         {
-            _log.Debug("Enter Dispatch(env)");
+            _log.Trace("Enter Dispatch(env)");
             object maybeNull = null;
 
             try
@@ -63,12 +63,12 @@ namespace cmf.rabbit
             }
 
             this.RespondToMessage(maybeNull);
-            _log.Debug("Leave Dispatch(env)");
+            _log.Trace("Leave Dispatch(env)");
         }
 
         public virtual void Fail(Exception ex)
         {
-            _log.Debug("Enter Fail");
+            _log.Trace("Enter Fail");
 
             object maybeNull = null;
 
@@ -77,13 +77,13 @@ namespace cmf.rabbit
 
             this.RespondToMessage(maybeNull);
 
-            _log.Debug("Leave Fail");
+            _log.Trace("Leave Fail");
         }
 
 
         protected virtual void RespondToMessage(object maybeNull)
         {
-            _log.Debug("Enter RespondToMessage");
+            _log.Trace("Enter RespondToMessage");
 
             // we accept an envelope instead of dispatching the envelope in our
             // state because whoever is consuming us may have mutated it
@@ -113,7 +113,7 @@ namespace cmf.rabbit
                     break;
             }
 
-            _log.Debug("Leave RespondToMessage");
+            _log.Trace("Leave RespondToMessage");
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.DirectoryServices.AccountManagement;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -45,7 +44,7 @@ namespace cmf.rabbit
 
         public void Start()
         {
-            _log.Debug("Enter Start");
+            _log.Trace("Enter Start");
             _shouldContinue = true;
 
             using (IModel channel = _connection.CreateModel())
@@ -108,14 +107,14 @@ namespace cmf.rabbit
                 catch (OperationInterruptedException) { }
             }
 
-            _log.Debug("Leave Start");
+            _log.Trace("Leave Start");
         }
 
         public void Stop()
         {
-            _log.Debug("Enter Stop");
+            _log.Trace("Enter Stop");
             _shouldContinue = false;
-            _log.Debug("Leave Stop");
+            _log.Trace("Leave Stop");
         }
 
 
@@ -137,7 +136,7 @@ namespace cmf.rabbit
         protected virtual void LogMessage(BasicDeliverEventArgs eventArgs)
         {
             StringBuilder buffer = new StringBuilder();
-            buffer.Append("Got a message from the queue: ");
+            buffer.AppendLine("Got a message from the queue -- ");
 
             using (StringWriter writer = new StringWriter(buffer))
             {
