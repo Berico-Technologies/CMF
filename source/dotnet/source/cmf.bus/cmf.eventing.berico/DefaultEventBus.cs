@@ -30,7 +30,7 @@ namespace cmf.eventing.berico
 
         public virtual void Publish(object ev)
         {
-            _log.Trace("Enter Publish");
+            _log.Debug("Enter Publish");
 
             if (null == ev) { throw new ArgumentNullException("Cannot publish a null event"); }
 
@@ -49,17 +49,17 @@ namespace cmf.eventing.berico
                 throw;
             }
 
-            _log.Trace("Leave Publish");
+            _log.Debug("Leave Publish");
         }
 
         public virtual void Subscribe(IEventHandler handler)
         {
-            _log.Trace("Enter Subscribe");
+            _log.Debug("Enter Subscribe");
 
             EventRegistration registration = new EventRegistration(handler, this.InboundChain.Sort());
             _envBus.Register(registration);
 
-            _log.Trace("Leave Subscribe");
+            _log.Debug("Leave Subscribe");
         }
 
         public virtual void Subscribe<TEvent>(Action<TEvent, IDictionary<string, string>> handler) where TEvent : class

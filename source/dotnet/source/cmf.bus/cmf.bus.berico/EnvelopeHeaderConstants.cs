@@ -17,5 +17,7 @@ namespace cmf.bus.berico
         public static readonly string MESSAGE_PATTERN_RPC_TIMEOUT = "cmf.bus.message.pattern#rpc.timeout";
         public static readonly string MESSAGE_SENDER_IDENTITY = "cmf.bus.message.sender_identity";
         public static readonly string MESSAGE_SENDER_SIGNATURE = "cmf.bus.message.sender_signature";
+        public static readonly string ENVELOPE_CREATION_TIME = "cmf.bus.envelope.creation";
+        public static readonly string ENVELOPE_RECEIPT_TIME = "cmf.bus.envelope.receipt";
     }
 }

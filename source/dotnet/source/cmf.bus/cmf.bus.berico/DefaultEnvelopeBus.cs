@@ -31,7 +31,7 @@ namespace cmf.bus.berico
 
         public virtual void Send(Envelope env)
         {
-            _log.Trace("Enter Send");
+            _log.Debug("Enter Send");
             // guard clause
             if (null == env) { throw new ArgumentNullException("Cannot send a null envelope"); }
             
@@ -44,33 +44,33 @@ namespace cmf.bus.berico
             // send the envelope to the transport provider
             _txProvider.Send(env);
 
-            _log.Trace("Leave Send");
+            _log.Debug("Leave Send");
         }
 
         public virtual void Register(IRegistration registration)
         {
-            _log.Trace("Enter Register");
+            _log.Debug("Enter Register");
 
             // guard clause
             if (null == registration) { throw new ArgumentNullException("Cannot register a null registration"); }
             _txProvider.Register(registration);
 
-            _log.Trace("Leave Register");
+            _log.Debug("Leave Register");
         }
 
         public virtual void Unregister(IRegistration registration)
         {
-            _log.Trace("Enter Unregister");
+            _log.Debug("Enter Unregister");
 
             if (null == registration) { throw new ArgumentNullException("Cannot unregister a null registration"); }
             _txProvider.Unregister(registration);
 
-            _log.Trace("Leave Unregister");
+            _log.Debug("Leave Unregister");
         }
 
         public virtual void Handle_Dispatcher(IEnvelopeDispatcher dispatcher)
         {
-            _log.Trace("Enter Handle_Dispatcher");
+            _log.Debug("Enter Handle_Dispatcher");
 
             try
             {
@@ -91,14 +91,14 @@ namespace cmf.bus.berico
                 dispatcher.Fail(ex);
             }
 
-            _log.Trace("Leave Handle_Dispatcher");
+            _log.Debug("Leave Handle_Dispatcher");
         }
 
         public void Dispose()
         {
-            _log.Trace("Enter Dispose");
+            _log.Debug("Enter Dispose");
             _txProvider.Dispose();
-            _log.Trace("Leave Dispose");
+            _log.Debug("Leave Dispose");
         }
 
 

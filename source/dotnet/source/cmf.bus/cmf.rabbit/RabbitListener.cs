@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 
 using Common.Logging;
 using RabbitMQ.Client;
@@ -44,7 +45,7 @@ namespace cmf.rabbit
 
         public void Start()
         {
-            _log.Trace("Enter Start");
+            _log.Debug("Enter Start");
             _shouldContinue = true;
 
             using (IModel channel = _connection.CreateModel())
@@ -72,6 +73,7 @@ namespace cmf.rabbit
                         IBasicProperties props = e.BasicProperties;
 
                         Envelope env = new Envelope();
+                        env.SetReceiptTime(DateTime.Now);
                         env.Payload = e.Body;
                         foreach (DictionaryEntry entry in props.Headers)
                         {
@@ -89,7 +91,7 @@ namespace cmf.rabbit
                         if (this.ShouldRaiseEvent(_registration.Filter, env))
                         {
                             RabbitEnvelopeDispatcher dispatcher = new RabbitEnvelopeDispatcher(_registration, env, channel, e.DeliveryTag);
-                            this.OnEnvelopeReceived(dispatcher);
+                            this.Raise_OnEnvelopeReceivedEvent(dispatcher);
                         }
                     }
                     catch (OperationInterruptedException)
@@ -107,14 +109,14 @@ namespace cmf.rabbit
                 catch (OperationInterruptedException) { }
             }
 
-            _log.Trace("Leave Start");
+            _log.Debug("Leave Start");
         }
 
         public void Stop()
         {
-            _log.Trace("Enter Stop");
+            _log.Debug("Enter Stop");
             _shouldContinue = false;
-            _log.Trace("Leave Stop");
+            _log.Debug("Leave Stop");
         }
 
 
@@ -130,6 +132,14 @@ namespace cmf.rabbit
             {
                 try { this.OnClose(registration); }
                 catch { }
+            }
+        }
+
+        protected virtual void Raise_OnEnvelopeReceivedEvent(RabbitEnvelopeDispatcher dispatcher)
+        {
+            if (null != this.OnEnvelopeReceived)
+            {
+                Task.Factory.StartNew(() => this.OnEnvelopeReceived(dispatcher));
             }
         }
 

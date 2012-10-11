@@ -34,11 +34,16 @@
     <Reference Include="Moq">
       <HintPath>..\..\..\libraries\Moq.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.0.4.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libraries\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\..\libraries\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +53,7 @@
   <ItemGroup>
     <Compile Include="DefaultEnvelopeBusTests.cs" />
     <Compile Include="InMemoryEnvBusTests.cs" />
+    <Compile Include="JsonSerializerPerfTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +76,10 @@
     <ProjectReference Include="..\cmf.rabbit\cmf.rabbit.csproj">
       <Project>{8CB67E8B-14B4-4C67-A23E-5C61EE17C8C2}</Project>
       <Name>cmf.rabbit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\source\cmf.security\cmf.security.csproj">
+      <Project>{55E3C8AB-52AA-4170-8326-B09F795C9449}</Project>
+      <Name>cmf.security</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

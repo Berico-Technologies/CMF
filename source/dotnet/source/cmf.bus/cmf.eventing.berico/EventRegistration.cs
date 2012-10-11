@@ -43,7 +43,7 @@ namespace cmf.eventing.berico
 
         public virtual object Handle(Envelope env)
         {
-            _log.Trace("Enter Handle");
+            _log.Debug("Enter Handle");
 
             object ev = null;
             object result = null;
@@ -52,6 +52,7 @@ namespace cmf.eventing.berico
             {
                 try
                 {
+
                     result = _handler.Handle(ev, env.Headers);
                 }
                 catch (Exception ex)
@@ -61,18 +62,18 @@ namespace cmf.eventing.berico
                 }
             }
 
-            _log.Trace("Leave Handle");
+            _log.Debug("Leave Handle");
             return result;
         }
 
         public virtual object HandleFailed(Envelope env, Exception ex)
         {
-            _log.Trace("Enter HandleFailed");
+            _log.Debug("Enter HandleFailed");
 
             // either log & return or log & throw
             try
             {
-                _log.Trace("Leave HandleFailed");
+                _log.Debug("Leave HandleFailed");
                 return _handler.HandleFailed(env, ex);
             }
             catch (Exception failedToFail)

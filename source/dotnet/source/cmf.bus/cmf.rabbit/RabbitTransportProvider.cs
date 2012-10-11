@@ -43,7 +43,7 @@ namespace cmf.rabbit
 
         public void Send(Envelope env)
         {
-            _log.Trace("Enter Send");
+            _log.Debug("Enter Send");
 
             // first, get the topology based on the headers
             RoutingInfo routing = _topoSvc.GetRoutingInfo(env.Headers);
@@ -72,12 +72,12 @@ namespace cmf.rabbit
                 }
             }
 
-            _log.Trace("Leave Send");
+            _log.Debug("Leave Send");
         }
 
         public void Register(IRegistration registration)
         {
-            _log.Trace("Enter Register");
+            _log.Debug("Enter Register");
 
             // first, get the topology based on the registration info
             RoutingInfo routing = _topoSvc.GetRoutingInfo(registration.Info);
@@ -108,7 +108,7 @@ namespace cmf.rabbit
                 _listeners.Add(registration, listener);
             }
 
-            _log.Trace("Leave Register");
+            _log.Debug("Leave Register");
         }
 
         public virtual void Unregister(IRegistration registration)
@@ -143,7 +143,7 @@ namespace cmf.rabbit
 
         protected virtual void Dispose(bool disposing)
         {
-            _log.Trace("Enter Dispose");
+            _log.Debug("Enter Dispose");
 
             if (disposing)
             {
@@ -156,7 +156,7 @@ namespace cmf.rabbit
             }
             // get rid of unmanaged resources
 
-            _log.Trace("Leave Dispose");
+            _log.Debug("Leave Dispose");
         }
 
         protected virtual IConnection GetConnection(Exchange ex, X509Certificate2 cert)
@@ -178,7 +178,7 @@ namespace cmf.rabbit
 
         protected virtual IConnection CreateConnection(Exchange ex, X509Certificate2 cert)
         {
-            _log.Trace("Enter CreateConnection");
+            _log.Debug("Enter CreateConnection");
 
             IConnection conn = null;
 
@@ -206,7 +206,7 @@ namespace cmf.rabbit
             // we either now create an SSL connection or a default "guest/guest" connection
             conn = cf.CreateConnection();
 
-            _log.Trace("Leave CreateConnection");
+            _log.Debug("Leave CreateConnection");
             return conn;
         }
     }

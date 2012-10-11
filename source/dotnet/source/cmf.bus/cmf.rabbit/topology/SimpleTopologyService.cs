@@ -37,7 +37,7 @@ namespace cmf.rabbit.topology
                 this.Port,
                 topic, 
                 string.Format("{0}#{1}", this.ClientProfile, topic),
-                "topic", 
+                "direct", 
                 false, 
                 true);
 

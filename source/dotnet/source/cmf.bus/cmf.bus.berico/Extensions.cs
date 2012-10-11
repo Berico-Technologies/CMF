@@ -339,6 +339,59 @@ namespace cmf.bus.berico
         }
 
 
+        public static DateTime GetCreationTime(this Envelope env)
+        {
+            string createTicks = null;
+
+            if (env.Headers.ContainsKey(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME))
+            {
+                createTicks = env.Headers[EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME];
+            }
+
+            return new DateTime(long.Parse(createTicks));
+        }
+
+        public static void SetCreationTime(this Envelope env, DateTime date)
+        {
+            env.Headers[EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME] = date.Ticks.ToString();
+        }
+
+
+        public static DateTime GetReceiptTime(this Envelope env)
+        {
+            string receiptTicks = null;
+
+            if (env.Headers.ContainsKey(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME))
+            {
+                receiptTicks = env.Headers[EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME];
+            }
+
+            return new DateTime(long.Parse(receiptTicks));
+        }
+
+        public static void SetReceiptTime(this Envelope env, DateTime date)
+        {
+            env.Headers[EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME] = date.Ticks.ToString();
+        }
+
+        public static DateTime GetReceiptTime(this IDictionary<string, string> headers)
+        {
+            string receiptTicks = null;
+
+            if (headers.ContainsKey(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME))
+            {
+                receiptTicks = headers[EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME];
+            }
+
+            return new DateTime(long.Parse(receiptTicks));
+        }
+
+        public static void SetReceiptTime(this IDictionary<string, string> headers, DateTime date)
+        {
+            headers[EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME] = date.Ticks.ToString();
+        }
+
+
         public static bool IsRpc(this Envelope env)
         {
             return string.Equals(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC, env.GetMessagePattern());

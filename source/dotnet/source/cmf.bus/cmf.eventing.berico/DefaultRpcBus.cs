@@ -23,7 +23,7 @@ namespace cmf.eventing.berico
 
         public object GetResponseTo(object request, TimeSpan timeout, string expectedTopic)
         {
-            _log.Trace("Enter GetResponseTo");
+            _log.Debug("Enter GetResponseTo");
 
             if (null == request) { throw new ArgumentNullException("Cannot get response to a null request"); }
 
@@ -65,7 +65,7 @@ namespace cmf.eventing.berico
                 throw;
             }
 
-            _log.Trace("Leave GetResponseTo");
+            _log.Debug("Leave GetResponseTo");
             return response;
         }
 
@@ -90,7 +90,7 @@ namespace cmf.eventing.berico
 
         public void RespondTo(IDictionary<string, string> headers, object response)
         {
-            _log.Trace("Enter RespondTo");
+            _log.Debug("Enter RespondTo");
 
             if (null == response) { throw new ArgumentNullException("Cannot respond with a null event"); }
             if (null == headers) { throw new ArgumentNullException("Must provide non-null request headers"); }
@@ -110,7 +110,7 @@ namespace cmf.eventing.berico
                 throw;
             }
 
-            _log.Trace("Leave RespondTo");
+            _log.Debug("Leave RespondTo");
         }
     }
 }
