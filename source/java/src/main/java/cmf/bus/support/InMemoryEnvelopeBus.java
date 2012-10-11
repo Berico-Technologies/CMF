@@ -23,9 +23,9 @@ public class InMemoryEnvelopeBus implements IEnvelopeBus {
             public void run() {
                 for (IRegistration registration : registrationList) {
                     try {
-                        registration.getEnvelopeHandler().handle(envelope);
+                        registration.getHandler().handle(envelope);
                     } catch (Exception e) {
-                        registration.getEnvelopeHandler().handleFailed(envelope, e);
+                        registration.getHandler().handleFailed(envelope, e);
                     }
                 }
             }

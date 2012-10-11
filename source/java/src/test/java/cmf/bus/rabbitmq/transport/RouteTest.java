@@ -33,5 +33,5 @@ public class RouteTest {
     public void nullRoutingKeyThrows() {
         route.setRoutingKey(null);
     }
-    
+
 }

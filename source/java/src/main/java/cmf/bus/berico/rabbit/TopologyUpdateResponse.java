@@ -2,13 +2,13 @@ package cmf.bus.berico.rabbit;
 
 public class TopologyUpdateResponse {
 
-    private TopologyRegistry topologyRegistry;
+    private ITopologyRegistry topologyRegistry;
 
-    public TopologyRegistry getTopologyRegistry() {
+    public ITopologyRegistry getTopologyRegistry() {
         return topologyRegistry;
     }
 
-    public void setTopologyRegistry(TopologyRegistry topologyRegistry) {
+    public void setTopologyRegistry(ITopologyRegistry topologyRegistry) {
         this.topologyRegistry = topologyRegistry;
     }
 }

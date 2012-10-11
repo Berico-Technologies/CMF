@@ -2,14 +2,18 @@ package cmf.bus.berico.rabbit;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import cmf.bus.Envelope;
 import cmf.bus.IRegistration;
-import cmf.bus.berico.IEnvelopeDispatcher;
 import cmf.bus.berico.ITransportProvider;
+import cmf.bus.berico.rabbit.support.RabbitEnvelopeHelper;
+import cmf.bus.berico.rabbit.support.RabbitRegistrationHelper;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
@@ -17,30 +21,22 @@ import com.rabbitmq.client.Connection;
 
 public class TransportProvider implements ITransportProvider {
 
-    public static final int DEFAULT_QUEUE_LIFETIME = 1000 * 60 * 30; // 30 minute lifetime
     private static final String TOPIC_EXCHANGE_TYPE = "topic";
 
     private Channel channel;
     private Connection connection;
-    private ConnectionFactory connectionFactory;
     private Set<String> exchangesKnownToExist = new HashSet<String>();
-    private int queueLifetime = DEFAULT_QUEUE_LIFETIME;
-    private IEnvelopeDispatcher envelopeDispatcher;
     private ITopologyProvider topologyProvider;
+    private QueueProvider queueProvider;
+    private ConnectionProvider connectionProvider;
 
-    public TransportProvider(ConnectionFactory connectionFactory, ITopologyProvider topologyProvider, IEnvelopeDispatcher envelopeDispatcher) {
-        this.connectionFactory = connectionFactory;
+    public TransportProvider(ConnectionProvider connectionProvider, QueueProvider queueProvider,
+                    ITopologyProvider topologyProvider) {
+        this.connectionProvider = connectionProvider;
+        this.queueProvider = queueProvider;
         this.topologyProvider = topologyProvider;
-        this.envelopeDispatcher = envelopeDispatcher;
-        openConnectionAndChannel();
-    }
-    
-    private void closeConnectionAndChannel() {
-        try {
-            connection.close();
-        } catch (IOException e) {
-            throw new RuntimeException("Error closing the rabbit connection and channels", e);
-        }
+        connection = connectionProvider.newConnection();
+        channel = connectionProvider.newChannel(connection);
     }
 
     private void createExchange(String exchangeName) {
@@ -53,7 +49,7 @@ public class TransportProvider implements ITransportProvider {
 
     @Override
     protected void finalize() {
-        closeConnectionAndChannel();
+        connectionProvider.closeConnection(connection);
     }
 
     private String getExchangeName(Route route) {
@@ -66,51 +62,36 @@ public class TransportProvider implements ITransportProvider {
         return exchangeName;
     }
 
-    private void openConnectionAndChannel() {
-        try {
-            if (connection != null) {
-                connection.close();
-            }
-            connection = connectionFactory.newConnection();
-        } catch (IOException e) {
-            throw new RuntimeException("Error opening the rabbit connection", e);
-        }
-        channel = createChannel();
-    }
-    
-    private Channel createChannel() {
-        try {
-            return connection.createChannel();
-        } catch (IOException e) {
-            throw new RuntimeException("Error opening rabbit command channel", e);
-        }
-    }
-
+    @Override
     public void register(IRegistration registration) {
-        String routingKey = registration.getRegistrationInfo().get(RegistrationConstants.ROUTING_KEY);
+        Channel channel = connectionProvider.newChannel(connection);
+        Queue queue = queueProvider.newQueue(channel, registration);
+        String routingKey = RabbitRegistrationHelper.RegistrationInfo.getRoutingKey(registration);
         Collection<Route> routes = topologyProvider.getReceiveRoutes(routingKey);
-        Queue queue = new Queue(createChannel(), queueLifetime, registration, envelopeDispatcher);
-        
         for (Route route : routes) {
             queue.bind(getExchangeName(route), routingKey);
         }
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
     public void send(Envelope envelope) {
-        String routingKey = envelope.getHeader(EnvelopeConstants.TYPE);
+        String routingKey = RabbitEnvelopeHelper.Headers.getType(envelope);
         List<Route> sendRoutes = topologyProvider.getSendRoutes(routingKey);
+        byte[] payload = envelope.getPayload();
+        Map<String, Object> headers = new HashMap<String, Object>();
+        for (Entry<String, String> entry : envelope.getHeaders().entrySet()) {
+            headers.put(entry.getKey(), entry.getValue());
+        }
+        BasicProperties basicProperties = new BasicProperties.Builder().build();
+        basicProperties.setHeaders(headers);
         for (Route route : sendRoutes) {
             String exchangeName = getExchangeName(route);
             try {
-                BasicProperties basicProperties = new BasicProperties.Builder().build();
-                channel.basicPublish(exchangeName, routingKey, basicProperties, envelope.getPayload());
+                channel.basicPublish(exchangeName, routingKey, basicProperties, payload);
             } catch (IOException e) {
                 throw new RuntimeException("Error sending envelope", e);
             }
         }
-    }
-
-    public void setQueueLifetime(int queueLifetime) {
-        this.queueLifetime = queueLifetime;
     }
 }

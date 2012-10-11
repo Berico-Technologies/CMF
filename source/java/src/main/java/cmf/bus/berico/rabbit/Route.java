@@ -1,6 +1,8 @@
 package cmf.bus.berico.rabbit;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 public class Route {
 
@@ -11,24 +13,20 @@ public class Route {
 
     }
 
+    protected Route(Route route) {
+        exchangeName = route.exchangeName;
+        routingKey = route.routingKey;
+    }
+
     public Route(String exchangeName, String routingKey) {
         setExchangeName(exchangeName);
         setRoutingKey(routingKey);
     }
 
-    protected Route(Route route) {
-        this.exchangeName = route.exchangeName;
-        this.routingKey = route.routingKey;
-    }
-    
     public Route copyFrom(Route route) {
         return new Route(route);
     }
-    
-    public Route getCopy() {
-        return new Route(this);
-    }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -57,6 +55,10 @@ public class Route {
         }
 
         return true;
+    }
+
+    public Route getCopy() {
+        return new Route(this);
     }
 
     public String getExchangeName() {
@@ -93,6 +95,6 @@ public class Route {
 
     @Override
     public String toString() {
-        return String.format("{\"exchangeName\":\"%s\", \"routingKey\"=\"%s\"}", exchangeName, routingKey);
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

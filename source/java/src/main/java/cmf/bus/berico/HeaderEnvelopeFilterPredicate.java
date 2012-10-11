@@ -1,5 +1,6 @@
 package cmf.bus.berico;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -22,20 +23,13 @@ public class HeaderEnvelopeFilterPredicate implements IEnvelopeFilterPredicate {
 
     @Override
     public boolean filter(Envelope envelope) {
-        boolean filter = true;
-        Map<String, String> envelopeHeaders = envelope.getHeaders();
-        for (Entry<String, String> entry : filterHeaders.entrySet()) {
-            String key = entry.getKey();
-            if (!envelopeHeaders.containsKey(key)) {
-                filter = false;
-                break;
-            }
-            String envelopeValue = entry.getValue();
-            String filterValue = filterHeaders.get(key);
-            if (!StringUtils.equals(filterValue, envelopeValue)) {
-                filter = false;
-                break;
-            }
+        Iterator<Entry<String, String>> filterIterator = filterHeaders.entrySet().iterator();
+        boolean filter = envelope.getHeaders().size() == filterHeaders.size();
+        while (filter && filterIterator.hasNext()) {
+            Entry<String, String> filterEntry = filterIterator.next();
+            String filterValue = filterEntry.getValue();
+            String envelopeValue = envelope.getHeaders().get(filterEntry.getKey());
+            filter = StringUtils.equals(filterValue, envelopeValue);
         }
 
         return filter;

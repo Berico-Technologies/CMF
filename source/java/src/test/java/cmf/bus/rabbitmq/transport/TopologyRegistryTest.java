@@ -18,16 +18,16 @@ import cmf.bus.berico.rabbit.TopologyRegistry;
 
 public class TopologyRegistryTest {
 
-    private TopologyRegistry topologyRegistry;
     @Mock
     private Map<String, List<Route>> receiveRouteMap;
     @Mock
-    private Map<String, List<Route>> sendRouteMap;
-    @Mock
     private List<Route> receiveRoutes;
+    @Mock
+    private Map<String, List<Route>> sendRouteMap;
     @Mock
     private List<Route> sendRoutes;
     private String topic = "topic";
+    private TopologyRegistry topologyRegistry;
 
     @Before
     public void before() {
