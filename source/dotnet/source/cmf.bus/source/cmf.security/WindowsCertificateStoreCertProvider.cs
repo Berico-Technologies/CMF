@@ -27,21 +27,35 @@ namespace cmf.security
 
         public virtual X509Certificate2 GetCertificate()
         {
+            _log.Debug("Enter GetCertificate()");
+
             X509Certificate2 cert = null;
 
             // the DN I get is CN=name,CN=Users,DC=example,DC=com
             // but the DN on the cert has spaces after each comma
             string spacedDN = UserPrincipal.Current.DistinguishedName.Replace(",", ", ");
+            _log.Debug(string.Format("Looking for certificate with subject: {0}", spacedDN));
 
             cert = this.GetCertificateFromCache(spacedDN);
 
             if (null == cert)
             {
+                _log.Debug("Certificate not cached: opening certificate store to find certificate");
+
                 // I've imported my certificate into my certificate store 
                 // (the Personal/Certificates folder in the certmgr mmc snap-in)
                 // Let's open that store right now.
                 X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
                 certStore.Open(OpenFlags.ReadOnly);
+
+                // for debugging purposes, write out all the user's certs
+                if (_log.IsDebugEnabled)
+                {
+                    foreach (X509Certificate2 c in certStore.Certificates)
+                    {
+                        _log.Debug(string.Format("Certificate store has a certificate with subject: {0}", c.Subject));
+                    }
+                }
 
                 // get and store the certificate
                 cert = certStore.Certificates
@@ -54,15 +68,19 @@ namespace cmf.security
 
                 if (null != cert)
                 {
+                    _log.Debug("Found the desired certificate in the user's store: adding to cache");
                     this.CacheCertificate(spacedDN, cert);
                 }
             }
 
+            _log.Debug("Leave GetCertificate()");
             return cert;
         }
 
         public virtual X509Certificate2 GetCertificateFor(string distinguishedName)
         {
+            _log.Debug(string.Format("Enter GetCertificateFor({0})", distinguishedName));
+
             X509Certificate2 cert = null;
 
             cert = this.GetCertificateFromCache(distinguishedName);
@@ -93,6 +111,7 @@ namespace cmf.security
                 }
             }
 
+            _log.Debug(string.Format("Leave GetCertificateFor({0})", distinguishedName));
             return cert;
         }
 
