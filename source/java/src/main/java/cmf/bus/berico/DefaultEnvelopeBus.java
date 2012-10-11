@@ -7,46 +7,26 @@ import java.util.Map;
 
 import cmf.bus.Envelope;
 import cmf.bus.IEnvelopeBus;
-import cmf.bus.IEnvelopeHandler;
 import cmf.bus.IRegistration;
 
 public class DefaultEnvelopeBus implements IEnvelopeBus {
 
-    protected class EnvelopeBusEnvelopeHandler implements IEnvelopeHandler {
+    private List<IInboundEnvelopeProcessor> inboundProcessors = new LinkedList<IInboundEnvelopeProcessor>();
+    private List<IOutboundEnvelopeProcessor> outboundProcessors = new LinkedList<IOutboundEnvelopeProcessor>();
+    private ITransportProvider transportProvider;
+    private IEnvelopeDispatcher envelopeDispatcher;
 
-        private IEnvelopeHandler userEnvelopeHandler;
-
-        public EnvelopeBusEnvelopeHandler(IEnvelopeHandler userEnvelopeHandler) {
-            this.userEnvelopeHandler = userEnvelopeHandler;
-        }
-
-        @Override
-        public Object handle(Envelope envelope) {
-            processInbound(envelope);
-            Object result = userEnvelopeHandler.handle(envelope);
-
-            return result;
-        }
-
-        @Override
-        public Object handleFailed(Envelope envelope, Exception e) {
-            return userEnvelopeHandler.handleFailed(envelope, e);
-        }
-    }
-
-    protected List<IInboundEnvelopeProcessor> inboundProcessors = new LinkedList<IInboundEnvelopeProcessor>();
-    protected List<IOutboundEnvelopeProcessor> outboundProcessors = new LinkedList<IOutboundEnvelopeProcessor>();
-    protected ITransportProvider transportProvider;
-
-    public DefaultEnvelopeBus(ITransportProvider transportProvider) {
+    public DefaultEnvelopeBus(ITransportProvider transportProvider, IEnvelopeDispatcher envelopeDispatcher) {
         this.transportProvider = transportProvider;
+        this.envelopeDispatcher = envelopeDispatcher;
     }
 
     public DefaultEnvelopeBus(ITransportProvider transportProvider, List<IInboundEnvelopeProcessor> inboundProcessors,
-                    List<IOutboundEnvelopeProcessor> outboundProcessors) {
+                    List<IOutboundEnvelopeProcessor> outboundProcessors, IEnvelopeDispatcher envelopeDispatcher) {
         this.transportProvider = transportProvider;
         this.inboundProcessors = inboundProcessors;
         this.outboundProcessors = outboundProcessors;
+        this.envelopeDispatcher = envelopeDispatcher;
     }
 
     protected void processInbound(Envelope envelope) {
@@ -68,12 +48,15 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
         if (registration == null) {
             throw new IllegalArgumentException("Cannot register with a null registration");
         }
-        /**
-         * wrap user envelope handler with bus envelope handler which calls processInbound to run the inbound processors
-         * before dispatching an envelope
-         */
-        registration.setEnvelopeHandler(new EnvelopeBusEnvelopeHandler(registration.getEnvelopeHandler()));
-        transportProvider.register(registration);
+
+        transportProvider.register(registration, new IEnvelopeReceivedCallback() {
+
+            public Object handleReceive(Envelope envelope) {
+                processInbound(envelope);
+
+                return envelopeDispatcher.dispatch(registration, envelope);
+            }
+        });
     }
 
     @Override
@@ -95,5 +78,13 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
 
     public void setTransportProvider(ITransportProvider transportProvider) {
         this.transportProvider = transportProvider;
+    }
+
+    @Override
+    public void unregister(IRegistration registration) {
+        if (registration == null) {
+            throw new IllegalArgumentException("Cannot unregister with a null registration");
+        }
+        transportProvider.unregister(registration);
     }
 }

@@ -4,15 +4,15 @@ import java.util.Map;
 
 public interface IRegistration {
 
-    IEnvelopeHandler getEnvelopeHandler();
-
     IEnvelopeFilterPredicate getFilterPredicate();
+
+    IEnvelopeHandler getHandler();
 
     Map<String, String> getRegistrationInfo();
 
-    void setEnvelopeHandler(IEnvelopeHandler envelopeHandler);
-
     void setFilterPredicate(IEnvelopeFilterPredicate envelopeFilterPredicate);
+
+    void setHandler(IEnvelopeHandler envelopeHandler);
 
     void setRegistrationInfo(Map<String, String> registrationInfo);
 }

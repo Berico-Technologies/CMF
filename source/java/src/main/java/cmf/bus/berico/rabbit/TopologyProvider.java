@@ -12,9 +12,9 @@ public class TopologyProvider implements ITopologyProvider {
 
     @SuppressWarnings("unused")
     private String profile;
-    private TopologyRegistry topologyRegistry;
+    private ITopologyRegistry topologyRegistry;
 
-    public TopologyProvider(String profile, TopologyRegistry topologyRegistry) {
+    public TopologyProvider(String profile, ITopologyRegistry topologyRegistry) {
         this.profile = profile;
         this.topologyRegistry = topologyRegistry;
     }
@@ -40,24 +40,26 @@ public class TopologyProvider implements ITopologyProvider {
     }
 
     public void setEventBus(IEventBus eventBus) {
-        eventBus.subscribe(new IEventHandler<TopologyUpdateResponse>() {
+        eventBus.subscribe(new TopologyUpdateResponseHandler());
+    }
 
-            @Override
-            public Class<TopologyUpdateResponse> getEventType() {
-                return TopologyUpdateResponse.class;
-            }
+    private class TopologyUpdateResponseHandler implements IEventHandler<TopologyUpdateResponse> {
 
-            @Override
-            public Object handle(TopologyUpdateResponse event, Map<String, String> headers) {
-                topologyRegistry = event.getTopologyRegistry();
+        @Override
+        public Class<TopologyUpdateResponse> getEventType() {
+            return TopologyUpdateResponse.class;
+        }
 
-                return null;
-            }
+        @Override
+        public Object handle(TopologyUpdateResponse event, Map<String, String> headers) {
+            topologyRegistry = event.getTopologyRegistry();
 
-            @Override
-            public Object handleFailed(Envelope envelope, Exception e) {
-                return null;
-            }
-        });
+            return null;
+        }
+
+        @Override
+        public Object handleFailed(Envelope envelope, Exception e) {
+            return null;
+        }
     }
 }

@@ -14,13 +14,13 @@ public class DefaultEnvelopeRegistration implements IRegistration {
     protected Map<String, String> registrationInfo = new HashMap<String, String>();
 
     @Override
-    public IEnvelopeHandler getEnvelopeHandler() {
-        return envelopeHandler;
+    public IEnvelopeFilterPredicate getFilterPredicate() {
+        return filterPredicate;
     }
 
     @Override
-    public IEnvelopeFilterPredicate getFilterPredicate() {
-        return filterPredicate;
+    public IEnvelopeHandler getHandler() {
+        return envelopeHandler;
     }
 
     @Override
@@ -29,13 +29,13 @@ public class DefaultEnvelopeRegistration implements IRegistration {
     }
 
     @Override
-    public void setEnvelopeHandler(IEnvelopeHandler envelopeHandler) {
-        this.envelopeHandler = envelopeHandler;
+    public void setFilterPredicate(IEnvelopeFilterPredicate filterPredicate) {
+        this.filterPredicate = filterPredicate;
     }
 
     @Override
-    public void setFilterPredicate(IEnvelopeFilterPredicate filterPredicate) {
-        this.filterPredicate = filterPredicate;
+    public void setHandler(IEnvelopeHandler envelopeHandler) {
+        this.envelopeHandler = envelopeHandler;
     }
 
     @Override

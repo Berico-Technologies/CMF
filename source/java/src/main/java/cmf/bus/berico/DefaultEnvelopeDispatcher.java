@@ -9,7 +9,7 @@ public class DefaultEnvelopeDispatcher implements IEnvelopeDispatcher {
     public Object dispatch(IRegistration registration, Envelope envelope) {
         Object result = null;
         if (registration.getFilterPredicate().filter(envelope)) {
-            result = registration.getEnvelopeHandler().handle(envelope);
+            result = registration.getHandler().handle(envelope);
         }
 
         return result;
@@ -17,6 +17,6 @@ public class DefaultEnvelopeDispatcher implements IEnvelopeDispatcher {
 
     @Override
     public Object dispatchFailed(IRegistration registration, Envelope envelope, Exception e) {
-        return registration.getEnvelopeHandler().handleFailed(envelope, e);
+        return registration.getHandler().handleFailed(envelope, e);
     }
 }

@@ -1,4 +1,4 @@
-package cmf.bus.serializer;
+package cmf.bus.eventing.berico;
 
 import static org.junit.Assert.assertTrue;
 
@@ -19,13 +19,12 @@ import cmf.bus.eventing.berico.GsonSerializer;
 @RunWith(value = Parameterized.class)
 public class GsonSerializerTest {
 
-    private GsonSerializer serializer = new GsonSerializer();
-    
     private static class ComplexImmutableType {
 
         private final String string = UUID.randomUUID().toString();
         private final long time = UUID.randomUUID().getMostSignificantBits();
 
+        @Override
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
@@ -50,6 +49,7 @@ public class GsonSerializerTest {
             return true;
         }
 
+        @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
@@ -85,6 +85,7 @@ public class GsonSerializerTest {
             mapWithComplexKeys.put(new ComplexImmutableType(), "b");
         }
 
+        @Override
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
@@ -193,6 +194,7 @@ public class GsonSerializerTest {
             return uuid;
         }
 
+        @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
@@ -266,9 +268,28 @@ public class GsonSerializerTest {
 
     private Object objectToSerialize;
 
+    private GsonSerializer serializer = new GsonSerializer();
+
     public GsonSerializerTest(String description, Object objectToSerialize) {
         this.objectToSerialize = objectToSerialize;
         this.description = description;
+    }
+
+    @Test
+    public void byteTest() throws Exception {
+        byte[] serialized;
+        Object deserialized;
+        try {
+            serialized = serializer.byteSerialize(objectToSerialize);
+        } catch (Exception e) {
+            throw new Exception(description + " failed to byte serialze.", e);
+        }
+        try {
+            deserialized = serializer.byteDeserialize(serialized, objectToSerialize.getClass());
+        } catch (Exception e) {
+            throw new Exception(description + " failed to byte deserialze.", e);
+        }
+        assertTrue(description, objectToSerialize.equals(deserialized));
     }
 
     @Test
@@ -288,21 +309,4 @@ public class GsonSerializerTest {
         assertTrue(description, objectToSerialize.equals(deserialized));
     }
 
-    @Test
-    public void byteTest() throws Exception {
-        byte[] serialized;
-        Object deserialized;
-        try {
-            serialized = serializer.byteSerialize(objectToSerialize);
-        } catch (Exception e) {
-            throw new Exception(description + " failed to byte serialze.", e);
-        }
-        try {
-            deserialized = serializer.byteDeserialize(serialized, objectToSerialize.getClass());
-        } catch (Exception e) {
-            throw new Exception(description + " failed to byte deserialze.", e);
-        }
-        assertTrue(description, objectToSerialize.equals(deserialized));
-    }
-    
 }

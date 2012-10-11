@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.commons.lang.time.StopWatch;
 
 import cmf.bus.Envelope;
+import cmf.bus.berico.exception.TimeoutException;
 import cmf.bus.eventing.IEventHandler;
 
 public class BlockingEventHandler<TEVENT> implements IEventHandler<TEVENT> {
@@ -17,22 +18,6 @@ public class BlockingEventHandler<TEVENT> implements IEventHandler<TEVENT> {
         this.timeoutMillis = timeoutMillis;
     }
 
-    @Override
-    public Object handle(TEVENT event, Map<String, String> headers) {
-        this.event = event;
-        this.headers = headers;
-
-        return null;
-    }
-
-    public TEVENT getEvent() {
-        return blockOn(event);
-    }
-    
-    public Map<String, String> getHeaders() {
-        return blockOn(headers);
-    }
-    
     protected <BLOCK_ITEM> BLOCK_ITEM blockOn(BLOCK_ITEM item) {
         StopWatch watch = new StopWatch();
         watch.start();
@@ -40,19 +25,35 @@ public class BlockingEventHandler<TEVENT> implements IEventHandler<TEVENT> {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
-                throw new RuntimeException("BlockingEventHandler received an interupt exception.", e);
+                throw new RuntimeException("BlockingEnvelopeHandler received an interupt exception.", e);
             }
         }
         watch.stop();
         if (item == null) {
-            throw new RuntimeException("BlockingEventHandler timed out while waiting for an event.");
+            throw new TimeoutException("BlockingEnvelopeHandler timed out while waiting for an event.");
         }
 
         return item;
     }
 
+    public TEVENT getEvent() {
+        return blockOn(event);
+    }
+
     @Override
     public Class<TEVENT> getEventType() {
+        return null;
+    }
+
+    public Map<String, String> getHeaders() {
+        return blockOn(headers);
+    }
+
+    @Override
+    public Object handle(TEVENT event, Map<String, String> headers) {
+        this.event = event;
+        this.headers = headers;
+
         return null;
     }
 
