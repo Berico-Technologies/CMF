@@ -52,6 +52,24 @@ public class DefaultEventBus implements IEventBus {
         this.outboundProcessors = outboundProcessors;
     }
 
+    protected Object processInbound(Object event, Envelope envelope) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        for (IInboundEventProcessor processor : inboundProcessors) {
+            event = processor.processInbound(event, envelope, context);
+        }
+
+        return event;
+    }
+
+    protected Object processOutbound(Object event, Envelope envelope) {
+        Map<String, Object> context = new HashMap<String, Object>();
+        for (IOutboundEventProcessor processor : outboundProcessors) {
+            processor.processOutbound(event, envelope, context);
+        }
+
+        return event;
+    }
+
     @Override
     public void publish(Object event) {
         if (event == null) {
@@ -72,25 +90,7 @@ public class DefaultEventBus implements IEventBus {
     @Override
     public <TEVENT> void subscribe(final IEventHandler<TEVENT> eventHandler, final IEventFilterPredicate filterPredicate) {
         IRegistration registration = new DefaultEnvelopeRegistration();
-        registration.setEnvelopeHandler(new EventBusEnvelopeHandler<TEVENT>(eventHandler));
+        registration.setHandler(new EventBusEnvelopeHandler<TEVENT>(eventHandler));
         envelopeBus.register(registration);
-    }
-
-    protected Object processOutbound(Object event, Envelope envelope) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        for (IOutboundEventProcessor processor : outboundProcessors) {
-            processor.processOutbound(event, envelope, context);
-        }
-        
-        return event;
-    }
-
-    protected Object processInbound(Object event, Envelope envelope) {
-        Map<String, Object> context = new HashMap<String, Object>();
-        for (IInboundEventProcessor processor : inboundProcessors) {
-            event = processor.processInbound(event, envelope, context);
-        }
-        
-        return event;
     }
 }

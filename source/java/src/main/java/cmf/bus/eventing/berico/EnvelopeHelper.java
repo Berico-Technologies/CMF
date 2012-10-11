@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
 import cmf.bus.Envelope;
-import cmf.bus.berico.rabbit.EnvelopeConstants;
+import cmf.bus.berico.rabbit.support.RabbitEnvelopeHelper;
 import cmf.bus.eventing.ISerializer;
 
 public class EnvelopeHelper {
@@ -17,7 +17,7 @@ public class EnvelopeHelper {
         TEVENT event = null;
         try {
             byte[] serializedEvent = envelope.getPayload();
-            String typeName = envelope.getHeader(EnvelopeConstants.TYPE);
+            String typeName = RabbitEnvelopeHelper.Headers.getType(envelope);
             @SuppressWarnings("unchecked")
             Class<TEVENT> type = (Class<TEVENT>) Class.forName(typeName);
             event = serializer.byteDeserialize(serializedEvent, type);
@@ -36,12 +36,12 @@ public class EnvelopeHelper {
         Envelope envelope = new Envelope();
         envelope.setHeaders(headers);
         envelope.setPayload(serializer.byteSerialize(event));
-        if (StringUtils.isBlank(envelope.getHeader(EnvelopeConstants.ID))) {
-            envelope.setHeader(EnvelopeConstants.ID, UUID.randomUUID().toString());
+        if (StringUtils.isBlank(RabbitEnvelopeHelper.Headers.getId(envelope))) {
+            RabbitEnvelopeHelper.Headers.setId(envelope, UUID.randomUUID().toString());
         }
-        envelope.setHeader(EnvelopeConstants.TYPE, event.getClass().getCanonicalName());
-        if (StringUtils.isBlank(envelope.getHeader(EnvelopeConstants.TIMESTAMP))) {
-            envelope.setHeader(EnvelopeConstants.TIMESTAMP, Long.toString(DateTime.now().getMillis()));
+        RabbitEnvelopeHelper.Headers.setType(envelope, event.getClass().getCanonicalName());
+        if (StringUtils.isBlank(RabbitEnvelopeHelper.Headers.getTimestamp(envelope))) {
+            RabbitEnvelopeHelper.Headers.setTimestamp(envelope, DateTime.now().getMillis());
         }
 
         return envelope;

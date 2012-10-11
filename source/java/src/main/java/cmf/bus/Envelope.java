@@ -3,7 +3,9 @@ package cmf.bus;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 public class Envelope {
 
@@ -61,14 +63,6 @@ public class Envelope {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("{");
-        String separator = "";
-        for (Entry<String, String> header : headers.entrySet()) {
-            sb.append(separator).append(String.format("\"%s\":\":%s\"", header.getKey(), header.getValue()));
-            separator = ", ";
-        }
-        sb.append("}");
-
-        return sb.toString();
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 }

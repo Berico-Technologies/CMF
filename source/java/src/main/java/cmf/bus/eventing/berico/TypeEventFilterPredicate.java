@@ -5,7 +5,7 @@ import cmf.bus.eventing.IEventFilterPredicate;
 public class TypeEventFilterPredicate implements IEventFilterPredicate {
 
     protected Class<?> clazz;
-    
+
     public TypeEventFilterPredicate(Class<?> clazz) {
         this.clazz = clazz;
     }

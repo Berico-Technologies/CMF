@@ -12,11 +12,11 @@ import cmf.bus.IRegistration;
 
 public class DefaultEnvelopeBus implements IEnvelopeBus {
 
-    protected class EnvelopeBusEnvelopeHandler implements IEnvelopeHandler {
+    private class HandlerWrapper implements IEnvelopeHandler {
 
         private IEnvelopeHandler userEnvelopeHandler;
 
-        public EnvelopeBusEnvelopeHandler(IEnvelopeHandler userEnvelopeHandler) {
+        public HandlerWrapper(IEnvelopeHandler userEnvelopeHandler) {
             this.userEnvelopeHandler = userEnvelopeHandler;
         }
 
@@ -69,11 +69,14 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
             throw new IllegalArgumentException("Cannot register with a null registration");
         }
         /**
-         * wrap user envelope handler with bus envelope handler which calls processInbound to run the inbound processors
-         * before dispatching an envelope
+         * wrap user registration and envelope handler with bus envelope handler which calls processInbound to run the
+         * inbound processors before dispatching an envelope
          */
-        registration.setEnvelopeHandler(new EnvelopeBusEnvelopeHandler(registration.getEnvelopeHandler()));
-        transportProvider.register(registration);
+        DefaultEnvelopeRegistration registrationWrapper = new DefaultEnvelopeRegistration();
+        registrationWrapper.setFilterPredicate(registration.getFilterPredicate());
+        registrationWrapper.setRegistrationInfo(registration.getRegistrationInfo());
+        registrationWrapper.setHandler(new HandlerWrapper(registration.getHandler()));
+        transportProvider.register(registrationWrapper);
     }
 
     @Override
