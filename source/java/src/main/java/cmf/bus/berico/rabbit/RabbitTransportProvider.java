@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import cmf.bus.Envelope;
 import cmf.bus.IRegistration;
+import cmf.bus.berico.IEnvelopeReceivedCallback;
 import cmf.bus.berico.ITransportProvider;
 import cmf.bus.berico.rabbit.support.RabbitEnvelopeHelper;
 import cmf.bus.berico.rabbit.support.RabbitRegistrationHelper;
@@ -30,6 +31,7 @@ public class RabbitTransportProvider implements ITransportProvider {
     private QueueProvider queueProvider;
     private ConnectionProvider connectionProvider;
     private Map<IRegistration, Queue> queues = new HashMap<IRegistration, Queue>();
+    private Map<IRegistration, IEnvelopeReceivedCallback> callbacks = new HashMap<IRegistration, IEnvelopeReceivedCallback>();
 
     public RabbitTransportProvider(ConnectionProvider connectionProvider, QueueProvider queueProvider,
                     ITopologyProvider topologyProvider) {
@@ -64,11 +66,12 @@ public class RabbitTransportProvider implements ITransportProvider {
     }
 
     @Override
-    public void register(IRegistration registration) {
+    public void register(IRegistration registration, IEnvelopeReceivedCallback callback) {
         Channel channel = connectionProvider.newChannel(connection);
-        Queue queue = queueProvider.newQueue(channel, registration);
+        Queue queue = queueProvider.newQueue(channel, registration, callback);
         queues.put(registration, queue);
-        
+        callbacks.put(registration, callback);
+
         String routingKey = RabbitRegistrationHelper.RegistrationInfo.getRoutingKey(registration);
         Collection<Route> routes = topologyProvider.getReceiveRoutes(routingKey);
         for (Route route : routes) {
@@ -103,6 +106,7 @@ public class RabbitTransportProvider implements ITransportProvider {
         Queue queue = queues.remove(registration);
         if (queue != null) {
             queue.stop();
+            callbacks.remove(registration);
         }
     }
 }

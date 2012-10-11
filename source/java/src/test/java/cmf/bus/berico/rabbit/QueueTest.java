@@ -25,7 +25,7 @@ import com.rabbitmq.client.Channel;
 
 import cmf.bus.Envelope;
 import cmf.bus.IRegistration;
-import cmf.bus.berico.IEnvelopeDispatcher;
+import cmf.bus.berico.IEnvelopeReceivedCallback;
 
 @SuppressWarnings("serial")
 public class QueueTest {
@@ -35,13 +35,14 @@ public class QueueTest {
     @Mock
     private IRegistration registration;
     @Mock
-    private IEnvelopeDispatcher dispatcher;
-    @Mock
     private com.rabbitmq.client.Envelope rabbitEnvelope;
+    @Mock
+    private IEnvelopeReceivedCallback callback;
     @Mock
     private BasicProperties properties;
     private byte[] body = new byte[] { 1, 1, 0, 0 };
 
+    private String queueName = "queueName";
     private String consumerTag = "consumerTag";
     private String exchangeName = "exchangeName";
     private String routingKey = "routingKey";
@@ -52,7 +53,7 @@ public class QueueTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
 
-        queue = new Queue(channel, registration, dispatcher, consumerTag);
+        queue = new Queue(channel, callback, queueName, consumerTag);
     }
 
     @Test
@@ -74,9 +75,9 @@ public class QueueTest {
     }
 
     @Test
-    public void handleDeliveryCallsDispatch() {
+    public void handleDeliveryCallsCallback() {
         queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
-        verify(dispatcher).dispatch(eq(registration), any(Envelope.class));
+        verify(callback).handleReceive(any(Envelope.class));
     }
 
     @Test
@@ -100,9 +101,11 @@ public class QueueTest {
             }
         }).when(properties).getHeaders();
         queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
+        
         ArgumentCaptor<Envelope> envelopeArgumentCaptor = ArgumentCaptor.forClass(Envelope.class);
-        verify(dispatcher).dispatch(any(IRegistration.class), envelopeArgumentCaptor.capture());
+        verify(callback).handleReceive(envelopeArgumentCaptor.capture());
         Envelope envelope = envelopeArgumentCaptor.getValue();
+        
         assertEquals(value1, envelope.getHeader(key1));
         assertEquals(value2, envelope.getHeader(key2));
         assertEquals(bpHeaders.size(), envelope.getHeaders().size());
@@ -117,7 +120,7 @@ public class QueueTest {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return result;
             }
-        }).when(dispatcher).dispatch(any(IRegistration.class), any(Envelope.class));
+        }).when(callback).handleReceive(any(Envelope.class));
         queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
         verify(channel).basicAck(any(Long.class), eq(false));
     }
@@ -131,7 +134,7 @@ public class QueueTest {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return result;
             }
-        }).when(dispatcher).dispatch(any(IRegistration.class), any(Envelope.class));
+        }).when(callback).handleReceive(any(Envelope.class));
         queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
         verify(channel).basicAck(any(Long.class), eq(false));
     }
@@ -145,7 +148,7 @@ public class QueueTest {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return result;
             }
-        }).when(dispatcher).dispatch(any(IRegistration.class), any(Envelope.class));
+        }).when(callback).handleReceive(any(Envelope.class));
         queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
         verify(channel).basicAck(any(Long.class), eq(true));
     }
@@ -159,16 +162,14 @@ public class QueueTest {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return result;
             }
-        }).when(dispatcher).dispatch(any(IRegistration.class), any(Envelope.class));
+        }).when(callback).handleReceive(any(Envelope.class));
         queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
         verify(channel).basicNack(any(Long.class), eq(false), eq(false));
     }
 
     @Test
     public void actualExceptionResultCallsAckFailure() throws IOException {
-        doThrow(RuntimeException.class).when(dispatcher).dispatch(any(IRegistration.class), any(Envelope.class));
-        doThrow(RuntimeException.class).when(dispatcher).dispatchFailed(any(IRegistration.class), any(Envelope.class),
-                        any(Exception.class));
+        doThrow(RuntimeException.class).when(callback).handleReceive(any(Envelope.class));
         queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
         verify(channel).basicNack(any(Long.class), eq(false), eq(false));
     }

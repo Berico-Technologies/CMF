@@ -7,9 +7,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 import cmf.bus.Envelope;
-import cmf.bus.IRegistration;
-import cmf.bus.berico.IEnvelopeDispatcher;
-import cmf.bus.berico.rabbit.support.RabbitRegistrationHelper;
+import cmf.bus.berico.IEnvelopeReceivedCallback;
 
 import com.rabbitmq.client.BasicProperties;
 import com.rabbitmq.client.Channel;
@@ -17,20 +15,19 @@ import com.rabbitmq.client.DefaultConsumer;
 
 public class Queue extends DefaultConsumer {
 
+    private String queueName;
     private String consumerTag;
     private long deliveryTag;
-    private IEnvelopeDispatcher dispatcher;
-    private IRegistration registration;
+    private IEnvelopeReceivedCallback callback;
 
-    public Queue(Channel channel, IRegistration registration, IEnvelopeDispatcher dispatcher, String consumerTag) {
+    public Queue(Channel channel, IEnvelopeReceivedCallback callback, String queueName, String consumerTag) {
         super(channel);
-        this.registration = registration;
-        this.dispatcher = dispatcher;
+        this.callback = callback;
+        this.queueName = queueName;
         this.consumerTag = consumerTag;
     }
 
     public void bind(String exchangeName, String routingKey) {
-        String queueName = RabbitRegistrationHelper.RegistrationInfo.getQueueName(registration);
         try {
             getChannel().queueBind(queueName, exchangeName, routingKey);
             getChannel().basicConsume(queueName, false, consumerTag, this);
@@ -56,13 +53,7 @@ public class Queue extends DefaultConsumer {
                 envelope.setHeader(entry.getKey(), entry.getValue().toString());
             }
 
-            Object result = null;
-            try {
-                result = dispatcher.dispatch(registration, envelope);
-            } catch (Exception e) {
-                result = dispatcher.dispatchFailed(registration, envelope, e);
-            }
-
+            Object result = callback.handleReceive(envelope);
             if (result instanceof DeliveryOutcome) {
                 deliveryOutcome = (DeliveryOutcome) result;
             }
@@ -115,7 +106,7 @@ public class Queue extends DefaultConsumer {
             throw new RuntimeException("Error on ackSuccess", e);
         }
     }
-    
+
     public void stop() {
         try {
             getChannel().basicCancel(consumerTag);

@@ -2,6 +2,7 @@ package cmf.bus.berico.rabbit;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doAnswer;
@@ -28,6 +29,7 @@ import com.rabbitmq.client.Connection;
 
 import cmf.bus.Envelope;
 import cmf.bus.IRegistration;
+import cmf.bus.berico.IEnvelopeReceivedCallback;
 
 @SuppressWarnings("serial")
 public class RabbitTransportProviderTest {
@@ -48,6 +50,8 @@ public class RabbitTransportProviderTest {
     private Connection connection;
     @Mock
     private Route route;
+    @Mock
+    private IEnvelopeReceivedCallback callback;
     @Mock
     private Envelope envelope;
     private byte[] payload = new byte[] { 0, 0, 1, 1 };
@@ -87,19 +91,19 @@ public class RabbitTransportProviderTest {
 
     @Test
     public void registerCreatesChannel() throws IOException {
-        transportProvider.register(registration);
+        transportProvider.register(registration, callback);
         verify(connectionProvider, times(2)).newChannel(any(Connection.class));
     }
 
     @Test
     public void registerCreatesQueue() {
-        transportProvider.register(registration);
-        verify(queueProvider).newQueue(any(Channel.class), any(IRegistration.class));
+        transportProvider.register(registration, callback);
+        verify(queueProvider).newQueue(eq(channel), eq(registration), eq(callback));
     }
 
     @Test
     public void registerRetreivesReceiveRoutes() {
-        transportProvider.register(registration);
+        transportProvider.register(registration, callback);
         verify(topologyProvider).getReceiveRoutes(anyString());
     }
 
@@ -107,14 +111,14 @@ public class RabbitTransportProviderTest {
     public void registerBindsForEachRoute() throws IOException {
         initReceiveRoutes();
         initQueue();
-        transportProvider.register(registration);
+        transportProvider.register(registration, callback);
         verify(queue, times(2)).bind(anyString(), anyString());
     }
 
     @Test
     public void unregisterCallsQueueStop() {
         initQueue();
-        transportProvider.register(registration);
+        transportProvider.register(registration, callback);
         transportProvider.unregister(registration);
         verify(queue).stop();
     }
@@ -137,7 +141,7 @@ public class RabbitTransportProviderTest {
                 return exchangeName;
             }
         }).when(route).getExchangeName();
-        transportProvider.register(registration);
+        transportProvider.register(registration, callback);
         transportProvider.send(envelope);
         verify(channel, times(1)).exchangeDeclare(anyString(), anyString(), anyBoolean());
     }
@@ -228,6 +232,6 @@ public class RabbitTransportProviderTest {
             public Queue answer(InvocationOnMock invocation) throws Throwable {
                 return queue;
             }
-        }).when(queueProvider).newQueue(any(Channel.class), any(IRegistration.class));
+        }).when(queueProvider).newQueue(eq(channel), eq(registration), eq(callback));
     }
 }

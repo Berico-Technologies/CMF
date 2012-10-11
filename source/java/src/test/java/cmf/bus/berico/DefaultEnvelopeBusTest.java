@@ -1,6 +1,7 @@
 package cmf.bus.berico;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -38,9 +40,10 @@ public class DefaultEnvelopeBusTest {
     private IRegistration registration;
     @Mock
     private ITransportProvider transportProvider;
-    private IRegistration userRegistration;
     @Mock
     private IEnvelopeHandler envelopeHandler;
+    @Mock
+    private IEnvelopeDispatcher envelopeDispatcher;
 
     @Before
     public void before() {
@@ -48,15 +51,17 @@ public class DefaultEnvelopeBusTest {
 
         inboundProcessors.add(inboundEnvelopeProcessor);
         outboundProcessors.add(outboundEnvelopeProcessor);
-        envelopeBus = new DefaultEnvelopeBus(transportProvider, inboundProcessors, outboundProcessors);
+        envelopeBus =
+                        new DefaultEnvelopeBus(transportProvider, inboundProcessors, outboundProcessors,
+                                        envelopeDispatcher);
     }
 
     @Test
     public void registerCallsTransportProviderRegister() {
         envelopeBus.register(registration);
-        verify(transportProvider).register(any(IRegistration.class));
+        verify(transportProvider).register(eq(registration), any(IEnvelopeReceivedCallback.class));
     }
-    
+
     @Test
     public void unregisterCallsTransportProviderRegister() {
         envelopeBus.unregister(registration);
@@ -92,26 +97,18 @@ public class DefaultEnvelopeBusTest {
 
     @Test
     public void receiveCallsInboundProcessor() {
-        // capture the registration wrapper object
-        doAnswer(new Answer<Void>() {
+        ArgumentCaptor<IEnvelopeReceivedCallback> callbackArgumentCaptor = ArgumentCaptor.forClass(IEnvelopeReceivedCallback.class);
+        final Object result = null;
+        doAnswer(new Answer<Object>() {
 
             @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                userRegistration = (IRegistration) invocation.getArguments()[0];
-
-                return null;
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return result;
             }
-        }).when(transportProvider).register(any(IRegistration.class));
-        doAnswer(new Answer<IEnvelopeHandler>() {
-
-            @Override
-            public IEnvelopeHandler answer(InvocationOnMock invocation) throws Throwable {
-                return envelopeHandler;
-            }
-        }).when(registration).getHandler();
+        }).when(envelopeDispatcher).dispatch(registration, envelope);
         envelopeBus.register(registration);
-        IEnvelopeHandler handler = userRegistration.getHandler();
-        handler.handle(envelope);
+        verify(transportProvider).register(eq(registration), callbackArgumentCaptor.capture());
+        callbackArgumentCaptor.getValue().handleReceive(envelope);
         verify(inboundEnvelopeProcessor).processInbound(any(Envelope.class), anyMap());
     }
 }

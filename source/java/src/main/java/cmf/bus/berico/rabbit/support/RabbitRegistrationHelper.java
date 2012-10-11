@@ -21,6 +21,10 @@ public class RabbitRegistrationHelper {
             registration.getRegistrationInfo().put(ROUTING_KEY, routingKey);
         }
 
+        public static void setRoutingKey(IRegistration registration, Object item) {
+            registration.getRegistrationInfo().put(ROUTING_KEY, item.getClass().getCanonicalName());
+        }
+
         public static String getRoutingKey(IRegistration registration) {
             return registration.getRegistrationInfo().get(ROUTING_KEY);
         }

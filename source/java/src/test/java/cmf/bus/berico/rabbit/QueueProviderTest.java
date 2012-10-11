@@ -21,6 +21,7 @@ import org.mockito.stubbing.Answer;
 
 import cmf.bus.IRegistration;
 import cmf.bus.berico.IEnvelopeDispatcher;
+import cmf.bus.berico.IEnvelopeReceivedCallback;
 import cmf.bus.berico.rabbit.support.RabbitRegistrationHelper;
 
 import com.rabbitmq.client.Channel;
@@ -34,6 +35,8 @@ public class QueueProviderTest {
     private IRegistration registration;
     @Mock
     private IEnvelopeDispatcher envelopeDispatcher;
+    @Mock
+    private IEnvelopeReceivedCallback callback;
 
     private QueueProvider queueProvider;
 
@@ -41,12 +44,12 @@ public class QueueProviderTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
 
-        queueProvider = new QueueProvider(envelopeDispatcher);
+        queueProvider = new QueueProvider();
     }
 
     @Test
     public void newQueueGeneratesQueueName() throws IOException {
-        queueProvider.newQueue(channel, registration);
+        queueProvider.newQueue(channel, registration, callback);
         ArgumentCaptor<String> queueNameCaptor = ArgumentCaptor.forClass(String.class);
         verify(channel).queueDeclare(queueNameCaptor.capture(), anyBoolean(), anyBoolean(), anyBoolean(),
                         any(Map.class));
@@ -68,7 +71,7 @@ public class QueueProviderTest {
                 };
             }
         }).when(registration).getRegistrationInfo();
-        queueProvider.newQueue(channel, registration);
+        queueProvider.newQueue(channel, registration, callback);
         ArgumentCaptor<String> queueNameCaptor = ArgumentCaptor.forClass(String.class);
         verify(channel).queueDeclare(queueNameCaptor.capture(), anyBoolean(), anyBoolean(), anyBoolean(),
                         any(Map.class));
