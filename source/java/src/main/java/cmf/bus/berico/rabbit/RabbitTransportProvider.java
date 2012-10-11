@@ -19,7 +19,7 @@ import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 
-public class TransportProvider implements ITransportProvider {
+public class RabbitTransportProvider implements ITransportProvider {
 
     private static final String TOPIC_EXCHANGE_TYPE = "topic";
 
@@ -29,8 +29,9 @@ public class TransportProvider implements ITransportProvider {
     private ITopologyProvider topologyProvider;
     private QueueProvider queueProvider;
     private ConnectionProvider connectionProvider;
+    private Map<IRegistration, Queue> queues = new HashMap<IRegistration, Queue>();
 
-    public TransportProvider(ConnectionProvider connectionProvider, QueueProvider queueProvider,
+    public RabbitTransportProvider(ConnectionProvider connectionProvider, QueueProvider queueProvider,
                     ITopologyProvider topologyProvider) {
         this.connectionProvider = connectionProvider;
         this.queueProvider = queueProvider;
@@ -66,6 +67,8 @@ public class TransportProvider implements ITransportProvider {
     public void register(IRegistration registration) {
         Channel channel = connectionProvider.newChannel(connection);
         Queue queue = queueProvider.newQueue(channel, registration);
+        queues.put(registration, queue);
+        
         String routingKey = RabbitRegistrationHelper.RegistrationInfo.getRoutingKey(registration);
         Collection<Route> routes = topologyProvider.getReceiveRoutes(routingKey);
         for (Route route : routes) {
@@ -92,6 +95,14 @@ public class TransportProvider implements ITransportProvider {
             } catch (IOException e) {
                 throw new RuntimeException("Error sending envelope", e);
             }
+        }
+    }
+
+    @Override
+    public void unregister(IRegistration registration) {
+        Queue queue = queues.remove(registration);
+        if (queue != null) {
+            queue.stop();
         }
     }
 }

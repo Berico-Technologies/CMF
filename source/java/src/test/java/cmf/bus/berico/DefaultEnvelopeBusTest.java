@@ -56,10 +56,21 @@ public class DefaultEnvelopeBusTest {
         envelopeBus.register(registration);
         verify(transportProvider).register(any(IRegistration.class));
     }
+    
+    @Test
+    public void unregisterCallsTransportProviderRegister() {
+        envelopeBus.unregister(registration);
+        verify(transportProvider).unregister(any(IRegistration.class));
+    }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void registerThrowsOnNullRegistration() {
         envelopeBus.register((IRegistration) null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void unregisterThrowsOnNullRegistration() {
+        envelopeBus.unregister((IRegistration) null);
     }
 
     @Test

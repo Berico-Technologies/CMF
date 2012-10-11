@@ -41,12 +41,7 @@ public class Queue extends DefaultConsumer {
 
     @Override
     protected void finalize() {
-        try {
-            getChannel().basicCancel(consumerTag);
-            getChannel().close();
-        } catch (IOException e) {
-            throw new RuntimeException("Error finalizing consumer", e);
-        }
+        stop();
     }
 
     public void handleDelivery(String consumerTag, com.rabbitmq.client.Envelope rabbitEnvelope,
@@ -118,6 +113,15 @@ public class Queue extends DefaultConsumer {
             getChannel().basicAck(deliveryTag, false);
         } catch (IOException e) {
             throw new RuntimeException("Error on ackSuccess", e);
+        }
+    }
+    
+    public void stop() {
+        try {
+            getChannel().basicCancel(consumerTag);
+            getChannel().close();
+        } catch (IOException e) {
+            throw new RuntimeException("Error stoping queue", e);
         }
     }
 

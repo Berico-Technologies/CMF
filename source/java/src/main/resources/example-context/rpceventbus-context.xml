@@ -17,7 +17,7 @@
 
     <util:list id="outboundEnvelopeProcessors" value-type="cmf.bus.berico.IOutboundEnvelopeProcessor" />
     
-    <bean id="transportProvider" class="cmf.bus.berico.rabbit.TransportProvider">
+    <bean id="transportProvider" class="cmf.bus.berico.rabbit.RabbitTransportProvider">
         <constructor-arg name="connectionFactory" ref="connectionFactory" />
         <constructor-arg name="topologyProvider" ref="topologyProvider" />
         <constructor-arg name="envelopeDispatcher" ref="envelopeDispatcher" />

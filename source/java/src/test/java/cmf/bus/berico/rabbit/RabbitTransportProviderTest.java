@@ -30,7 +30,7 @@ import cmf.bus.Envelope;
 import cmf.bus.IRegistration;
 
 @SuppressWarnings("serial")
-public class TransportProviderTest {
+public class RabbitTransportProviderTest {
 
     @Mock
     private ConnectionProvider connectionProvider;
@@ -52,7 +52,7 @@ public class TransportProviderTest {
     private Envelope envelope;
     private byte[] payload = new byte[] { 0, 0, 1, 1 };
 
-    private TransportProvider transportProvider;
+    private RabbitTransportProvider transportProvider;
 
     @Before
     public void before() throws IOException {
@@ -72,14 +72,7 @@ public class TransportProviderTest {
                 return channel;
             }
         }).when(connectionProvider).newChannel(any(Connection.class));
-        doAnswer(new Answer<Queue>() {
-
-            @Override
-            public Queue answer(InvocationOnMock invocation) throws Throwable {
-                return queue;
-            }
-        }).when(queueProvider).newQueue(any(Channel.class), any(IRegistration.class));
-        transportProvider = new TransportProvider(connectionProvider, queueProvider, topologyProvider);
+        transportProvider = new RabbitTransportProvider(connectionProvider, queueProvider, topologyProvider);
     }
 
     @Test
@@ -113,8 +106,17 @@ public class TransportProviderTest {
     @Test
     public void registerBindsForEachRoute() throws IOException {
         initReceiveRoutes();
+        initQueue();
         transportProvider.register(registration);
         verify(queue, times(2)).bind(anyString(), anyString());
+    }
+
+    @Test
+    public void unregisterCallsQueueStop() {
+        initQueue();
+        transportProvider.register(registration);
+        transportProvider.unregister(registration);
+        verify(queue).stop();
     }
 
     @Test
@@ -217,5 +219,15 @@ public class TransportProviderTest {
                 };
             }
         }).when(topologyProvider).getReceiveRoutes(anyString());
+    }
+
+    private void initQueue() {
+        doAnswer(new Answer<Queue>() {
+
+            @Override
+            public Queue answer(InvocationOnMock invocation) throws Throwable {
+                return queue;
+            }
+        }).when(queueProvider).newQueue(any(Channel.class), any(IRegistration.class));
     }
 }

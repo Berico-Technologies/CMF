@@ -19,7 +19,7 @@ import cmf.bus.berico.rabbit.ConnectionFactory;
 import cmf.bus.berico.rabbit.ConnectionProvider;
 import cmf.bus.berico.rabbit.ITopologyProvider;
 import cmf.bus.berico.rabbit.QueueProvider;
-import cmf.bus.berico.rabbit.TransportProvider;
+import cmf.bus.berico.rabbit.RabbitTransportProvider;
 import cmf.bus.berico.rabbit.support.InMemoryTopologyProvider;
 import cmf.bus.berico.rabbit.support.InMemoryTopologyRegistry;
 import cmf.bus.eventing.ISerializer;
@@ -63,7 +63,7 @@ public class EnvelopeBusExample {
                         new InMemoryTopologyProvider("envelope-example", new InMemoryTopologyRegistry("test-default",
                                         "test-default"));
         ITransportProvider transportProvider =
-                        new TransportProvider(connectionProvider, queueProvider, topologyProvider);
+                        new RabbitTransportProvider(connectionProvider, queueProvider, topologyProvider);
         IEnvelopeBus envelopeBus = new DefaultEnvelopeBus(transportProvider);
 
         return envelopeBus;

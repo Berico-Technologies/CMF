@@ -2,7 +2,6 @@ package cmf.bus.berico.rabbit;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -23,7 +22,6 @@ import org.mockito.stubbing.Answer;
 
 import com.rabbitmq.client.BasicProperties;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.DefaultConsumer;
 
 import cmf.bus.Envelope;
 import cmf.bus.IRegistration;
@@ -39,7 +37,7 @@ public class QueueTest {
     @Mock
     private IEnvelopeDispatcher dispatcher;
     @Mock
-    private com.rabbitmq.client.Envelope envelope;
+    private com.rabbitmq.client.Envelope rabbitEnvelope;
     @Mock
     private BasicProperties properties;
     private byte[] body = new byte[] { 1, 1, 0, 0 };
@@ -60,25 +58,25 @@ public class QueueTest {
     @Test
     public void bindCallsRabbitBind() throws IOException {
         queue.bind(exchangeName, routingKey);
-        verify(channel).queueBind(anyString(), anyString(), anyString());
+        verify(channel).queueBind(anyString(), eq(exchangeName), eq(routingKey));
     }
 
     @Test
     public void bindCallsRabbitConsume() throws IOException {
         queue.bind(exchangeName, routingKey);
-        verify(channel).basicConsume(anyString(), anyBoolean(), anyString(), any(DefaultConsumer.class));
+        verify(channel).basicConsume(anyString(), eq(false), eq(consumerTag), eq(queue));
     }
 
     @Test
     public void handleDeliveryGetsDeliveryTag() {
-        queue.handleDelivery(consumerTag, envelope, properties, body);
-        verify(envelope).getDeliveryTag();
+        queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
+        verify(rabbitEnvelope).getDeliveryTag();
     }
 
     @Test
     public void handleDeliveryCallsDispatch() {
-        queue.handleDelivery(consumerTag, envelope, properties, body);
-        verify(dispatcher).dispatch(any(IRegistration.class), any(Envelope.class));
+        queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
+        verify(dispatcher).dispatch(eq(registration), any(Envelope.class));
     }
 
     @Test
@@ -101,7 +99,7 @@ public class QueueTest {
                 return bpHeaders;
             }
         }).when(properties).getHeaders();
-        queue.handleDelivery(consumerTag, envelope, properties, body);
+        queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
         ArgumentCaptor<Envelope> envelopeArgumentCaptor = ArgumentCaptor.forClass(Envelope.class);
         verify(dispatcher).dispatch(any(IRegistration.class), envelopeArgumentCaptor.capture());
         Envelope envelope = envelopeArgumentCaptor.getValue();
@@ -120,7 +118,7 @@ public class QueueTest {
                 return result;
             }
         }).when(dispatcher).dispatch(any(IRegistration.class), any(Envelope.class));
-        queue.handleDelivery(consumerTag, envelope, properties, body);
+        queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
         verify(channel).basicAck(any(Long.class), eq(false));
     }
 
@@ -134,7 +132,7 @@ public class QueueTest {
                 return result;
             }
         }).when(dispatcher).dispatch(any(IRegistration.class), any(Envelope.class));
-        queue.handleDelivery(consumerTag, envelope, properties, body);
+        queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
         verify(channel).basicAck(any(Long.class), eq(false));
     }
 
@@ -148,7 +146,7 @@ public class QueueTest {
                 return result;
             }
         }).when(dispatcher).dispatch(any(IRegistration.class), any(Envelope.class));
-        queue.handleDelivery(consumerTag, envelope, properties, body);
+        queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
         verify(channel).basicAck(any(Long.class), eq(true));
     }
 
@@ -162,7 +160,7 @@ public class QueueTest {
                 return result;
             }
         }).when(dispatcher).dispatch(any(IRegistration.class), any(Envelope.class));
-        queue.handleDelivery(consumerTag, envelope, properties, body);
+        queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
         verify(channel).basicNack(any(Long.class), eq(false), eq(false));
     }
 
@@ -171,7 +169,19 @@ public class QueueTest {
         doThrow(RuntimeException.class).when(dispatcher).dispatch(any(IRegistration.class), any(Envelope.class));
         doThrow(RuntimeException.class).when(dispatcher).dispatchFailed(any(IRegistration.class), any(Envelope.class),
                         any(Exception.class));
-        queue.handleDelivery(consumerTag, envelope, properties, body);
+        queue.handleDelivery(consumerTag, rabbitEnvelope, properties, body);
         verify(channel).basicNack(any(Long.class), eq(false), eq(false));
+    }
+
+    @Test
+    public void stopCallsCancel() throws IOException {
+        queue.stop();
+        verify(channel).basicCancel(eq(consumerTag));
+    }
+
+    @Test
+    public void stopCallsChannelClose() throws IOException {
+        queue.stop();
+        verify(channel).close();
     }
 }

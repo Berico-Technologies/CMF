@@ -13,26 +13,26 @@
 // import cmf.bus.Envelope;
 // import cmf.bus.berico.Registration;
 // import cmf.bus.berico.rabbit.TopologyProvider;
-// import cmf.bus.berico.rabbit.TransportProvider;
+// import cmf.bus.berico.rabbit.RabbitTransportProvider;
 //
 // @SuppressWarnings("unchecked")
-// public class TransportProviderTest {
+// public class RabbitTransportProviderTest {
 //
 // @Mock
-// private TransportProvider transportProvider;
+// private RabbitTransportProvider transportProvider;
 // @Mock
 // private InMemoryTopologyProvider topologyProvider;
 // @Mock
 // private Registration registration;
 // @Mock
 // private Envelope envelope;
-// private TransportProvider transportProvider;
+// private RabbitTransportProvider transportProvider;
 //
 // @Before
 // public void before() {
 // MockitoAnnotations.initMocks(this);
 //
-// transportProvider = new TransportProvider();
+// transportProvider = new RabbitTransportProvider();
 // transportProvider.setBroker(transportProvider);
 // transportProvider.setTopologyProvider(topologyProvider);
 // }

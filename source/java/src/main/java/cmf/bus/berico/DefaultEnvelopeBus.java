@@ -11,7 +11,7 @@ import cmf.bus.IEnvelopeHandler;
 import cmf.bus.IRegistration;
 
 public class DefaultEnvelopeBus implements IEnvelopeBus {
-
+    
     private class HandlerWrapper implements IEnvelopeHandler {
 
         private IEnvelopeHandler userEnvelopeHandler;
@@ -98,5 +98,13 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
 
     public void setTransportProvider(ITransportProvider transportProvider) {
         this.transportProvider = transportProvider;
+    }
+
+    @Override
+    public void unregister(IRegistration registration) {
+        if (registration == null) {
+            throw new IllegalArgumentException("Cannot unregister with a null registration");
+        }
+        transportProvider.unregister(registration);
     }
 }

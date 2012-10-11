@@ -10,7 +10,6 @@ import cmf.bus.IRegistration;
 public class InMemoryEnvelopeBus implements IEnvelopeBus {
 
     protected List<IRegistration> registrationList;
-    private Object registrationListLock = new Object();
 
     public InMemoryEnvelopeBus() {
         registrationList = new LinkedList<IRegistration>();
@@ -33,22 +32,23 @@ public class InMemoryEnvelopeBus implements IEnvelopeBus {
     }
 
     @Override
-    public void register(IRegistration registration) {
-        synchronized (registrationListLock) {
-            registrationList.add(registration);
-        }
+    public synchronized void register(IRegistration registration) {
+        registrationList.add(registration);
     }
 
     @Override
-    public void send(Envelope envelope) {
+    public synchronized void send(Envelope envelope) {
         List<IRegistration> registrations = new LinkedList<IRegistration>();
-        synchronized (registrationListLock) {
-            for (IRegistration registration : registrationList) {
-                if (registration.getFilterPredicate().filter(envelope)) {
-                    registrations.add(registration);
-                }
+        for (IRegistration registration : registrationList) {
+            if (registration.getFilterPredicate().filter(envelope)) {
+                registrations.add(registration);
             }
-            dispatch(envelope, registrations);
         }
+        dispatch(envelope, registrations);
+    }
+
+    @Override
+    public synchronized void unregister(IRegistration registration) {
+        registrationList.remove(registration);
     }
 }
