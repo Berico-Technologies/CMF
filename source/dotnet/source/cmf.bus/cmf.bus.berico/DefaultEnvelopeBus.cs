@@ -68,7 +68,7 @@ namespace cmf.bus.berico
             _log.Debug("Leave Unregister");
         }
 
-        public virtual void Handle_Dispatcher(IEnvelopeDispatcher dispatcher)
+        public virtual void Handle_Dispatcher(IEnvelopeDispatcher dispatcher)w
         {
             _log.Debug("Enter Handle_Dispatcher");
 
