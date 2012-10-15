@@ -38,11 +38,11 @@ namespace cmf.bus.berico
             // send the envelope through the outbound chain
             this.ProcessOutbound(ref env, this.OutboundChain.Sort());
 
-            // log the headers of the outgoing envelope
-            _log.Debug(string.Format("Outgoing headers: {0}", env.Headers.Flatten()));
-
             // send the envelope to the transport provider
             _txProvider.Send(env);
+
+            // log the headers of the outgoing envelope
+            _log.Debug(string.Format("Outgoing headers: {0}", env.Headers.Flatten()));
 
             _log.Debug("Leave Send");
         }
@@ -68,7 +68,7 @@ namespace cmf.bus.berico
             _log.Debug("Leave Unregister");
         }
 
-        public virtual void Handle_Dispatcher(IEnvelopeDispatcher dispatcher)w
+        public virtual void Handle_Dispatcher(IEnvelopeDispatcher dispatcher)
         {
             _log.Debug("Enter Handle_Dispatcher");
 

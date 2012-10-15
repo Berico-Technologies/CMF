@@ -5,7 +5,11 @@ import cmf.bus.IRegistration;
 
 public interface IEnvelopeDispatcher {
 
-    Object dispatch(IRegistration registration, Envelope envelope);
+	Envelope getEnvelope();
+	
+	
+	Object dispatch();
+    Object dispatch(Envelope envelope);
 
-    Object dispatchFailed(IRegistration registration, Envelope envelope, Exception e);
+    Object dispatchFailed(Envelope envelope, Exception e);
 }

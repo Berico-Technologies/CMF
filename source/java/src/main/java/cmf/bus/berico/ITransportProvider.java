@@ -5,7 +5,10 @@ import cmf.bus.IRegistration;
 
 public interface ITransportProvider {
 
-    void register(IRegistration registration, IEnvelopeReceivedCallback callback);
+	void onEnvelopeReceived(IEnvelopeReceivedCallback callback);
+	
+	
+    void register(IRegistration registration);
 
     void unregister(IRegistration registration);
 
