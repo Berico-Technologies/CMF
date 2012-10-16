@@ -52,7 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CertificateConnectionFactory.cs" />
     <Compile Include="DeliveryOutcomes.cs" />
+    <Compile Include="IRabbitConnectionFactory.cs" />
     <Compile Include="RabbitEnvelopeDispatcher.cs" />
     <Compile Include="RabbitListener.cs" />
     <Compile Include="RabbitTransportProvider.cs" />

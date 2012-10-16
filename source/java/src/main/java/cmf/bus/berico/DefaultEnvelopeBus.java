@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,7 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
     protected final Logger log = LoggerFactory.getLogger(this.getClass().getCanonicalName());
 
     
-    public DefaultEnvelopeBus(ITransportProvider transportProvider, IEnvelopeDispatcher envelopeDispatcher) {
+    public DefaultEnvelopeBus(ITransportProvider transportProvider) {
         this.transportProvider = transportProvider;
         
         this.initialize();
@@ -40,14 +39,18 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
 
     
     protected void initialize() {
+    	
+    	// add a handler to the transport provider's envelope received event
         this.transportProvider.onEnvelopeReceived(new IEnvelopeReceivedCallback() {
 
+        	// implement the callback method
             public Object handleReceive(IEnvelopeDispatcher dispatcher) {
+            	
+            	log.debug("Got an envelope dispatcher from the transport provider");
+            	Envelope env = dispatcher.getEnvelope();
             	
             	try
                 {
-            		Envelope env = dispatcher.getEnvelope();
-
                     // send the envelope through the inbound processing chain
                     if (processInbound(env))
                     {
@@ -66,8 +69,8 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
                 processInbound(env);
 
                 return dispatcher.dispatch(env);
-            }
-        });
+            } // end of the callback method
+        }); // end of adding event handler
         
         this.log.debug("Initialized");
     }
@@ -75,7 +78,8 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
     protected boolean processInbound(Envelope envelope) {
     	this.log.debug("Enter processInbound");
     	
-    	boolean cancelled = false;
+    	// the inbound process can be cancelled if one of the processors returns false
+    	boolean noOneCancelled = true;
     	
         Map<String, Object> context = new HashMap<String, Object>();
         for (IInboundEnvelopeProcessor inboundEnvelopeProcessor : inboundProcessors) {
@@ -87,13 +91,13 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
         		this.log.info("Inbound envelope cancelled by processor of type {}", 
         				inboundEnvelopeProcessor.getClass().getCanonicalName());
         		
-        		cancelled = true;
+        		noOneCancelled = false;
         		break;
         	}
         }
         
-        this.log.debug("Leave processInbound(cancelled={})", cancelled);
-        return cancelled;
+        this.log.debug("Leave processInbound(noOneCancelled={})", noOneCancelled);
+        return noOneCancelled;
     }
 
     protected void processOutbound(Envelope envelope) {
@@ -151,9 +155,5 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
 
     public void setOutboundProcessorCollection(List<IOutboundEnvelopeProcessor> outboundProcessors) {
         this.outboundProcessors = outboundProcessors;
-    }
-
-    public void setTransportProvider(ITransportProvider transportProvider) {
-        this.transportProvider = transportProvider;
     }
 }

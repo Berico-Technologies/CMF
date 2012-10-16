@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 
@@ -13,7 +11,6 @@ using RabbitMQ.Client;
 using cmf.bus;
 using cmf.bus.berico;
 using cmf.rabbit.topology;
-using cmf.security;
 
 namespace cmf.rabbit
 {
@@ -23,18 +20,16 @@ namespace cmf.rabbit
 
 
         protected IDictionary<IRegistration, RabbitListener> _listeners;
-        protected IDictionary<Exchange, IConnection> _connections;
         protected ITopologyService _topoSvc;
-        protected ICertificateProvider _certProvider;
+        protected IRabbitConnectionFactory _connFactory;
         protected ILog _log;
 
 
-        public RabbitTransportProvider(ITopologyService topologyService, ICertificateProvider certProvider)
+        public RabbitTransportProvider(ITopologyService topologyService, IRabbitConnectionFactory connFactory)
         {
             _topoSvc = topologyService;
-            _certProvider = certProvider;
+            _connFactory = connFactory;
 
-            _connections = new Dictionary<Exchange, IConnection>();
             _listeners = new Dictionary<IRegistration, RabbitListener>();
 
             _log = LogManager.GetLogger(this.GetType());
@@ -53,14 +48,11 @@ namespace cmf.rabbit
                 from route in routing.Routes
                 select route.ProducerExchange;
 
-            // get a certificate if we have one
-            X509Certificate2 cert = _certProvider.GetCertificate();
-
             // for each exchange, send the envelope
             foreach (Exchange ex in exchanges)
             {
                 _log.Debug("Sending to exchange: " + ex.ToString());
-                IConnection conn = this.GetConnection(ex, cert);
+                IConnection conn = _connFactory.ConnectTo(ex);
                 
                 using (IModel channel = conn.CreateModel())
                 {
@@ -87,12 +79,9 @@ namespace cmf.rabbit
                 from route in routing.Routes
                 select route.ConsumerExchange;
 
-            // get a certificate if we have one
-            X509Certificate2 cert = _certProvider.GetCertificate();
-
             foreach (Exchange ex in exchanges)
             {
-                IConnection conn = this.GetConnection(ex, cert);
+                IConnection conn = _connFactory.ConnectTo(ex);
 
                 // create a listener
                 RabbitListener listener = new RabbitListener(registration, ex, conn);
@@ -150,64 +139,10 @@ namespace cmf.rabbit
                 // get rid of managed resources
                 try { _listeners.Values.ToList().ForEach(l => l.Stop()); }
                 catch { }
-
-                try { _connections.Values.ToList().ForEach(c => c.Dispose()); }
-                catch { }
             }
             // get rid of unmanaged resources
 
             _log.Debug("Leave Dispose");
-        }
-
-        protected virtual IConnection GetConnection(Exchange ex, X509Certificate2 cert)
-        {
-            IConnection conn = null;
-
-            if (_connections.ContainsKey(ex))
-            {
-                conn = _connections[ex];
-            }
-            else
-            {
-                conn = this.CreateConnection(ex, cert);
-                _connections[ex] = conn;
-            }
-
-            return conn;
-        }
-
-        protected virtual IConnection CreateConnection(Exchange ex, X509Certificate2 cert)
-        {
-            _log.Debug("Enter CreateConnection");
-
-            IConnection conn = null;
-
-            // we use the rabbit connection factory, just like normal
-            ConnectionFactory cf = new ConnectionFactory();
-
-            // set the hostname and the port
-            cf.HostName = ex.HostName;
-            cf.VirtualHost = ex.VirtualHost;
-            cf.Port = ex.Port;
-
-            if (null != cert)
-            {
-                _log.Info("A certificate was located with subject: " + cert.Subject);
-
-                // now, let's set the connection factory's ssl-specific settings
-                // NOTE: it's absolutely required that what you set as Ssl.ServerName be
-                //       what's on your rabbitmq server's certificate (its CN - common name)
-                cf.AuthMechanisms = new AuthMechanismFactory[] { new ExternalMechanismFactory() };
-                cf.Ssl.Certs = new X509CertificateCollection(new X509Certificate[] { cert });
-                cf.Ssl.ServerName = ex.HostName;
-                cf.Ssl.Enabled = true;
-            }
-
-            // we either now create an SSL connection or a default "guest/guest" connection
-            conn = cf.CreateConnection();
-
-            _log.Debug("Leave CreateConnection");
-            return conn;
         }
     }
 }

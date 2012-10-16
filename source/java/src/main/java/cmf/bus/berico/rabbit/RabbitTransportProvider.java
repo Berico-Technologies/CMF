@@ -24,14 +24,20 @@ public class RabbitTransportProvider implements ITransportProvider {
 
     private static final String TOPIC_EXCHANGE_TYPE = "topic";
 
-    private Channel channel;
-    private Connection connection;
-    private Set<String> exchangesKnownToExist = new HashSet<String>();
-    private ITopologyProvider topologyProvider;
-    private QueueProvider queueProvider;
-    private ConnectionProvider connectionProvider;
-    private Map<IRegistration, Queue> queues = new HashMap<IRegistration, Queue>();
-    private Map<IRegistration, IEnvelopeReceivedCallback> callbacks = new HashMap<IRegistration, IEnvelopeReceivedCallback>();
+    protected Map<IRegistration, RabbitListener> listeners;
+    protected Map<Exchange, IConnection> connections;
+    protected ITopologyService topoSvc;
+    protected ICertificateProvider certProvider;
+    protected ILog log;
+    
+//    private Channel channel;
+//    private Connection connection;
+//    private Set<String> exchangesKnownToExist = new HashSet<String>();
+//    private ITopologyProvider topologyProvider;
+//    private QueueProvider queueProvider;
+//    private ConnectionProvider connectionProvider;
+//    private Map<IRegistration, Queue> queues = new HashMap<IRegistration, Queue>();
+//    private Map<IRegistration, IEnvelopeReceivedCallback> callbacks = new HashMap<IRegistration, IEnvelopeReceivedCallback>();
 
     public RabbitTransportProvider(ConnectionProvider connectionProvider, QueueProvider queueProvider,
                     ITopologyProvider topologyProvider) {
