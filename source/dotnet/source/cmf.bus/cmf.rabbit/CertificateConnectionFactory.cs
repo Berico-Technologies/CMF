@@ -37,6 +37,11 @@ namespace cmf.rabbit
             if (_connections.ContainsKey(exchange))
             {
                 conn = _connections[exchange];
+                if (!conn.IsOpen)
+                {
+                    _log.Info("Cached connection to RabbitMQ was closed: reconnecting");
+                    conn = this.CreateConnection(exchange);
+                }
             }
             else
             {
@@ -58,11 +63,12 @@ namespace cmf.rabbit
             if (null != cert)
             {
                 _log.Info("A certificate was located with subject: " + cert.Subject);
-                throw new RabbitException("Cannot connect to an exchange because no certificate was found");
             }
             else
             {
+                throw new RabbitException("Cannot connect to an exchange because no certificate was found");
             }
+
             IConnection conn = null;
 
             // we use the rabbit connection factory, just like normal
@@ -73,16 +79,13 @@ namespace cmf.rabbit
             cf.VirtualHost = ex.VirtualHost;
             cf.Port = ex.Port;
 
-                
-
-                // now, let's set the connection factory's ssl-specific settings
-                // NOTE: it's absolutely required that what you set as Ssl.ServerName be
-                //       what's on your rabbitmq server's certificate (its CN - common name)
-                cf.AuthMechanisms = new AuthMechanismFactory[] { new ExternalMechanismFactory() };
-                cf.Ssl.Certs = new X509CertificateCollection(new X509Certificate[] { cert });
-                cf.Ssl.ServerName = ex.HostName;
-                cf.Ssl.Enabled = true;
-            }
+            // now, let's set the connection factory's ssl-specific settings
+            // NOTE: it's absolutely required that what you set as Ssl.ServerName be
+            //       what's on your rabbitmq server's certificate (its CN - common name)
+            cf.AuthMechanisms = new AuthMechanismFactory[] { new ExternalMechanismFactory() };
+            cf.Ssl.Certs = new X509CertificateCollection(new X509Certificate[] { cert });
+            cf.Ssl.ServerName = ex.HostName;
+            cf.Ssl.Enabled = true;
 
             // we either now create an SSL connection or a default "guest/guest" connection
             conn = cf.CreateConnection();
@@ -90,6 +93,5 @@ namespace cmf.rabbit
             _log.Debug("Leave CreateConnection");
             return conn;
         }
-
     }
 }

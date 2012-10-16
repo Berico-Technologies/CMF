@@ -25,7 +25,9 @@ namespace cmf.rabbit
         protected ILog _log;
 
 
-        public RabbitTransportProvider(ITopologyService topologyService, IRabbitConnectionFactory connFactory)
+        public RabbitTransportProvider(
+            ITopologyService topologyService, 
+            IRabbitConnectionFactory connFactory)
         {
             _topoSvc = topologyService;
             _connFactory = connFactory;

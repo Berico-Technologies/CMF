@@ -30,6 +30,7 @@ import com.rabbitmq.client.Connection;
 import cmf.bus.Envelope;
 import cmf.bus.IRegistration;
 import cmf.bus.berico.IEnvelopeReceivedCallback;
+import cmf.bus.berico.rabbit.topology.ITopologyProvider;
 
 @SuppressWarnings("serial")
 public class RabbitTransportProviderTest {

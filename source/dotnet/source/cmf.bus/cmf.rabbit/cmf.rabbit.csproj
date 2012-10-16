@@ -56,6 +56,7 @@
     <Compile Include="DeliveryOutcomes.cs" />
     <Compile Include="IRabbitConnectionFactory.cs" />
     <Compile Include="RabbitEnvelopeDispatcher.cs" />
+    <Compile Include="RabbitException.cs" />
     <Compile Include="RabbitListener.cs" />
     <Compile Include="RabbitTransportProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -84,7 +85,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)$(TargetName)* $(SolutionDir)..\..\build</PostBuildEvent>
+    <PostBuildEvent>IF NOT EXIST $(SolutionDir)..\..\build MKDIR $(SolutionDir)..\..\build
+copy $(TargetDir)$(TargetName)* $(SolutionDir)..\..\build</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

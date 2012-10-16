@@ -3,8 +3,8 @@ package cmf.bus.berico.rabbit.support;
 import java.util.LinkedList;
 import java.util.List;
 
-import cmf.bus.berico.rabbit.ITopologyProvider;
 import cmf.bus.berico.rabbit.Route;
+import cmf.bus.berico.rabbit.topology.ITopologyProvider;
 
 public class InMemoryTopologyProvider implements ITopologyProvider {
 

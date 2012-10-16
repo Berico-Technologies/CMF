@@ -32,7 +32,7 @@ public class TopologyProviderTest {
     @Mock
     private Route route;
     private String routingKey = "routingKey";
-    private TopologyProvider topologyProvider;
+    private TopologyService topologyProvider;
     @Mock
     private ITopologyRegistry topologyRegistry;
     @Mock
@@ -44,7 +44,7 @@ public class TopologyProviderTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
 
-        topologyProvider = new TopologyProvider(profile, topologyRegistry);
+        topologyProvider = new TopologyService(profile, topologyRegistry);
     }
 
     @Test
