@@ -8,8 +8,8 @@ public interface IEnvelopeDispatcher {
 	Envelope getEnvelope();
 	
 	
-	Object dispatch();
-    Object dispatch(Envelope envelope);
+	void dispatch();
+    void dispatch(Envelope envelope);
 
-    Object dispatchFailed(Envelope envelope, Exception e);
+    void dispatchFailed(Envelope envelope, Exception e);
 }

@@ -44,7 +44,7 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
         this.transportProvider.onEnvelopeReceived(new IEnvelopeReceivedCallback() {
 
         	// implement the callback method
-            public Object handleReceive(IEnvelopeDispatcher dispatcher) {
+            public void handleReceive(IEnvelopeDispatcher dispatcher) {
             	
             	log.debug("Got an envelope dispatcher from the transport provider");
             	Envelope env = dispatcher.getEnvelope();
@@ -68,7 +68,7 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
             	
                 processInbound(env);
 
-                return dispatcher.dispatch(env);
+                dispatcher.dispatch(env);
             } // end of the callback method
         }); // end of adding event handler
         
@@ -113,7 +113,7 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
 
     
     @Override
-    public void register(final IRegistration registration) {
+    public void register(final IRegistration registration) throws Exception {
     	this.log.debug("Enter register");
         if (registration == null) {
             throw new IllegalArgumentException("Cannot register with a null registration");
@@ -124,7 +124,7 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
     }
 
     @Override
-    public void send(Envelope envelope) {
+    public void send(Envelope envelope) throws Exception {
     	this.log.debug("Enter send");
         if (envelope == null) {
             throw new IllegalArgumentException("Cannot send a null envelope");
@@ -138,7 +138,7 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
     }
 
     @Override
-    public void unregister(IRegistration registration) {
+    public void unregister(IRegistration registration) throws Exception {
     	this.log.debug("Enter unregister");
     	
         if (registration == null) {

@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import cmf.bus.eventing.berico.GsonSerializer;
+import cmf.eventing.berico.GsonSerializer;
 
 @RunWith(value = Parameterized.class)
 public class GsonSerializerTest {

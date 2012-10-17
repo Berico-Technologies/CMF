@@ -89,33 +89,42 @@ public class EnvelopeHelper {
 	}
 	
 	
-	public DateTime getCreationTime(Envelope envelope) {
+	public DateTime getCreationTime() {
         String createTicks = null;
 
-        if (envelope.getHeaders().containsKey(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME)) {
-            createTicks = envelope.getHeaders().get(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME);
+        if (env.getHeaders().containsKey(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME)) {
+            createTicks = env.getHeaders().get(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME);
         }
 
         return new DateTime(Long.parseLong(createTicks));
     }
 
-    public void setCreationTime(Envelope envelope, DateTime date) {
-        envelope.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME, Long.toString(date.getMillis()));
+    public void setCreationTime(DateTime date) {
+    	env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME, Long.toString(date.getMillis()));
     }
 
     
-    public DateTime getReceiptTime(Envelope envelope) {
+    public DateTime getReceiptTime() {
         String receiptTicks = null;
 
-        if (envelope.getHeaders().containsKey(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME)) {
-            receiptTicks = envelope.getHeaders().get(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME);
+        if (env.getHeaders().containsKey(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME)) {
+            receiptTicks = env.getHeaders().get(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME);
         }
 
         return new DateTime(Long.parseLong(receiptTicks));
     }
 
-    public void setReceiptTime(Envelope envelope, DateTime date) {
-        envelope.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME, Long.toString(date.getMillis()));
+    public void setReceiptTime(DateTime date) {
+    	env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME, Long.toString(date.getMillis()));
+    }
+    
+    
+    public String getSenderIdentity() {
+    	return env.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY);
+    }
+    
+    public void setSenderIdentity(String distinguishedName) {
+    	env.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY, distinguishedName);
     }
     
     

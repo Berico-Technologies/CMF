@@ -9,6 +9,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import cmf.rabbit.ConnectionFactory;
+import cmf.rabbit.ConnectionProvider;
+
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 

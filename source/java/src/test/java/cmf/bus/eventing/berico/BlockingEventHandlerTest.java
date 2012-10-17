@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import cmf.bus.berico.exception.TimeoutException;
+import cmf.eventing.berico.BlockingEventHandler;
 
 public class BlockingEventHandlerTest {
 

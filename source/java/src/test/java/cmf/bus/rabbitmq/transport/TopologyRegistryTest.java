@@ -13,8 +13,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import cmf.bus.berico.rabbit.Route;
-import cmf.bus.berico.rabbit.TopologyRegistry;
+import cmf.rabbit.Route;
+import cmf.rabbit.TopologyRegistry;
 
 public class TopologyRegistryTest {
 

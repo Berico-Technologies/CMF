@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import cmf.bus.berico.rabbit.Route;
+import cmf.rabbit.Route;
 
 public class RouteTest {
 

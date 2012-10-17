@@ -14,8 +14,9 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import cmf.bus.Envelope;
-import cmf.bus.berico.rabbit.support.RabbitEnvelopeHelper;
-import cmf.bus.eventing.ISerializer;
+import cmf.eventing.berico.ISerializer;
+import cmf.eventing.berico.SerializationProcessor;
+import cmf.rabbit.support.RabbitEnvelopeHelper;
 
 public class SerializationProcessorTest {
 

@@ -5,8 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import cmf.bus.eventing.ISerializer;
-import cmf.bus.eventing.berico.GsonSerializer;
+import cmf.eventing.berico.GsonSerializer;
+import cmf.eventing.berico.ISerializer;
 
 public class EnvelopeTest {
 
