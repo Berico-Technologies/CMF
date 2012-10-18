@@ -28,7 +28,7 @@ public class DefaultEventBus implements IEventBus {
         }
 
         @Override
-        public Object handle(Envelope envelope) {
+        public Object handle(Envelope envelope) throws Exception {
             TEVENT event = (TEVENT) processInbound(null, envelope);
             Object result = userEventHandler.handle(event, envelope.getHeaders());
 
@@ -52,7 +52,7 @@ public class DefaultEventBus implements IEventBus {
         this.outboundProcessors = outboundProcessors;
     }
 
-    protected Object processInbound(Object event, Envelope envelope) {
+    protected Object processInbound(Object event, Envelope envelope) throws Exception {
         Map<String, Object> context = new HashMap<String, Object>();
         for (IInboundEventProcessor processor : inboundProcessors) {
             event = processor.processInbound(event, envelope, context);
@@ -61,7 +61,7 @@ public class DefaultEventBus implements IEventBus {
         return event;
     }
 
-    protected Object processOutbound(Object event, Envelope envelope) {
+    protected Object processOutbound(Object event, Envelope envelope) throws Exception {
         Map<String, Object> context = new HashMap<String, Object>();
         for (IOutboundEventProcessor processor : outboundProcessors) {
             processor.processOutbound(event, envelope, context);

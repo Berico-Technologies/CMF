@@ -51,7 +51,7 @@ public class RabbitTransportProvider implements ITransportProvider {
 
     
     @Override
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "deprecation", "unchecked" })
     public void send(Envelope env) throws Exception
     {
         log.debug("Enter Send");

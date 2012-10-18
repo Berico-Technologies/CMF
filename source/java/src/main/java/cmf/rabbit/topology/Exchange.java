@@ -13,6 +13,7 @@ public class Exchange {
 	protected String exchangeType;
 	protected boolean isDurable;
 	protected boolean isAutoDelete;
+	@SuppressWarnings("rawtypes")
 	protected Map arguments;
 	
 	
@@ -43,11 +44,14 @@ public class Exchange {
     public boolean getIsAutoDelete() { return isAutoDelete; }
     protected void setIsAutoDelete(boolean isAutoDelete) { this.isAutoDelete = isAutoDelete; }
     
-    public Map getArguments() { return arguments; }
-    protected void setArguments(Map arguments) { this.arguments = arguments; }
+    @SuppressWarnings("rawtypes")
+	public Map getArguments() { return arguments; }
+    @SuppressWarnings("rawtypes")
+	protected void setArguments(Map arguments) { this.arguments = arguments; }
 
 
-    public Exchange(
+    @SuppressWarnings("rawtypes")
+	public Exchange(
         String name, 
         String hostName, 
         String vHost, 
