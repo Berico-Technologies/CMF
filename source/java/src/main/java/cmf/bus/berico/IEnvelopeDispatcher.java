@@ -1,7 +1,6 @@
 package cmf.bus.berico;
 
 import cmf.bus.Envelope;
-import cmf.bus.IRegistration;
 
 public interface IEnvelopeDispatcher {
 

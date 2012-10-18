@@ -1,7 +1,6 @@
 package cmf.security;
 
 import java.io.ByteArrayInputStream;
-import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PrivilegedAction;
@@ -137,6 +136,7 @@ public class WindowsCertificateProvider implements ICertificateProvider {
 		return credentials;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public X509Certificate getCertificateFor(final String distinguishedName) {
 		X509Certificate credentials = null;

@@ -10,7 +10,6 @@ import cmf.bus.berico.EnvelopeHelper;
 import cmf.eventing.IInboundEventProcessor;
 import cmf.eventing.IOutboundEventProcessor;
 import cmf.eventing.berico.ISerializer;
-import cmf.rabbit.support.RabbitEnvelopeHelper;
 
 public class JsonEventSerializer implements IInboundEventProcessor, IOutboundEventProcessor {
 
