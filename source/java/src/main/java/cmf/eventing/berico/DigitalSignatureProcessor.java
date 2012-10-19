@@ -2,15 +2,11 @@ package cmf.eventing.berico;
 
 import java.security.Signature;
 import java.security.cert.X509Certificate;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cmf.bus.Envelope;
 import cmf.bus.berico.EnvelopeHelper;
-import cmf.eventing.IInboundEventProcessor;
-import cmf.eventing.IOutboundEventProcessor;
 import cmf.security.CredentialHolder;
 import cmf.security.ICertificateProvider;
 
@@ -21,29 +17,38 @@ public class DigitalSignatureProcessor implements IInboundEventProcessor, IOutbo
 	protected Logger log;
 	
 	
-	public DigitalSignatureProcessor(ICertificateProvider certProvider) {
+	public DigitalSignatureProcessor(ICertificateProvider certProvider) throws Exception {
+		this.certProvider = certProvider;
 		this.log = LoggerFactory.getLogger(this.getClass());
 		
 		try {
 			this.credentials = certProvider.getCredentials();
 		}
-		catch(Exception ex) {}
+		catch(Exception ex)
+		{
+			log.error("Failed to get client's PKI credentials", ex);
+			throw ex;
+		}
 	}
 	
 	
 	@Override
-	public void processOutbound(Object event, Envelope envelope,
-			Map<String, Object> context) throws Exception {
+	public void processOutbound(ProcessingContext context) throws Exception {
 		
 		try {
-			EnvelopeHelper env = new EnvelopeHelper(envelope);
+			EnvelopeHelper env = new EnvelopeHelper(context.getEnvelope());
 			
 			Signature instance = Signature.getInstance("SHA1withRSA");
 			instance.initSign(this.credentials.getPrivateKey());
-			instance.update(envelope.getPayload());			
+			instance.update(env.getPayload());			
 			
 			env.setDigitalSignature(instance.sign());
-			env.setSenderIdentity(this.credentials.getCertificate().getSubjectX500Principal().getName());
+			
+			// make sure that the sender identity has spaces between LDAP elements
+			String sender = this.credentials.getCertificate().getSubjectX500Principal().getName();
+			sender = sender.replaceAll(",", ", ");
+			
+			env.setSenderIdentity(sender);
 		}
 		catch(Exception ex) {
 			log.error("Exception while signing outbound event", ex);
@@ -52,23 +57,34 @@ public class DigitalSignatureProcessor implements IInboundEventProcessor, IOutbo
 	}
 
 	@Override
-	public boolean processInbound(Object event, Envelope envelope,
-			Map<String, Object> context) throws Exception {
+	public boolean processInbound(ProcessingContext context) throws Exception {
 
+		boolean verified = false;
+		
 		try {
-			EnvelopeHelper env = new EnvelopeHelper(envelope);
+			EnvelopeHelper env = new EnvelopeHelper(context.getEnvelope());
 			String senderIdentity = env.getSenderIdentity();
+			
+			// remove spaces from the sender identity
+			senderIdentity = senderIdentity.replace(", ", ",");
 			
 			X509Certificate senderCert = this.certProvider.getCertificateFor(senderIdentity);
 			
 			Signature instance = Signature.getInstance("SHA1withRSA");
 			instance.initVerify(senderCert);
-			instance.update(envelope.getPayload());
+			instance.update(env.getPayload());
 			
-			return instance.verify(env.getDigitalSignature());
+			verified = instance.verify(env.getDigitalSignature());
+			
+			if (false == verified) {
+				log.warn("Event may have been tampered with (id:{})", env.getMessageId().toString());
+			}
 		}
 		catch(Exception ex) {
-			return false;
+			log.error("Failed to verify sender's digital signature", ex);
+			throw ex;
 		}
+		
+		return verified;
 	}
 }

@@ -22,6 +22,9 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.security.auth.Subject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
 import com.sun.security.auth.module.Krb5LoginModule;
@@ -29,10 +32,13 @@ import com.sun.security.auth.module.Krb5LoginModule;
 public class WindowsCertificateProvider implements ICertificateProvider {
 
 	protected String ldapProviderUrl;
+	protected Logger log;
 	
 	
 	public WindowsCertificateProvider(String ldapProviderUrl) {
 		this.ldapProviderUrl = ldapProviderUrl;
+		
+		this.log = LoggerFactory.getLogger(this.getClass());
 	}
 	
 	
@@ -92,11 +98,11 @@ public class WindowsCertificateProvider implements ICertificateProvider {
 					    
 					    SearchResult result = results.next();
 					    
-				    	System.out.println("Name: " + result.getName());
-				    	System.out.println("NameInNamespace: " + result.getNameInNamespace());
+				    	log.debug("Name: {}", result.getName());
+				    	log.debug("NameInNamespace: {}", result.getNameInNamespace());
 				    	for (NamingEnumeration<? extends javax.naming.directory.Attribute> e = result.getAttributes().getAll(); e.hasMoreElements();) {
 				    		javax.naming.directory.Attribute attr = e.next();
-				    		System.out.println("|-- Found attribute named: " + attr.getID());
+				    		log.debug("|-- Found attribute named: {}", attr.getID());
 				    	}
 				    	
 				    	String distinguishedName = result.getNameInNamespace();
@@ -104,7 +110,7 @@ public class WindowsCertificateProvider implements ICertificateProvider {
 					    // Close the context when we're done
 					    ctx.close();
 					    
-					    System.out.println("DistinguishedName: " + distinguishedName);
+					    log.debug("DistinguishedName: {}", distinguishedName);
 					    
 					    try {
 							KeyStore keyStore = KeyStore.getInstance("Windows-MY", "SunMSCAPI");
@@ -112,33 +118,33 @@ public class WindowsCertificateProvider implements ICertificateProvider {
 						
 						    String alias = distinguishedName.substring(0, distinguishedName.indexOf(','));
 						    alias = alias.replaceFirst("CN=", "");
-						    System.out.println("alias: " + alias);
+						    log.debug("alias: {}", alias);
 						    
 						    PrivateKey key = (PrivateKey) keyStore.getKey(alias, null);
 						    Certificate[] chain = keyStore.getCertificateChain(alias);
 						    X509Certificate cert = (X509Certificate) chain[0];
 						    
 						    if (null ==cert) {
-						    	System.out.println("No certificates found with alias: " + alias);
+						    	log.debug("No certificates found with alias: {}", alias);
 						    }
 						    else {
-						    	System.out.println("Found certificate issued by: " +cert.getIssuerX500Principal().getName());
+						    	log.debug("Found certificate issued by: {}", cert.getIssuerX500Principal().getName());
 						    	credentials = new CredentialHolder(cert, key);
 						    }
 						}
 						catch(Exception ex) {
-							ex.printStackTrace();
+							log.error("Exception while retrieving credentials from Windows Certificate Store", ex);
 						}
 					}
 					catch(Exception ex) {
-						ex.printStackTrace();
+						log.error("Exception attempting to get credentials", ex);
 					}
 					
 					return credentials;
 				}
 			});
 		} catch (Exception e) {
-		    e.printStackTrace();
+			log.error("Exception attempting to get credentials", e);
 		}
 		
 		return credentials;
@@ -200,8 +206,8 @@ public class WindowsCertificateProvider implements ICertificateProvider {
 					    
 					    SearchResult result = results.next();
 					    
-				    	System.out.println("Name: " + result.getName());
-				    	System.out.println("NameInNamespace: " + result.getNameInNamespace());
+				    	log.debug("Name: {}", result.getName());
+				    	log.debug("NameInNamespace: {}", result.getNameInNamespace());
 				    	
 				    	Attributes attrs = result.getAttributes();
 				    	CertificateFactory factory = CertificateFactory.getInstance("X.509");
@@ -211,20 +217,20 @@ public class WindowsCertificateProvider implements ICertificateProvider {
 				    		ByteArrayInputStream input = new ByteArrayInputStream((byte[])certAttr.get());
 				    		cert = (X509Certificate)factory.generateCertificate(input);
 				    	
-				    		System.out.println("Found certificate issued by: " + cert.getIssuerDN().getName());
+				    		log.debug("Found certificate issued by: {}", cert.getIssuerDN().getName());
 				    	}
 					    // Close the context when we're done
 					    ctx.close();
 					}
 					catch(Exception ex) {
-						ex.printStackTrace();
+						log.error("Failed to lookup certificate", ex);
 					}
 					
 					return cert;
 				}
 			});
 		} catch (Exception e) {
-		    e.printStackTrace();
+			log.error("Failed to get certificate", e);
 		}
 		
 		return credentials;

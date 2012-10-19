@@ -23,6 +23,9 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.security.auth.Subject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sun.security.auth.module.Krb5LoginModule;
 
 public class PKCS12CertificateProvider implements ICertificateProvider {
@@ -30,12 +33,15 @@ public class PKCS12CertificateProvider implements ICertificateProvider {
 	protected String pathToP12File;
 	protected String password;
 	protected String providerUrl;
+	protected Logger log;
 	
 	
 	public PKCS12CertificateProvider(String pathToP12File, String password, String providerUrl) {
 		this.pathToP12File = pathToP12File;
 		this.password = password;
 		this.providerUrl = providerUrl;
+		
+		log = LoggerFactory.getLogger(this.getClass());
 	}
 	
 	
@@ -63,8 +69,7 @@ public class PKCS12CertificateProvider implements ICertificateProvider {
 				credentials = new CredentialHolder(cert, (PrivateKey)key);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Exception getting credentials", e);
 		}
 		
 		return credentials;
@@ -126,8 +131,8 @@ public class PKCS12CertificateProvider implements ICertificateProvider {
 					    
 					    SearchResult result = results.next();
 					    
-				    	System.out.println("Name: " + result.getName());
-				    	System.out.println("NameInNamespace: " + result.getNameInNamespace());
+				    	log.debug("Name: {}", result.getName());
+				    	log.debug("NameInNamespace: {}", result.getNameInNamespace());
 				    	
 				    	Attributes attrs = result.getAttributes();
 				    	CertificateFactory factory = CertificateFactory.getInstance("X.509");
@@ -137,20 +142,20 @@ public class PKCS12CertificateProvider implements ICertificateProvider {
 				    		ByteArrayInputStream input = new ByteArrayInputStream((byte[])certAttr.get());
 				    		cert = (X509Certificate)factory.generateCertificate(input);
 				    	
-				    		System.out.println("Found certificate issued by: " + cert.getIssuerDN().getName());
+				    		log.debug("Found certificate issued by: {}", cert.getIssuerDN().getName());
 				    	}
 					    // Close the context when we're done
 					    ctx.close();
 					}
 					catch(Exception ex) {
-						ex.printStackTrace();
+						log.error("Failed to lookup certificate", ex);
 					}
 					
 					return cert;
 				}
 			});
 		} catch (Exception e) {
-		    e.printStackTrace();
+			log.error("Failed to get certificate", e);
 		}
 		
 		return credentials;

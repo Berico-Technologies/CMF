@@ -12,7 +12,7 @@ using cmf.security;
 
 namespace cmf.rabbit
 {
-    public class CertificateConnectionFactory : IRabbitConnectionFactory
+    public class CertificateConnectionFactory : IRabbitConnectionFactory, IDisposable
     {
         protected ICertificateProvider _certProvider;
         protected IDictionary<Exchange, IConnection> _connections;
@@ -51,6 +51,12 @@ namespace cmf.rabbit
 
             _log.Debug("Leave ConnectTo");
             return conn;
+        }
+
+        public void Dispose()
+        {
+            try { _connections.ToList().ForEach(kvp => kvp.Value.Dispose()); }
+            catch { }
         }
 
 

@@ -1,22 +1,17 @@
 package cmf.eventing.berico;
 
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-import cmf.bus.Envelope;
-import cmf.eventing.IOutboundEventProcessor;
+import cmf.bus.berico.EnvelopeHelper;
 
 public class OutboundHeadersProcessor implements IOutboundEventProcessor {
 
 	@Override
-	public void processOutbound(
-			Object event, 
-			Envelope envelope,
-			Map<String, Object> context) {
+	public void processOutbound(ProcessingContext context) {
 		
-		cmf.bus.berico.EnvelopeHelper env = new cmf.bus.berico.EnvelopeHelper(envelope);
+		EnvelopeHelper env = new EnvelopeHelper(context.getEnvelope());
 		
         UUID messageId = env.getMessageId();
         messageId = (null == messageId) ? UUID.randomUUID() : messageId;
@@ -25,11 +20,11 @@ public class OutboundHeadersProcessor implements IOutboundEventProcessor {
         UUID correlationId = env.getCorrelationId();
 
         String messageType = env.getMessageType();
-        messageType = StringUtils.isBlank(messageType) ? event.getClass().getCanonicalName() : messageType;
+        messageType = StringUtils.isBlank(messageType) ? context.getEvent().getClass().getCanonicalName() : messageType;
         env.setMessageType(messageType);
 
         String messageTopic = env.getMessageTopic();
-        messageTopic = StringUtils.isBlank(messageTopic) ? event.getClass().getCanonicalName() : messageTopic;
+        messageTopic = StringUtils.isBlank(messageTopic) ? context.getEvent().getClass().getCanonicalName() : messageTopic;
         if (null != correlationId)
         {
             messageTopic = messageTopic + "#" + correlationId.toString();

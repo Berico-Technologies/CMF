@@ -6,6 +6,7 @@ using System.Text;
 
 using Common.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 using cmf.bus;
 using cmf.bus.berico;
@@ -14,12 +15,29 @@ namespace cmf.eventing.berico.serializers
 {
     public class JsonEventSerializer : IInboundEventProcessor, IOutboundEventProcessor
     {
+        /// <summary>
+        /// We need to resolve properties to lowercase in order to be interoperable
+        /// with java and other json serializers.
+        /// </summary>
+        protected class LowercaseContractResolver : DefaultContractResolver
+        {
+            protected override string ResolvePropertyName(string propertyName)
+            {
+                return propertyName.ToLower();
+            }
+        }
+
+
         protected ILog _log;
+        protected JsonSerializerSettings _settings;
 
 
         public JsonEventSerializer()
         {
             _log = LogManager.GetLogger(this.GetType());
+
+            _settings = new JsonSerializerSettings();
+            _settings.ContractResolver = new LowercaseContractResolver();
         }
 
 
@@ -65,7 +83,7 @@ namespace cmf.eventing.berico.serializers
                 {
                     string jsonString = Encoding.UTF8.GetString(env.Payload);
                     _log.Debug("Will attempt to deserialize: " + jsonString);
-                    ev = JsonConvert.DeserializeObject(jsonString, type);
+                    ev = JsonConvert.DeserializeObject(jsonString, type, _settings);
 
                     success = true;
                 }
@@ -87,7 +105,7 @@ namespace cmf.eventing.berico.serializers
             try
             {
                 // first, serialize the event (make it pretty!)
-                string json = JsonConvert.SerializeObject(ev, Formatting.Indented);
+                string json = JsonConvert.SerializeObject(ev, Formatting.Indented, _settings);
 
                 _log.Debug("Serialized event: " + json);
 

@@ -14,10 +14,10 @@ import javax.swing.event.ChangeListener;
 import javax.swing.JTextArea;
 
 import cmf.bus.Envelope;
-import cmf.bus.events.EventTypeA;
-import cmf.bus.events.EventTypeB;
 import cmf.eventing.IEventBus;
 import cmf.eventing.IEventHandler;
+import cmf.examples.messages.EventTypeA;
+import cmf.examples.messages.EventTypeB;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -138,7 +138,7 @@ public class BusTester {
 						eventBus.publish(event);
 					}
 					catch(Exception ex) {
-						logTextArea.append("Failed to publish an event of type A: " + ex.toString());
+						log("Failed to publish an event of type A: " + ex.toString());
 					}
 					
 				} else if( EVENT_TYPE_B.equals(eventComboBox.getSelectedItem()))  {
@@ -150,7 +150,7 @@ public class BusTester {
 						eventBus.publish(event);
 					}
 					catch(Exception ex) {
-						logTextArea.append("Failed to publish an event of type B: " + ex.toString());
+						log("Failed to publish an event of type B: " + ex.toString());
 					}
 				}
 			}
@@ -264,20 +264,20 @@ public class BusTester {
 
 						public Object handle(EventTypeA event,
 								Map<String, String> headers) {
-							logTextArea.append("Received an event of type A: " + event.getMessage());
+							log("Received an event of type A: " + event.getMessage());
 							return null;
 						}
 
 						public Object handleFailed(Envelope envelope,
 								Exception e) {
-							logTextArea.append("Failed to receive an event of type A: " + e.getMessage());
+							log("Failed to receive an event of type A: " + e.toString());
 							return null;
 						}
 						
 					});
 				}
 				catch(Exception ex) {
-					logTextArea.append("Failed to subscribe for events of type A: " + ex.toString());
+					log("Failed to subscribe for events of type A: " + ex.toString());
 				}
 			} else if("cmf.bus.events.EventTypeB".equals(button.getText() )) {
 				try {
@@ -290,23 +290,26 @@ public class BusTester {
 
 						public Object handle(EventTypeB event,
 								Map<String, String> headers) {
-							logTextArea.append("Received an event of type B: " + event.getMessage());
+							log("Received an event of type B: " + event.getMessage());
 							return null;
 						}
 
 						public Object handleFailed(Envelope envelope,
 								Exception e) {
-							logTextArea.append("Failed to receive an event of type B: " + e.getMessage());
+							log("Failed to receive an event of type B: " + e.getMessage());
 							return null;
 						}
 						
 					});
 				}
 				catch(Exception ex) {
-					logTextArea.append("Failed to subscribe for events of type B: " + ex.toString());
+					log("Failed to subscribe for events of type B: " + ex.toString());
 				}
 			}
 		}
 	}
 
+	private void log(String message) {
+		logTextArea.insert(message + "\n", 0);
+	}
 }

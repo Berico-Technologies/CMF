@@ -36,6 +36,7 @@ public class RabbitTransportProvider implements ITransportProvider {
     	this.envCallbacks.add(callback);
     }
     
+    
     public RabbitTransportProvider(
     		ITopologyService topologyService,
     		RabbitConnectionFactory connFactory) {
@@ -121,7 +122,8 @@ public class RabbitTransportProvider implements ITransportProvider {
             
             // create a listener
             RabbitListener listener = new RabbitListener(registration, ex, channel);
-            listener.initialize();
+            
+            // hook into the listener's events
             listener.onEnvelopeReceived(new IEnvelopeReceivedCallback() {
             	@Override
 				public void handleReceive(IEnvelopeDispatcher dispatcher) {
@@ -135,10 +137,10 @@ public class RabbitTransportProvider implements ITransportProvider {
 				}
             });
 
+            listener.start();
+            
             // store the listener
             listeners.put(registration, listener);
-            
-            listener.setConsumerTag(channel.basicConsume(ex.getQueueName(), false, "", listener));
         }
 
         log.debug("Leave Register");
@@ -149,7 +151,7 @@ public class RabbitTransportProvider implements ITransportProvider {
         if (listeners.containsKey(registration))
         {
             RabbitListener listener = listeners.get(registration);
-            listener.stop();
+            listener.stopListening();
 
             listeners.remove(registration);
         }

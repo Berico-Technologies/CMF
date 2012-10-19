@@ -10,7 +10,6 @@ import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;
 import cmf.bus.berico.EnvelopeHeaderConstants;
 import cmf.eventing.IEventHandler;
-import cmf.eventing.IInboundEventProcessor;
 
 public class EventRegistration implements IRegistration {
 
@@ -46,11 +45,12 @@ public class EventRegistration implements IRegistration {
 		Object ev = null;
 		Object result = null;
 
-        if (this.processInbound(ev, env))
+		ProcessingContext processorContext = new ProcessingContext(env, ev);
+        if (this.processInbound(processorContext))
         {
             try
             {
-                result = eventHandler.handle(ev, env.getHeaders());
+                result = eventHandler.handle(processorContext.getEvent(), processorContext.getEnvelope().getHeaders());
             }
             catch (Exception ex)
             {
@@ -74,14 +74,13 @@ public class EventRegistration implements IRegistration {
 	}
 	
 	
-    protected boolean processInbound(Object ev, Envelope env)
+    protected boolean processInbound(ProcessingContext processorContext)
     {
     	boolean processed = true;
-        Map<String, Object> processorContext = new HashMap<String, Object>();
 
         try {
             for (IInboundEventProcessor processor : this.inboundChain) {
-                if (!processor.processInbound(ev, env, processorContext)) {
+                if (!processor.processInbound(processorContext)) {
                     processed = false;
                     break;
                 }

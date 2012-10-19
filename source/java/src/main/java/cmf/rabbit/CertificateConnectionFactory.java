@@ -10,6 +10,7 @@ import javax.net.ssl.TrustManagerFactory;
 import cmf.rabbit.topology.Exchange;
 
 import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DefaultSaslConfig;
 
 public class CertificateConnectionFactory implements RabbitConnectionFactory {

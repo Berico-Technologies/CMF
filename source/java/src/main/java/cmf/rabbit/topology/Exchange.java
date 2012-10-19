@@ -83,14 +83,14 @@ public class Exchange {
 
         sb.append("{");
         sb.append(String.format("Name:%s,", this.name));
-        sb.append(String.format("HostName:{0},", this.hostName));
-        sb.append(String.format("VirtualHost:{0},", this.virtualHost));
-        sb.append(String.format("Port:{0},", this.port));
-        sb.append(String.format("RoutingKey:{0},", this.routingKey));
-        sb.append(String.format("QueueName:{0},", this.queueName));
-        sb.append(String.format("ExchangeType:{0},", this.exchangeType));
-        sb.append(String.format("IsDurable:{0},", this.isDurable));
-        sb.append(String.format("IsAutoDelete:{0},", this.isAutoDelete));
+        sb.append(String.format("HostName:%s,", this.hostName));
+        sb.append(String.format("VirtualHost:%s,", this.virtualHost));
+        sb.append(String.format("Port:%d,", this.port));
+        sb.append(String.format("RoutingKey:%s,", this.routingKey));
+        sb.append(String.format("QueueName:%s,", this.queueName));
+        sb.append(String.format("ExchangeType:%s,", this.exchangeType));
+        sb.append(String.format("IsDurable:%s,", this.isDurable));
+        sb.append(String.format("IsAutoDelete:%s,", this.isAutoDelete));
 
         sb.append("}");
         return sb.toString();

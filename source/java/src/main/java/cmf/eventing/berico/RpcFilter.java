@@ -2,7 +2,6 @@ package cmf.eventing.berico;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -10,9 +9,7 @@ import java.util.UUID;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 
-import cmf.bus.Envelope;
-import cmf.eventing.IInboundEventProcessor;
-import cmf.eventing.IOutboundEventProcessor;
+import cmf.bus.berico.EnvelopeHelper;
 
 public class RpcFilter implements IInboundEventProcessor, IOutboundEventProcessor {
 
@@ -26,10 +23,9 @@ public class RpcFilter implements IInboundEventProcessor, IOutboundEventProcesso
     
     
 	@Override
-	public void processOutbound(Object event, Envelope envelope,
-			Map<String, Object> context) {
+	public void processOutbound(ProcessingContext context) {
 
-		cmf.bus.berico.EnvelopeHelper env = new cmf.bus.berico.EnvelopeHelper(envelope);
+		EnvelopeHelper env = new EnvelopeHelper(context.getEnvelope());
 		
         if (env.IsRequest())
         {
@@ -64,11 +60,10 @@ public class RpcFilter implements IInboundEventProcessor, IOutboundEventProcesso
 	}
 
 	@Override
-	public boolean processInbound(Object event, Envelope envelope,
-			Map<String, Object> context) {
+	public boolean processInbound(ProcessingContext context) {
         
 		boolean ourOwnRequest = false;
-		cmf.bus.berico.EnvelopeHelper env = new cmf.bus.berico.EnvelopeHelper(envelope);
+		cmf.bus.berico.EnvelopeHelper env = new cmf.bus.berico.EnvelopeHelper(context.getEnvelope());
         
         try
         {

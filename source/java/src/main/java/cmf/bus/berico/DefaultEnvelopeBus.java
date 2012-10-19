@@ -65,10 +65,6 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
                     log.warn("Failed to dispatch envelope; raising EnvelopeFailed event");
                     dispatcher.dispatchFailed(env, ex);
                 }
-            	
-                processInbound(env);
-
-                dispatcher.dispatch(env);
             } // end of the callback method
         }); // end of adding event handler
         

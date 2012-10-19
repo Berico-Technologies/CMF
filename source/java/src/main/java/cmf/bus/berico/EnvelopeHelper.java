@@ -14,15 +14,25 @@ public class EnvelopeHelper {
 	private Envelope env;
 	
 	
+	public Envelope getEnvelope() { return env; }
+	
+	
 	public EnvelopeHelper(Envelope envelope) {
 		this.env = envelope;
 	}
 	
 	
+	public String getHeader(String key) { return env.getHeader(key); }
+	public void setHeader(String key, String value) { env.setHeader(key, value); }
+	
+	
+	public byte[] getPayload() { return env.getPayload(); }
+	public void setPayload(byte[] payload) { env.setPayload(payload); }
+	
+	
 	public String getMessageTopic() {
 		return env.getHeader(EnvelopeHeaderConstants.MESSAGE_TOPIC);
 	}
-	
 	public void setMessageTopic(String topic) {
 		env.setHeader(EnvelopeHeaderConstants.MESSAGE_TOPIC, topic);
 	}
@@ -32,11 +42,13 @@ public class EnvelopeHelper {
 		UUID id = null;
 		
 		String idString = env.getHeader(EnvelopeHeaderConstants.MESSAGE_ID);
-		id = UUID.fromString(idString);
+		
+		if (idString != null) {
+			id = UUID.fromString(idString);
+		}
 		
 		return id;
 	}
-	
 	public void setMessageId(UUID id) {
 		env.setHeader(EnvelopeHeaderConstants.MESSAGE_ID, id.toString());
 	}
@@ -46,11 +58,12 @@ public class EnvelopeHelper {
 		UUID cid = null;
 		
 		String cidString = env.getHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID);
-		cid = UUID.fromString(cidString);
+		if (cidString != null) {
+			cid = UUID.fromString(cidString);
+		}
 		
 		return cid;
 	}
-	
 	public void setCorrelationId(UUID cid) {
 		env.setHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID, cid.toString());
 	}
@@ -59,7 +72,6 @@ public class EnvelopeHelper {
 	public String getMessageType() {
 		return env.getHeader(EnvelopeHeaderConstants.MESSAGE_TYPE);
 	}
-
 	public void setMessageType(String messageType) {
 		env.setHeader(EnvelopeHeaderConstants.MESSAGE_TYPE, messageType);
 	}
@@ -68,7 +80,6 @@ public class EnvelopeHelper {
 	public String getMessagePattern() {
 		return env.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN);
 	}
-	
 	public void setMessagePattern(String pattern) {
 		env.setHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN, pattern);
 	}
@@ -83,7 +94,6 @@ public class EnvelopeHelper {
 		long totalMilliseconds = Long.parseLong(timeString);
 		return new Duration(totalMilliseconds);
 	}
-	
 	public void setRpcTimeout(Duration timeout) {
 		env.setHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT, Long.toString(timeout.getMillis()));
 	}
@@ -98,7 +108,6 @@ public class EnvelopeHelper {
 
         return new DateTime(Long.parseLong(createTicks));
     }
-
     public void setCreationTime(DateTime date) {
     	env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME, Long.toString(date.getMillis()));
     }
@@ -113,7 +122,6 @@ public class EnvelopeHelper {
 
         return new DateTime(Long.parseLong(receiptTicks));
     }
-
     public void setReceiptTime(DateTime date) {
     	env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME, Long.toString(date.getMillis()));
     }
@@ -122,7 +130,6 @@ public class EnvelopeHelper {
     public String getSenderIdentity() {
     	return env.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY);
     }
-    
     public void setSenderIdentity(String distinguishedName) {
     	env.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY, distinguishedName);
     }
@@ -136,7 +143,6 @@ public class EnvelopeHelper {
 		
 		return Base64.decodeBase64(base64String);
 	}
-	
 	public void setDigitalSignature(byte[] signature) {
 		env.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE, Base64.encodeBase64String(signature));
 	}
@@ -174,11 +180,12 @@ public class EnvelopeHelper {
 
         if (sb.length()> 1)
         {
-            sb.delete(1, separator.length());
+            sb.delete(1, 1 + separator.length());
         }
 
         sb.append("]");
         
 		return sb.toString();
 	}
+
 }

@@ -1,5 +1,6 @@
 package cmf.rabbit;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -8,12 +9,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rabbitmq.client.AMQP.Queue.BindOk;
-import com.rabbitmq.client.AMQP.Queue.DeclareOk;
-import com.rabbitmq.client.BasicProperties;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.DefaultConsumer;
-
 import cmf.bus.Envelope;
 import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;
@@ -21,8 +16,13 @@ import cmf.bus.berico.EnvelopeHelper;
 import cmf.bus.berico.IEnvelopeReceivedCallback;
 import cmf.rabbit.topology.Exchange;
 
-public class RabbitListener extends DefaultConsumer {
-	
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.LongString;
+import com.rabbitmq.client.QueueingConsumer;
+
+public class RabbitListener extends Thread {
+
+	/* fields */
 	protected List<IEnvelopeReceivedCallback> envCallbacks;
 	protected List<IListenerCloseCallback> closeCallbacks;
 	protected IRegistration registration;
@@ -30,9 +30,9 @@ public class RabbitListener extends DefaultConsumer {
     protected Logger log;
     protected Exchange exchange;
     protected Channel channel;
-    protected String consumerTag;
     
-	
+
+    /* events */
     public void onEnvelopeReceived(IEnvelopeReceivedCallback callback) {
     	envCallbacks.add(callback);
     }
@@ -41,14 +41,8 @@ public class RabbitListener extends DefaultConsumer {
     	closeCallbacks.add(callback);
     }
     
-
-    public String getConsumerTag() { return this.consumerTag; }
-    public void setConsumerTag(String consumerTag) { this.consumerTag = consumerTag; }
     
-    
-    public RabbitListener(IRegistration registration, Exchange exchange, Channel channel)
-    {
-    	super(channel);
+    public RabbitListener(IRegistration registration, Exchange exchange, Channel channel) {
     	
     	this.registration = registration;
         this.exchange = exchange;
@@ -59,58 +53,92 @@ public class RabbitListener extends DefaultConsumer {
         
         log = LoggerFactory.getLogger(this.getClass());
     }
-
     
-    @SuppressWarnings("unchecked")
-	public void initialize() throws Exception {
-        channel.exchangeDeclare(exchange.getName(), exchange.getExchangeType(), exchange.getIsDurable(), exchange.getIsAutoDelete(), exchange.getArguments());
-        channel.queueDeclare(exchange.getQueueName(), exchange.getIsDurable(), false, exchange.getIsAutoDelete(), exchange.getArguments());
-        channel.queueBind(exchange.getQueueName(), exchange.getName(), exchange.getRoutingKey(), exchange.getArguments());
-    }
     
-    public void handleDelivery(
-    		String consumerTag, 
-    		com.rabbitmq.client.Envelope rabbitEnvelope,
-            BasicProperties properties, 
-            byte[] body) {
+	@SuppressWarnings("unchecked")
+	public void run() {
+		log.debug("Enter Start");
+        this.shouldContinue = true;
 
-        Envelope env = new Envelope();
-        new EnvelopeHelper(env).setReceiptTime(DateTime.now());
-        env.setPayload(body);
-        
-        for (Entry<String, Object> prop : properties.getHeaders().entrySet()) {
-        	
-        	try {
-	        	String key = prop.getKey();
-	        	String value = new String((byte[])prop.getValue(), "UTF-8");
-	        	
-	        	env.setHeader(key, value);
-        	}
-        	catch (Exception ex) { log.debug("couldn't get property", ex); }
+        try { 
+            // first, declare the exchange and queue
+            channel.exchangeDeclare(exchange.getName(), exchange.getExchangeType(), exchange.getIsDurable(), exchange.getIsAutoDelete(), exchange.getArguments());
+            channel.queueDeclare(exchange.getQueueName(), exchange.getIsDurable(), false, exchange.getIsAutoDelete(), exchange.getArguments());
+            channel.queueBind(exchange.getQueueName(), exchange.getName(), exchange.getRoutingKey(), exchange.getArguments());
+
+            // next(), create a basic consumer
+            QueueingConsumer consumer = new QueueingConsumer(channel);
+
+            // and tell it to start consuming messages, storing the consumer tag
+            String consumerTag = channel.basicConsume(exchange.getQueueName(), false, consumer);
+
+            log.debug("Will now continuously listen for events using routing key: " + exchange.getRoutingKey());
+            while (this.shouldContinue) {
+                try {
+                    QueueingConsumer.Delivery result = consumer.nextDelivery(100);
+
+                    if (null == result) { continue; }
+
+                    EnvelopeHelper env = new EnvelopeHelper(new Envelope());
+                    env.setReceiptTime(DateTime.now());
+                    env.setPayload(result.getBody());
+                    
+                    for (Entry<String, Object> prop : result.getProperties().getHeaders().entrySet()) {
+                    	
+                    	try {
+            	        	String key = prop.getKey();
+            	        	byte[] valueBytes = ((LongString) prop.getValue()).getBytes();
+            	        	String value = new String(valueBytes, "UTF-8");
+            	        	
+            	        	env.setHeader(key, value);
+                    	}
+                    	catch (Exception ex) { log.debug("couldn't get property", ex); }
+                    }
+
+                    log.debug("Incoming event headers: " + env.flatten());
+
+                    if (this.shouldRaiseEvent(this.registration.getFilterPredicate(), env.getEnvelope())) {
+                        RabbitEnvelopeDispatcher dispatcher = new RabbitEnvelopeDispatcher(
+                        		this.registration, env.getEnvelope(), channel, result.getEnvelope().getDeliveryTag());
+                        this.raise_onEnvelopeReceivedEvent(dispatcher);
+                    }
+                }
+                catch (InterruptedException interruptedException) {
+                    // The consumer was removed, either through
+                    // channel or connection closure, or through the
+                    // action of IModel.BasicCancel().
+                    this.shouldContinue = false;
+                }
+                catch (Exception ex) {
+                	log.warn("Caught an exception, but will not stop listening for messages", ex);
+            	}
+            }
+            log.debug("No longer listening for events");
+
+            try { channel.basicCancel(consumerTag); }
+            catch (IOException ex) { }
+        }
+        catch(Exception ex) {
+        	log.error("Caught an exception that will cause the listener to not listen for messages", ex);
         }
 
-        if (this.ShouldRaiseEvent(registration.getFilterPredicate(), env))
-        {
-            RabbitEnvelopeDispatcher dispatcher = new RabbitEnvelopeDispatcher(registration, env, channel, rabbitEnvelope.getDeliveryTag());
-            this.raise_onEnvelopeReceivedEvent(dispatcher);
-        }
-    }
-    
-    
-    protected boolean ShouldRaiseEvent(IEnvelopeFilterPredicate filter, Envelope env) {
+        this.raise_onCloseEvent(registration);
+        log.debug("Leave Start");
+	}
+	
+	public void stopListening() {
+        log.debug("Enter Stop");
+        this.shouldContinue = false;
+        log.debug("Leave Stop");
+	}
+	
+    protected boolean shouldRaiseEvent(IEnvelopeFilterPredicate filter, Envelope env) {
     	// if there's no filter, the client wants it.  Otherwise, see if they want it.
-        return (null == filter) ? true : filter.filter(env);
+    	boolean clientWantsIt = (null == filter) ? true : filter.filter(env);
+    	
+    	log.debug("Client's transport filter returns: " + clientWantsIt);
+        return clientWantsIt;
     }
-    
-    
-    public void stop()
-    {
-        try { channel.close(); }
-        catch (Exception ex) { log.debug("Caught an exception stopping the listener", ex); }
-        
-        this.raise_onCloseEvent(this.registration);
-    }
-
 
     protected void raise_onCloseEvent(IRegistration registration)
     {
@@ -127,5 +155,4 @@ public class RabbitListener extends DefaultConsumer {
         	catch (Exception ex) { log.error("Caught an unhandled exception raising the envelope received event", ex); }
         }
     }
-
 }

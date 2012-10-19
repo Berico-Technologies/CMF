@@ -63,6 +63,9 @@ namespace cmf.rabbit
 
                     channel.ExchangeDeclare(ex.Name, ex.ExchangeType, ex.IsDurable, ex.IsAutoDelete, ex.Arguments);
                     channel.BasicPublish(ex.Name, ex.RoutingKey, props, env.Payload);
+
+                    // close the channel, but not the connection.  Channels are cheap.
+                    channel.Close();
                 }
             }
 
@@ -140,6 +143,9 @@ namespace cmf.rabbit
             {
                 // get rid of managed resources
                 try { _listeners.Values.ToList().ForEach(l => l.Stop()); }
+                catch { }
+
+                try { _connFactory.Dispose(); }
                 catch { }
             }
             // get rid of unmanaged resources

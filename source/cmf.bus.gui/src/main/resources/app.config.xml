@@ -57,19 +57,19 @@
 	<bean id="cmf.rabbit.RabbitConnectionProvider" class="cmf.rabbit.CertificateConnectionFactory">
 		<constructor-arg name="pathToClientCertificate" value="C:/Users/jruiz/johnruiz.pfx" />
 		<constructor-arg name="password" value="1qaz@WSX3edc$RFV" />
-		<constructor-arg name="pathToRemoteCertStore" value="C:/Users/jruiz/rabbit.osd.mil.keyStore" />
+		<constructor-arg name="pathToRemoteCertStore" value="C:/Users/jruiz/rabbit.johnruiz.com.keyStore" />
 	</bean>
 	
 	<bean id="cmf.rabbit.topology.ITopologyService" class="cmf.rabbit.topology.SimpleTopologyService">
 		<constructor-arg name="clientProfile" value="" />
 		<constructor-arg name="name" value="" />
-		<constructor-arg name="hostname" value="rabbit.osd.mil" />
+		<constructor-arg name="hostname" value="rabbit.johnruiz.com" />
 		<constructor-arg name="vhost" value="" />
 		<constructor-arg name="port" value="5671" />
 	</bean>
 
 	<bean id="cmf.security.ICertificateProvider" class="cmf.security.WindowsCertificateProvider">
-		<constructor-arg name="ldapProviderUrl" value="ldap://osd-dc01.osd.mil/DC=osd,DC=mil" />
+		<constructor-arg name="ldapProviderUrl" value="ldap://dc01.johnruiz.com/DC=johnruiz,DC=com" />
 	</bean>
 
 </beans>

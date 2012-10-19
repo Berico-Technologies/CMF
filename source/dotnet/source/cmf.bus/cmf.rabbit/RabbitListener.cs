@@ -66,7 +66,10 @@ namespace cmf.rabbit
                 {
                     try
                     {
-                        BasicDeliverEventArgs e = consumer.Queue.Dequeue() as BasicDeliverEventArgs;
+                        object result = null;
+
+                        if (false == consumer.Queue.Dequeue(100, out result)) { continue; }
+                        BasicDeliverEventArgs e = result as BasicDeliverEventArgs;
                         if (null == e) { continue; }
                         else { this.LogMessage(e); }
 

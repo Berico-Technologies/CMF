@@ -9,7 +9,7 @@ using cmf.rabbit.topology;
 
 namespace cmf.rabbit
 {
-    public interface IRabbitConnectionFactory
+    public interface IRabbitConnectionFactory : IDisposable
     {
         IConnection ConnectTo(Exchange exchange);
     }

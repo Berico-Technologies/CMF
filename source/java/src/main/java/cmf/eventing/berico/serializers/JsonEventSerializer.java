@@ -7,9 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import cmf.bus.Envelope;
 import cmf.bus.berico.EnvelopeHelper;
-import cmf.eventing.IInboundEventProcessor;
-import cmf.eventing.IOutboundEventProcessor;
+import cmf.eventing.berico.IInboundEventProcessor;
+import cmf.eventing.berico.IOutboundEventProcessor;
 import cmf.eventing.berico.ISerializer;
+import cmf.eventing.berico.ProcessingContext;
 
 public class JsonEventSerializer implements IInboundEventProcessor, IOutboundEventProcessor {
 
@@ -24,22 +25,23 @@ public class JsonEventSerializer implements IInboundEventProcessor, IOutboundEve
 	
 	
 	@Override
-	public void processOutbound(Object event, Envelope envelope,
-			Map<String, Object> context) {
-			
-		envelope.setPayload(this.serializer.byteSerialize(event));
+	public void processOutbound(ProcessingContext context) {
+		
+		context.getEnvelope().setPayload(this.serializer.byteSerialize(context.getEvent()));
 	}
 
 	@Override
-	public boolean processInbound(Object event, Envelope envelope,
-			Map<String, Object> context) {
+	public boolean processInbound(ProcessingContext context) {
 		
 		boolean success = false;
+		EnvelopeHelper env = new EnvelopeHelper(context.getEnvelope());
 		
 		try {
-            String eventType = new EnvelopeHelper(envelope).getMessageType();
+            String eventType = env.getMessageType();
+            
             Class<?> type = Class.forName(eventType);
-            event = serializer.byteDeserialize(envelope.getPayload(), type);
+            context.setEvent(serializer.byteDeserialize(env.getPayload(), type));
+            
             success = true;
         } catch (Exception e) {
         	log.error("Error deserializing event", e);

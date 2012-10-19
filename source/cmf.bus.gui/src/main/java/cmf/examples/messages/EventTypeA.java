@@ -1,6 +1,6 @@
-package cmf.bus.events;
+package cmf.examples.messages;
 
-public class EventTypeB {
+public class EventTypeA {
 
 	private String message = null;
 
@@ -11,5 +11,7 @@ public class EventTypeB {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+	
+	
 
 }
