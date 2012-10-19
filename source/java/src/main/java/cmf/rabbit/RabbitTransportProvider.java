@@ -138,7 +138,7 @@ public class RabbitTransportProvider implements ITransportProvider {
             // store the listener
             listeners.put(registration, listener);
             
-            channel.basicConsume(ex.getQueueName(), false, listener.getConsumerTag(), listener);
+            listener.setConsumerTag(channel.basicConsume(ex.getQueueName(), false, "", listener));
         }
 
         log.debug("Leave Register");

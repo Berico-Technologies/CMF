@@ -29,11 +29,13 @@ public class PKCS12CertificateProvider implements ICertificateProvider {
 
 	protected String pathToP12File;
 	protected String password;
+	protected String providerUrl;
 	
 	
-	public PKCS12CertificateProvider(String pathToP12File, String password) {
+	public PKCS12CertificateProvider(String pathToP12File, String password, String providerUrl) {
 		this.pathToP12File = pathToP12File;
 		this.password = password;
+		this.providerUrl = providerUrl;
 	}
 	
 	
@@ -104,7 +106,7 @@ public class PKCS12CertificateProvider implements ICertificateProvider {
 					try {
 						Hashtable<String, Object> props = new Hashtable<String, Object>();
 						props.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-						props.put(Context.PROVIDER_URL, "ldap://dc01.johnruiz.com/DC=johnruiz,DC=com");
+						props.put(Context.PROVIDER_URL, providerUrl);
 						props.put(Context.SECURITY_AUTHENTICATION, "GSSAPI");
 					
 					    /* Create initial context */

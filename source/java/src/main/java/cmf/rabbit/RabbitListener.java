@@ -1,5 +1,6 @@
 package cmf.rabbit;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -7,6 +8,8 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.rabbitmq.client.AMQP.Queue.BindOk;
+import com.rabbitmq.client.AMQP.Queue.DeclareOk;
 import com.rabbitmq.client.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
@@ -27,6 +30,7 @@ public class RabbitListener extends DefaultConsumer {
     protected Logger log;
     protected Exchange exchange;
     protected Channel channel;
+    protected String consumerTag;
     
 	
     public void onEnvelopeReceived(IEnvelopeReceivedCallback callback) {
@@ -38,6 +42,10 @@ public class RabbitListener extends DefaultConsumer {
     }
     
 
+    public String getConsumerTag() { return this.consumerTag; }
+    public void setConsumerTag(String consumerTag) { this.consumerTag = consumerTag; }
+    
+    
     public RabbitListener(IRegistration registration, Exchange exchange, Channel channel)
     {
     	super(channel);
@@ -46,6 +54,9 @@ public class RabbitListener extends DefaultConsumer {
         this.exchange = exchange;
         this.channel = channel;
 
+        this.envCallbacks = new ArrayList<IEnvelopeReceivedCallback>();
+        this.closeCallbacks = new ArrayList<IListenerCloseCallback>();
+        
         log = LoggerFactory.getLogger(this.getClass());
     }
 

@@ -59,7 +59,7 @@ public class RabbitEnvelopeDispatcher implements IEnvelopeDispatcher {
         try
         {
             // this may be null, or it may be any other kind of object
-            maybeNull = this.registration.getHandler().handle(env);
+            maybeNull = this.registration.handle(env);
             log.debug("Dispatched envelope to registration");
         }
         catch (Exception ex)

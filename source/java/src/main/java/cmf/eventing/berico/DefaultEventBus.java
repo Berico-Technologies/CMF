@@ -9,7 +9,6 @@ import cmf.bus.Envelope;
 import cmf.bus.IEnvelopeBus;
 import cmf.bus.IEnvelopeHandler;
 import cmf.bus.IRegistration;
-import cmf.bus.berico.DefaultEnvelopeRegistration;
 import cmf.eventing.IEventBus;
 import cmf.eventing.IEventFilterPredicate;
 import cmf.eventing.IEventHandler;
@@ -89,8 +88,9 @@ public class DefaultEventBus implements IEventBus {
 
     @Override
     public <TEVENT> void subscribe(final IEventHandler<TEVENT> eventHandler, final IEventFilterPredicate filterPredicate) throws Exception {
-        IRegistration registration = new DefaultEnvelopeRegistration();
-        registration.setHandler(new EventBusEnvelopeHandler<TEVENT>(eventHandler));
+    	EventRegistration registration = new EventRegistration(eventHandler, this.inboundProcessors);
+//        IRegistration registration = new DefaultEnvelopeRegistration();
+//        registration.setHandler(new EventBusEnvelopeHandler<TEVENT>(eventHandler));
         envelopeBus.register(registration);
     }
 }

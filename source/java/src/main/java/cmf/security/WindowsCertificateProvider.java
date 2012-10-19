@@ -28,6 +28,14 @@ import com.sun.security.auth.module.Krb5LoginModule;
 
 public class WindowsCertificateProvider implements ICertificateProvider {
 
+	protected String ldapProviderUrl;
+	
+	
+	public WindowsCertificateProvider(String ldapProviderUrl) {
+		this.ldapProviderUrl = ldapProviderUrl;
+	}
+	
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public CredentialHolder getCredentials() {
@@ -65,7 +73,7 @@ public class WindowsCertificateProvider implements ICertificateProvider {
 					try {
 						Hashtable<String, Object> props = new Hashtable<String, Object>();
 						props.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-						props.put(Context.PROVIDER_URL, "ldap://dc01.johnruiz.com/DC=johnruiz,DC=com");
+						props.put(Context.PROVIDER_URL, ldapProviderUrl);
 						props.put(Context.SECURITY_AUTHENTICATION, "GSSAPI");
 					
 					    /* Create initial context */
@@ -172,7 +180,7 @@ public class WindowsCertificateProvider implements ICertificateProvider {
 					try {
 						Hashtable<String, Object> props = new Hashtable<String, Object>();
 						props.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-						props.put(Context.PROVIDER_URL, "ldap://dc01.johnruiz.com/DC=johnruiz,DC=com");
+						props.put(Context.PROVIDER_URL, ldapProviderUrl);
 						props.put(Context.SECURITY_AUTHENTICATION, "GSSAPI");
 					
 					    /* Create initial context */

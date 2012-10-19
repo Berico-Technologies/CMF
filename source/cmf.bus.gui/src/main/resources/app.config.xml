@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+	<bean id="cmf.bus.ui.BusTester" class="cmf.bus.ui.BusTester">
+		<constructor-arg name="eventBus" ref="cmf.eventing.IEventBus" />
+	</bean>
+
+	<bean id="cmf.eventing.IEventBus" class="cmf.eventing.berico.DefaultEventBus">
+		<constructor-arg name="envelopeBus" ref="cmf.bus.IEnvelopeBus" />
+		<constructor-arg name="inboundProcessors">
+			<list>
+				<ref bean="RpcFilter" />
+				<ref bean="DigitalSignatureProcessor" />
+				<ref bean="JsonEventSerializer" />
+			</list>
+		</constructor-arg>
+		<constructor-arg name="outboundProcessors">
+			<list>
+				<ref bean="JsonEventSerializer" />
+				<ref bean="OutboundHeadersProcessor" />
+				<ref bean="DigitalSignatureProcessor" />
+				<ref bean="RpcFilter" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="JsonEventSerializer" class="cmf.eventing.berico.serializers.JsonEventSerializer">
+		<constructor-arg name="serializer"
+			ref="cmf.eventing.berico.ISerializer" />
+	</bean>
+
+	<bean id="cmf.eventing.berico.ISerializer" class="cmf.eventing.berico.GsonSerializer" />
+	
+	<bean id="OutboundHeadersProcessor" class="cmf.eventing.berico.OutboundHeadersProcessor" />
+
+	<bean id="RpcFilter" class="cmf.eventing.berico.RpcFilter" />
+
+	<bean id="DigitalSignatureProcessor" class="cmf.eventing.berico.DigitalSignatureProcessor">
+		<constructor-arg name="certProvider"
+			ref="cmf.security.ICertificateProvider" />
+	</bean>
+
+	<bean id="cmf.bus.IEnvelopeBus" class="cmf.bus.berico.DefaultEnvelopeBus">
+		<constructor-arg name="transportProvider"
+			ref="cmf.bus.berico.ITransportProvider" />
+	</bean>
+
+	<bean id="cmf.bus.berico.ITransportProvider" class="cmf.rabbit.RabbitTransportProvider">
+		<constructor-arg name="topologyService"
+			ref="cmf.rabbit.topology.ITopologyService" />
+		<constructor-arg name="connFactory"
+			ref="cmf.rabbit.RabbitConnectionProvider" />
+	</bean>
+
+	<bean id="cmf.rabbit.RabbitConnectionProvider" class="cmf.rabbit.CertificateConnectionFactory">
+		<constructor-arg name="pathToClientCertificate" value="C:/Users/jruiz/johnruiz.pfx" />
+		<constructor-arg name="password" value="1qaz@WSX3edc$RFV" />
+		<constructor-arg name="pathToRemoteCertStore" value="C:/Users/jruiz/rabbit.osd.mil.keyStore" />
+	</bean>
+	
+	<bean id="cmf.rabbit.topology.ITopologyService" class="cmf.rabbit.topology.SimpleTopologyService">
+		<constructor-arg name="clientProfile" value="" />
+		<constructor-arg name="name" value="" />
+		<constructor-arg name="hostname" value="rabbit.osd.mil" />
+		<constructor-arg name="vhost" value="" />
+		<constructor-arg name="port" value="5671" />
+	</bean>
+
+	<bean id="cmf.security.ICertificateProvider" class="cmf.security.WindowsCertificateProvider">
+		<constructor-arg name="ldapProviderUrl" value="ldap://osd-dc01.osd.mil/DC=osd,DC=mil" />
+	</bean>
+
+</beans>

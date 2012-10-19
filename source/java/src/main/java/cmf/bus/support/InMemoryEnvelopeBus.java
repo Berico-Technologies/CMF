@@ -22,9 +22,13 @@ public class InMemoryEnvelopeBus implements IEnvelopeBus {
             public void run() {
                 for (IRegistration registration : registrationList) {
                     try {
-                        registration.getHandler().handle(envelope);
+                        registration.handle(envelope);
                     } catch (Exception e) {
-                        registration.getHandler().handleFailed(envelope, e);
+                        try {
+							registration.handleFailed(envelope, e);
+						} catch (Exception failedToFail) {
+							failedToFail.printStackTrace();
+						}
                     }
                 }
             }

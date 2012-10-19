@@ -13,8 +13,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JTextArea;
 
+import cmf.bus.Envelope;
 import cmf.bus.events.EventTypeA;
 import cmf.bus.events.EventTypeB;
+import cmf.eventing.IEventBus;
+import cmf.eventing.IEventHandler;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -31,7 +34,12 @@ import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.Map;
+
 import javax.swing.JTextField;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class BusTester {
 
@@ -40,6 +48,8 @@ public class BusTester {
 	
 	private JFrame EventConsumerFrame;
 	private JTextField reqmsgTextField;
+	private final JTextArea logTextArea = new JTextArea();
+	private IEventBus eventBus;
 	
 
 	/**
@@ -49,7 +59,9 @@ public class BusTester {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					BusTester window = new BusTester();
+					ApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"app.config.xml"});
+
+					BusTester window = context.getBean(BusTester.class);
 					window.EventConsumerFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -61,7 +73,8 @@ public class BusTester {
 	/**
 	 * Create the application.
 	 */
-	public BusTester() {
+	public BusTester(IEventBus eventBus) {
+		this.eventBus = eventBus;
 		initialize();
 	}
 
@@ -118,12 +131,27 @@ public class BusTester {
 		publishButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if( EVENT_TYPE_A.equals(eventComboBox.getSelectedItem()) ) {
-					//TODO PUBLISH THIS TO THE BUS
-					new EventTypeA().setMessage(eventTextPane.getText());
+					EventTypeA event = new EventTypeA();
+					event.setMessage(eventTextPane.getText());
+					
+					try {
+						eventBus.publish(event);
+					}
+					catch(Exception ex) {
+						logTextArea.append("Failed to publish an event of type A: " + ex.toString());
+					}
 					
 				} else if( EVENT_TYPE_B.equals(eventComboBox.getSelectedItem()))  {
 					//TODO PUBLISH THIS TO THE BUS
-					new EventTypeB().setMessage(eventTextPane.getText());
+					EventTypeB event = new EventTypeB();
+					event.setMessage(eventTextPane.getText());
+					
+					try {
+						eventBus.publish(event);
+					}
+					catch(Exception ex) {
+						logTextArea.append("Failed to publish an event of type B: " + ex.toString());
+					}
 				}
 			}
 		});
@@ -207,8 +235,7 @@ public class BusTester {
 		logPanel.add(panel, BorderLayout.CENTER);
 		panel.setLayout(new GridLayout(2, 1, 0, 0));
 		
-		final JTextArea logTextArea = new JTextArea();
-		panel.add(logTextArea);
+		panel.add(this.logTextArea);
 		
 		JPanel panel_1 = new JPanel();
 		panel.add(panel_1);
@@ -222,13 +249,62 @@ public class BusTester {
 		panel_1.add(clearLogButton);
 	}
 	
-	private void handleCheckBox( ActionEvent e ) {
+	private void handleCheckBox( ActionEvent e )  {
 		AbstractButton button = (AbstractButton)e.getSource();
 		if( button.getModel().isSelected() ) {
 			if( "cmf.bus.events.EventTypeA".equals(button.getText())) {
-				//SUBSCRIBE 
+				
+				try {
+					this.eventBus.subscribe(new IEventHandler<EventTypeA>() {
+
+						public Class<EventTypeA> getEventType() {
+							// TODO Auto-generated method stub
+							return EventTypeA.class;
+						}
+
+						public Object handle(EventTypeA event,
+								Map<String, String> headers) {
+							logTextArea.append("Received an event of type A: " + event.getMessage());
+							return null;
+						}
+
+						public Object handleFailed(Envelope envelope,
+								Exception e) {
+							logTextArea.append("Failed to receive an event of type A: " + e.getMessage());
+							return null;
+						}
+						
+					});
+				}
+				catch(Exception ex) {
+					logTextArea.append("Failed to subscribe for events of type A: " + ex.toString());
+				}
 			} else if("cmf.bus.events.EventTypeB".equals(button.getText() )) {
-				//SUBSCRIBE
+				try {
+					this.eventBus.subscribe(new IEventHandler<EventTypeB>() {
+
+						public Class<EventTypeB> getEventType() {
+							// TODO Auto-generated method stub
+							return EventTypeB.class;
+						}
+
+						public Object handle(EventTypeB event,
+								Map<String, String> headers) {
+							logTextArea.append("Received an event of type B: " + event.getMessage());
+							return null;
+						}
+
+						public Object handleFailed(Envelope envelope,
+								Exception e) {
+							logTextArea.append("Failed to receive an event of type B: " + e.getMessage());
+							return null;
+						}
+						
+					});
+				}
+				catch(Exception ex) {
+					logTextArea.append("Failed to subscribe for events of type B: " + ex.toString());
+				}
 			}
 		}
 	}
