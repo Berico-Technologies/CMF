@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Envelope.cs" />
+    <Compile Include="EnvelopeHeaderConstants.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="IEnvelopeBus.cs" />
     <Compile Include="IEnvelopeReceiver.cs" />
     <Compile Include="IEnvelopeSender.cs" />

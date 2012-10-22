@@ -5,7 +5,7 @@ using System.Text;
 
 using cmf.bus;
 
-namespace cmf.bus.berico
+namespace cmf.bus
 {
     public static class Extensions
     {

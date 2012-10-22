@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using cmf.bus.berico;
+using cmf.bus;
 
 namespace cmf.rabbit.topology
 {
