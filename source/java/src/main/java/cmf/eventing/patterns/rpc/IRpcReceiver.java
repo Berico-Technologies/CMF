@@ -1,8 +1,17 @@
 package cmf.eventing.patterns.rpc;
 
+import java.util.Collection;
+
+import org.joda.time.Duration;
+
 public interface IRpcReceiver {
 
-    <T> T getResponseTo(Object request);
+    Object getResponseTo(Object request, Duration timeout, String expectedTopic);
 
-    <T> T getResponseTo(Object request, long timeout);
+    <TResponse> TResponse getResponseTo(Object request, Duration timeout, Class<TResponse> expectedType);
+
+    @SuppressWarnings("rawtypes")
+    Collection gatherResponsesTo(Object request, Duration timeout, String... expectedTopics);
+
+    <TResponse> Collection<TResponse> gatherResponsesTo(Object request, Duration timeout);
 }
