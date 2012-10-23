@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface IRpcSender {
 
-    void respondTo(Map<String, String> originalHeaders, Object response);
+    void respondTo(Map<String, String> headers, Object response);
 }
