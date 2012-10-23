@@ -165,4 +165,24 @@ public class RabbitTransportProvider implements ITransportProvider {
     		catch(Exception ex) { log.error("Caught an unhandled exception raising the onEnvelopeReceived event", ex); }
     	}
     }
+
+
+	@Override
+	public void dispose() {
+		try { this.connFactory.dispose(); }
+		catch (Exception ex) {}
+		
+		try { this.topoSvc.dispose(); }
+		catch (Exception ex) {}
+		
+		for (RabbitListener l : this.listeners.values()) {
+			try { l.dispose(); }
+			catch (Exception ex) {}
+		}
+	}
+	
+	@Override
+	protected void finalize() {
+		this.dispose();
+	}
 }

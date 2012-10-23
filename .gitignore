@@ -9,6 +9,8 @@
 target/
 [Bb]uild/
 [Bb]in/
+.metadata/
+Servers/
 
 *.tar
 *.tgz

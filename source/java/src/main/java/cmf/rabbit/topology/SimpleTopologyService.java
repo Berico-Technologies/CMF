@@ -67,4 +67,14 @@ public class SimpleTopologyService implements ITopologyService {
         
         return new RoutingInfo(routingInfo);
 	}
+	
+	@Override
+	public void dispose() {
+		// nothing to do
+	}
+	
+	@Override
+	protected void finalize() {
+		this.dispose();
+	}
 }

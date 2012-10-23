@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cmf.bus.Envelope;
+import cmf.bus.IDisposable;
 import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;
 import cmf.bus.berico.EnvelopeHelper;
@@ -20,7 +21,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.LongString;
 import com.rabbitmq.client.QueueingConsumer;
 
-public class RabbitListener extends Thread {
+public class RabbitListener extends Thread implements IDisposable {
 
 	/* fields */
 	protected List<IEnvelopeReceivedCallback> envCallbacks;
@@ -155,4 +156,14 @@ public class RabbitListener extends Thread {
         	catch (Exception ex) { log.error("Caught an unhandled exception raising the envelope received event", ex); }
         }
     }
+
+	@Override
+	public void dispose() {
+		this.shouldContinue = false;
+	}
+	
+	@Override
+	protected void finalize() {
+		this.dispose();
+	}
 }

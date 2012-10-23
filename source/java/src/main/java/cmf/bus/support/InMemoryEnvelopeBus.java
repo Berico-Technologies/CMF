@@ -55,4 +55,10 @@ public class InMemoryEnvelopeBus implements IEnvelopeBus {
     public synchronized void unregister(IRegistration registration) {
         registrationList.remove(registration);
     }
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
 }

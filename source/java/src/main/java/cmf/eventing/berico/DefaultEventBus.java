@@ -48,6 +48,10 @@ public class DefaultEventBus implements IEventBus {
     	EventRegistration registration = new EventRegistration(eventHandler, this.inboundProcessors);
         envelopeBus.register(registration);
     }
+
+    public void dispose() {
+    	this.envelopeBus.dispose();
+    }
     
 
     protected Object processOutbound(Object event, Envelope envelope) throws Exception {
@@ -57,5 +61,10 @@ public class DefaultEventBus implements IEventBus {
         }
 
         return event;
+    }
+    
+    @Override
+    protected void finalize() {
+    	this.dispose();
     }
 }

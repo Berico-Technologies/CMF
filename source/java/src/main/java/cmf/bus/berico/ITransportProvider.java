@@ -1,9 +1,10 @@
 package cmf.bus.berico;
 
 import cmf.bus.Envelope;
+import cmf.bus.IDisposable;
 import cmf.bus.IRegistration;
 
-public interface ITransportProvider {
+public interface ITransportProvider extends IDisposable {
 
 	void onEnvelopeReceived(IEnvelopeReceivedCallback callback);
 	

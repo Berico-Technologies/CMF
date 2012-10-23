@@ -1,6 +1,6 @@
 package cmf.bus;
 
-public interface IEnvelopeReceiver {
+public interface IEnvelopeReceiver extends IDisposable {
 
     void register(IRegistration registration) throws Exception;
     

@@ -54,4 +54,15 @@ public class CertificateConnectionFactory implements RabbitConnectionFactory {
         
         return factory.newConnection();
 	}
+
+
+	@Override
+	public void dispose() {
+		// nothing to do
+	}
+	
+	@Override
+	protected void finalize() {
+		this.dispose();
+	}
 }

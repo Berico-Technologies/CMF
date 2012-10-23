@@ -152,4 +152,19 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
     public void setOutboundProcessorCollection(List<IOutboundEnvelopeProcessor> outboundProcessors) {
         this.outboundProcessors = outboundProcessors;
     }
+
+	@Override
+	public void dispose() {
+		this.transportProvider.dispose();
+		
+		for (IInboundEnvelopeProcessor p : this.inboundProcessors) {
+			try { p.dispose(); }
+			catch (Exception ex) {}
+		}
+		
+		for (IOutboundEnvelopeProcessor p : this.outboundProcessors) {
+			try { p.dispose(); }
+			catch(Exception ex) {}
+		}
+	}
 }
