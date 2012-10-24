@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Text;
 
@@ -27,7 +28,11 @@ namespace cmf.eventing.berico
             {
                 messageTopic = messageTopic + "#" + correlationId.ToString();
             }
-            env.SetMessageTopic(messageTopic); 
+            env.SetMessageTopic(messageTopic);
+
+            string senderIdentity = env.GetSenderIdentity();
+            senderIdentity = string.IsNullOrEmpty(senderIdentity) ? UserPrincipal.Current.DistinguishedName.Replace(",", ", ") : senderIdentity;
+            env.SetSenderIdentity(senderIdentity);
         }
     }
 }

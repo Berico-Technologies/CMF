@@ -23,7 +23,10 @@ namespace cmf.eventing.berico.serializers
         {
             protected override string ResolvePropertyName(string propertyName)
             {
-                return propertyName.ToLower();
+                string firstChar = propertyName.Substring(0, 1).ToLower();
+                string camelName = string.Format("{0}{1}", firstChar, propertyName.Substring(1));
+
+                return camelName;
             }
         }
 
