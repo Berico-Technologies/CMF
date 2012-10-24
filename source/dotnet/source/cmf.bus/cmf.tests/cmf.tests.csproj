@@ -43,6 +43,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -55,6 +56,7 @@
     <Compile Include="InMemoryEnvBusTests.cs" />
     <Compile Include="JsonSerializerPerfTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserPrincipalTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\cmf.bus.berico\cmf.bus.berico.csproj">
