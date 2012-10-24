@@ -12,179 +12,216 @@ import cmf.bus.Envelope;
 public class EnvelopeHelper {
 
 	private Envelope env;
-	
-	
-	public Envelope getEnvelope() { return env; }
-	
+
+	public Envelope getEnvelope() {
+		return env;
+	}
+
+	public EnvelopeHelper(){
+		this.env = new Envelope();
+	}
 	
 	public EnvelopeHelper(Envelope envelope) {
 		this.env = envelope;
 	}
-	
-	
-	public String getHeader(String key) { return env.getHeader(key); }
-	public void setHeader(String key, String value) { env.setHeader(key, value); }
-	
-	
-	public byte[] getPayload() { return env.getPayload(); }
-	public void setPayload(byte[] payload) { env.setPayload(payload); }
-	
-	
+
+	public String getHeader(String key) {
+		return env.getHeader(key);
+	}
+
+	public EnvelopeHelper setHeader(String key, String value) {
+		env.setHeader(key, value);
+		return this;
+	}
+
+	public byte[] getPayload() {
+		return env.getPayload();
+	}
+
+	public EnvelopeHelper setPayload(byte[] payload) {
+		env.setPayload(payload);
+		return this;
+	}
+
 	public String getMessageTopic() {
 		return env.getHeader(EnvelopeHeaderConstants.MESSAGE_TOPIC);
 	}
-	public void setMessageTopic(String topic) {
+
+	public EnvelopeHelper setMessageTopic(String topic) {
 		env.setHeader(EnvelopeHeaderConstants.MESSAGE_TOPIC, topic);
+		return this;
 	}
-	
-	
+
 	public UUID getMessageId() {
 		UUID id = null;
-		
+
 		String idString = env.getHeader(EnvelopeHeaderConstants.MESSAGE_ID);
-		
+
 		if (idString != null) {
 			id = UUID.fromString(idString);
 		}
-		
+
 		return id;
 	}
-	public void setMessageId(UUID id) {
+
+	public EnvelopeHelper setMessageId(UUID id) {
 		env.setHeader(EnvelopeHeaderConstants.MESSAGE_ID, id.toString());
+		return this;
 	}
-	
-	
+
 	public UUID getCorrelationId() {
 		UUID cid = null;
-		
-		String cidString = env.getHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID);
+
+		String cidString = env
+				.getHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID);
 		if (cidString != null) {
 			cid = UUID.fromString(cidString);
 		}
-		
+
 		return cid;
 	}
-	public void setCorrelationId(UUID cid) {
-		env.setHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID, cid.toString());
+
+	public EnvelopeHelper setCorrelationId(UUID cid) {
+		env.setHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID,
+				cid.toString());
+		return this;
 	}
-	
-	
+
 	public String getMessageType() {
 		return env.getHeader(EnvelopeHeaderConstants.MESSAGE_TYPE);
 	}
-	public void setMessageType(String messageType) {
+
+	public EnvelopeHelper setMessageType(String messageType) {
 		env.setHeader(EnvelopeHeaderConstants.MESSAGE_TYPE, messageType);
+		return this;
 	}
-	
-	
+
 	public String getMessagePattern() {
 		return env.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN);
 	}
-	public void setMessagePattern(String pattern) {
+
+	public EnvelopeHelper setMessagePattern(String pattern) {
 		env.setHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN, pattern);
+		return this;
 	}
-	
-	
+
 	public Duration getRpcTimeout() {
-		String timeString = env.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT);
+		String timeString = env
+				.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT);
 		if (null == timeString) {
 			return Duration.ZERO;
 		}
-		
+
 		long totalMilliseconds = Long.parseLong(timeString);
 		return new Duration(totalMilliseconds);
 	}
-	public void setRpcTimeout(Duration timeout) {
-		env.setHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT, Long.toString(timeout.getMillis()));
+
+	public EnvelopeHelper setRpcTimeout(Duration timeout) {
+		env.setHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT,
+				Long.toString(timeout.getMillis()));
+		return this;
 	}
-	
-	
+
 	public DateTime getCreationTime() {
-        String createTicks = null;
+		String createTicks = null;
 
-        if (env.getHeaders().containsKey(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME)) {
-            createTicks = env.getHeaders().get(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME);
-        }
+		if (env.getHeaders().containsKey(
+				EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME)) {
+			createTicks = env.getHeaders().get(
+					EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME);
+		}
 
-        return new DateTime(Long.parseLong(createTicks));
-    }
-    public void setCreationTime(DateTime date) {
-    	env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME, Long.toString(date.getMillis()));
-    }
+		return new DateTime(Long.parseLong(createTicks));
+	}
 
-    
-    public DateTime getReceiptTime() {
-        String receiptTicks = null;
+	public EnvelopeHelper setCreationTime(DateTime date) {
+		env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME,
+				Long.toString(date.getMillis()));
+		return this;
+	}
 
-        if (env.getHeaders().containsKey(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME)) {
-            receiptTicks = env.getHeaders().get(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME);
-        }
+	public DateTime getReceiptTime() {
+		String receiptTicks = null;
 
-        return new DateTime(Long.parseLong(receiptTicks));
-    }
-    public void setReceiptTime(DateTime date) {
-    	env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME, Long.toString(date.getMillis()));
-    }
-    
-    
-    public String getSenderIdentity() {
-    	return env.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY);
-    }
-    public void setSenderIdentity(String distinguishedName) {
-    	env.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY, distinguishedName);
-    }
-    
-    
+		if (env.getHeaders().containsKey(
+				EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME)) {
+			receiptTicks = env.getHeaders().get(
+					EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME);
+		}
+
+		return new DateTime(Long.parseLong(receiptTicks));
+	}
+
+	public EnvelopeHelper setReceiptTime(DateTime date) {
+		env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME,
+				Long.toString(date.getMillis()));
+		return this;
+	}
+
+	public String getSenderIdentity() {
+		return env.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY);
+	}
+
+	public EnvelopeHelper setSenderIdentity(String distinguishedName) {
+		env.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY,
+				distinguishedName);
+		return this;
+	}
+
 	public byte[] getDigitalSignature() {
-		String base64String = env.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE);
+		String base64String = env
+				.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE);
 		if (null == base64String) {
 			return null;
 		}
-		
+
 		return Base64.decodeBase64(base64String);
 	}
-	public void setDigitalSignature(byte[] signature) {
-		env.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE, Base64.encodeBase64String(signature));
+
+	public EnvelopeHelper setDigitalSignature(byte[] signature) {
+		env.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE,
+				Base64.encodeBase64String(signature));
+		return this;
 	}
-	
-	
+
 	public boolean IsRpc() {
-		return EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC.equals(env.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN));
+		return EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC.equals(env
+				.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN));
 	}
-	
+
 	public boolean IsPubSub() {
-		return EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB.equals(env.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN));
+		return EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB.equals(env
+				.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN));
 	}
-	
+
 	public boolean IsRequest() {
-        // we assume that the envelope is holding a request if it is marked
-        // as an rpc message that has no correlation id set.
-        UUID correlationId = new EnvelopeHelper(env).getCorrelationId();
+		// we assume that the envelope is holding a request if it is marked
+		// as an rpc message that has no correlation id set.
+		UUID correlationId = new EnvelopeHelper(env).getCorrelationId();
 
-        return ( (new EnvelopeHelper(env).IsRpc()) && (null == correlationId) );
+		return ((new EnvelopeHelper(env).IsRpc()) && (null == correlationId));
 	}
-
 
 	public String flatten() {
 		return this.flatten(",");
 	}
-	
+
 	public String flatten(String separator) {
 		StringBuilder sb = new StringBuilder();
-		
-        sb.append("[");
-        
-        for (Entry<String, String> kvp : this.env.getHeaders().entrySet()) {
-        	sb.append(String.format("%s{%s:%s}", separator, kvp.getKey(), kvp.getValue()));
-        }
 
-        if (sb.length()> 1)
-        {
-            sb.delete(1, 1 + separator.length());
-        }
+		sb.append("[");
 
-        sb.append("]");
-        
+		for (Entry<String, String> kvp : this.env.getHeaders().entrySet()) {
+			sb.append(String.format("%s{%s:%s}", separator, kvp.getKey(),
+					kvp.getValue()));
+		}
+
+		if (sb.length() > 1) {
+			sb.delete(1, 1 + separator.length());
+		}
+
+		sb.append("]");
+
 		return sb.toString();
 	}
 
