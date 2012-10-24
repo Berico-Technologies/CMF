@@ -49,6 +49,7 @@ public class CertificateConnectionFactory implements RabbitConnectionFactory {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(exchange.getHostName());
         factory.setPort(exchange.getPort());
+        factory.setVirtualHost(exchange.getVirtualHost());
         factory.setSaslConfig(DefaultSaslConfig.EXTERNAL);
         factory.useSslProtocol(c);
         
