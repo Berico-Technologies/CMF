@@ -48,7 +48,8 @@ public class InMemoryEnvelopeBus implements IEnvelopeBus {
         for (IRegistration registration : registrationList) {
         		
         		if (null != registration.getFilterPredicate() 
-        			&& registration.getFilterPredicate().filter(envelope)){
+        			&& !registration.getFilterPredicate().filter(envelope)){
+        			
                    registrations.add(registration);
         		} else {
         			registrations.add(registration);
