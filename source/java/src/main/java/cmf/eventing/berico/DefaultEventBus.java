@@ -23,8 +23,8 @@ public class DefaultEventBus implements IEventBus {
 
     public DefaultEventBus(IEnvelopeBus envelopeBus) {
         this.envelopeBus = envelopeBus;
-        this.inboundProcessors = new ArrayList<IInboundEventProcessor>();
-        this.outboundProcessors = new ArrayList<IOutboundEventProcessor>();
+        inboundProcessors = new ArrayList<IInboundEventProcessor>();
+        outboundProcessors = new ArrayList<IOutboundEventProcessor>();
     }
 
     public DefaultEventBus(IEnvelopeBus envelopeBus, List<IInboundEventProcessor> inboundProcessors,
@@ -32,6 +32,25 @@ public class DefaultEventBus implements IEventBus {
         this.envelopeBus = envelopeBus;
         this.inboundProcessors = inboundProcessors;
         this.outboundProcessors = outboundProcessors;
+    }
+
+    @Override
+    public void dispose() {
+        envelopeBus.dispose();
+    }
+
+    @Override
+    protected void finalize() {
+        dispose();
+    }
+
+    protected Object processOutbound(Object event, Envelope envelope) throws Exception {
+        ProcessingContext context = new ProcessingContext(envelope, event);
+        for (IOutboundEventProcessor processor : outboundProcessors) {
+            processor.processOutbound(context);
+        }
+
+        return event;
     }
 
     @Override
@@ -54,25 +73,7 @@ public class DefaultEventBus implements IEventBus {
     @Override
     public <TEVENT> void subscribe(final IEventHandler<TEVENT> eventHandler, final IEventFilterPredicate filterPredicate)
                     throws Exception {
-        EventRegistration registration = new EventRegistration(eventHandler, this.inboundProcessors);
+        EventRegistration registration = new EventRegistration(eventHandler, inboundProcessors);
         envelopeBus.register(registration);
-    }
-
-    public void dispose() {
-    	this.envelopeBus.dispose();
-    }
-    
-    protected Object processOutbound(Object event, Envelope envelope) throws Exception {
-        ProcessingContext context = new ProcessingContext(envelope, event);
-        for (IOutboundEventProcessor processor : outboundProcessors) {
-            processor.processOutbound(context);
-        }
-
-        return event;
-    }
-    
-    @Override
-    protected void finalize() {
-    	this.dispose();
     }
 }

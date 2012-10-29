@@ -24,6 +24,26 @@ public class DefaultRpcBus extends DefaultEventBus implements IRpcEventBus {
         super(envelopeBus, inboundProcessors, outboundProcessors);
     }
 
+    @Override
+    public <TResponse> Collection<TResponse> gatherResponsesTo(Object request, Duration timeout) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public Collection gatherResponsesTo(Object request, Duration timeout, String... expectedTopics) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <TResponse> TResponse getResponseTo(Object request, Duration timeout, Class<TResponse> expectedType) {
+        Object responseObject = getResponseTo(request, timeout, expectedType.getCanonicalName());
+
+        return (TResponse) responseObject;
+    }
+
+    @Override
     public Object getResponseTo(Object request, Duration timeout, String expectedTopic) {
         log.debug("Enter GetResponseTo");
 
@@ -48,7 +68,7 @@ public class DefaultRpcBus extends DefaultEventBus implements IRpcEventBus {
             envelopeHelper.setRpcTimeout(timeout);
 
             // let the outbound processor do its thing
-            this.processOutbound(request, env);
+            processOutbound(request, env);
 
             // create an RPC registration
             RpcRegistration rpcRegistration = new RpcRegistration(requestId, expectedTopic, inboundProcessors);
@@ -73,22 +93,7 @@ public class DefaultRpcBus extends DefaultEventBus implements IRpcEventBus {
         return response;
     }
 
-    @SuppressWarnings("unchecked")
-    public <TResponse> TResponse getResponseTo(Object request, Duration timeout, Class<TResponse> expectedType) {
-        Object responseObject = getResponseTo(request, timeout, expectedType.getCanonicalName());
-
-        return (TResponse) responseObject;
-    }
-
-    @SuppressWarnings("rawtypes")
-    public Collection gatherResponsesTo(Object request, Duration timeout, String... expectedTopics) {
-        throw new UnsupportedOperationException();
-    }
-
-    public <TResponse> Collection<TResponse> gatherResponsesTo(Object request, Duration timeout) {
-        throw new UnsupportedOperationException();
-    }
-
+    @Override
     public void respondTo(Map<String, String> headers, Object response) {
         log.debug("Enter RespondTo");
 
@@ -111,7 +116,7 @@ public class DefaultRpcBus extends DefaultEventBus implements IRpcEventBus {
             Envelope env = new Envelope();
             new EnvelopeHelper(env).setCorrelationId(originalHeadersHelper.getMessageId());
 
-            this.processOutbound(response, env);
+            processOutbound(response, env);
             envelopeBus.send(env);
         } catch (Exception ex) {
             log.error("Exception responding to an event", ex);

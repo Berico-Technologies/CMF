@@ -4,7 +4,7 @@ import java.security.cert.X509Certificate;
 
 public interface ICertificateProvider {
 
-	CredentialHolder getCredentials();
-	
-	X509Certificate getCertificateFor(String distinguishedName);
+    X509Certificate getCertificateFor(String distinguishedName);
+
+    CredentialHolder getCredentials();
 }

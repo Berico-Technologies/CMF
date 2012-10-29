@@ -7,34 +7,45 @@ import cmf.bus.Envelope;
 
 public class ProcessingContext {
 
-	protected Envelope envelope;
-	protected Object event;
-	protected Map<String, Object> properties;
-	
-	
-	public Envelope getEnvelope() { return this.envelope; }
-	public void setEnvelope(Envelope env) { this.envelope = env; }
-	
-	public Object getEvent() { return this.event; }
-	public void setEvent(Object event) { this.event = event; }
-	
-	public Map<String, Object> getProperties() { return this.properties; }
-	public void setProperties(Map<String, Object> properties) { this.properties = properties; }
-	
-	
-	public ProcessingContext(Envelope env, Object event) {
-		this.envelope = env;
-		this.event = event;
-		this.properties = new HashMap<String, Object>();
-	}
-	
-	
+    protected Envelope envelope;
+    protected Object event;
+    protected Map<String, Object> properties;
+
+    public ProcessingContext(Envelope env, Object event) {
+        envelope = env;
+        this.event = event;
+        properties = new HashMap<String, Object>();
+    }
+
+    public Envelope getEnvelope() {
+        return envelope;
+    }
+
+    public Object getEvent() {
+        return event;
+    }
+
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
 
     public Object getProperty(String key) {
         return properties.get(key);
     }
 
+    public void setEnvelope(Envelope env) {
+        envelope = env;
+    }
+
+    public void setEvent(Object event) {
+        this.event = event;
+    }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
     public void setProperty(String key, Object value) {
-    	properties.put(key, value);
+        properties.put(key, value);
     }
 }

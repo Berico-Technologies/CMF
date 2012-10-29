@@ -6,12 +6,12 @@ import org.joda.time.Duration;
 
 public interface IRpcReceiver {
 
-    Object getResponseTo(Object request, Duration timeout, String expectedTopic);
-
-    <TResponse> TResponse getResponseTo(Object request, Duration timeout, Class<TResponse> expectedType);
+    <TResponse> Collection<TResponse> gatherResponsesTo(Object request, Duration timeout);
 
     @SuppressWarnings("rawtypes")
     Collection gatherResponsesTo(Object request, Duration timeout, String... expectedTopics);
 
-    <TResponse> Collection<TResponse> gatherResponsesTo(Object request, Duration timeout);
+    <TResponse> TResponse getResponseTo(Object request, Duration timeout, Class<TResponse> expectedType);
+
+    Object getResponseTo(Object request, Duration timeout, String expectedTopic);
 }
