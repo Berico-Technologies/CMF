@@ -15,30 +15,29 @@ import com.rabbitmq.client.DefaultSaslConfig;
 
 public class CertificateConnectionFactory implements RabbitConnectionFactory {
 
-	protected String pathToClientCert;
-	protected String password;
-	protected String pathToRemoteCertStore;
-	
-	public CertificateConnectionFactory(String pathToClientCertificate, String password, String pathToRemoteCertStore) {
-		this.pathToClientCert = pathToClientCertificate;
-		this.password = password;
-		this.pathToRemoteCertStore = pathToRemoteCertStore;
-	}
-	
-	
-	@Override
-	public Connection connectTo(Exchange exchange) throws Exception {
-		
-		char[] keyPassphrase = this.password.toCharArray();
-		
+    protected String password;
+    protected String pathToClientCert;
+    protected String pathToRemoteCertStore;
+
+    public CertificateConnectionFactory(String pathToClientCertificate, String password, String pathToRemoteCertStore) {
+        pathToClientCert = pathToClientCertificate;
+        this.password = password;
+        this.pathToRemoteCertStore = pathToRemoteCertStore;
+    }
+
+    @Override
+    public Connection connectTo(Exchange exchange) throws Exception {
+
+        char[] keyPassphrase = password.toCharArray();
+
         KeyStore clientCertStore = KeyStore.getInstance("PKCS12");
-        clientCertStore.load(new FileInputStream(this.pathToClientCert), keyPassphrase);
-		
-		KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+        clientCertStore.load(new FileInputStream(pathToClientCert), keyPassphrase);
+
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
         kmf.init(clientCertStore, keyPassphrase);
-        
+
         KeyStore remoteCertStore = KeyStore.getInstance("JKS");
-        remoteCertStore.load(new FileInputStream(this.pathToRemoteCertStore), null);
+        remoteCertStore.load(new FileInputStream(pathToRemoteCertStore), null);
 
         TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
         tmf.init(remoteCertStore);
@@ -52,18 +51,17 @@ public class CertificateConnectionFactory implements RabbitConnectionFactory {
         factory.setVirtualHost(exchange.getVirtualHost());
         factory.setSaslConfig(DefaultSaslConfig.EXTERNAL);
         factory.useSslProtocol(c);
-        
+
         return factory.newConnection();
-	}
+    }
 
+    @Override
+    public void dispose() {
+        // nothing to do
+    }
 
-	@Override
-	public void dispose() {
-		// nothing to do
-	}
-	
-	@Override
-	protected void finalize() {
-		this.dispose();
-	}
+    @Override
+    protected void finalize() {
+        dispose();
+    }
 }

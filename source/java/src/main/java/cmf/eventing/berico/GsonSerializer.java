@@ -1,6 +1,5 @@
 package cmf.eventing.berico;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,19 +10,17 @@ public class GsonSerializer implements ISerializer {
 
     protected Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
     protected Logger log;
-    
-    
+
     public GsonSerializer() {
-    	this.log = LoggerFactory.getLogger(this.getClass());
+        log = LoggerFactory.getLogger(this.getClass());
     }
 
-    
     @Override
     public <TYPE> TYPE byteDeserialize(byte[] serialized, Class<TYPE> type) {
         try {
-        	String json = new String(serialized, ENCODING);
-        	log.debug("Will attempt to deserialize: " + json);
-        	
+            String json = new String(serialized, ENCODING);
+            log.debug("Will attempt to deserialize: " + json);
+
             return stringDeserialize(json, type);
         } catch (RuntimeException e) {
             throw e;
@@ -35,9 +32,9 @@ public class GsonSerializer implements ISerializer {
     @Override
     public byte[] byteSerialize(Object deserialized) {
         try {
-        	String json = this.stringSerialize(deserialized);
-        	log.debug("Serialized event: " + json);
-        	
+            String json = stringSerialize(deserialized);
+            log.debug("Serialized event: " + json);
+
             return json.getBytes(ENCODING);
         } catch (RuntimeException e) {
             throw e;

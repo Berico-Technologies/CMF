@@ -11,218 +11,204 @@ import cmf.bus.Envelope;
 
 public class EnvelopeHelper {
 
-	private Envelope env;
+    private Envelope env;
 
-	public Envelope getEnvelope() {
-		return env;
-	}
+    public EnvelopeHelper() {
+        env = new Envelope();
+    }
 
-	public EnvelopeHelper(){
-		this.env = new Envelope();
-	}
-	
-	public EnvelopeHelper(Envelope envelope) {
-		this.env = envelope;
-	}
+    public EnvelopeHelper(Envelope envelope) {
+        env = envelope;
+    }
 
-	public String getHeader(String key) {
-		return env.getHeader(key);
-	}
+    public String flatten() {
+        return this.flatten(",");
+    }
 
-	public EnvelopeHelper setHeader(String key, String value) {
-		env.setHeader(key, value);
-		return this;
-	}
+    public String flatten(String separator) {
+        StringBuilder sb = new StringBuilder();
 
-	public byte[] getPayload() {
-		return env.getPayload();
-	}
+        sb.append("[");
 
-	public EnvelopeHelper setPayload(byte[] payload) {
-		env.setPayload(payload);
-		return this;
-	}
+        for (Entry<String, String> kvp : env.getHeaders().entrySet()) {
+            sb.append(String.format("%s{%s:%s}", separator, kvp.getKey(), kvp.getValue()));
+        }
 
-	public String getMessageTopic() {
-		return env.getHeader(EnvelopeHeaderConstants.MESSAGE_TOPIC);
-	}
+        if (sb.length() > 1) {
+            sb.delete(1, 1 + separator.length());
+        }
 
-	public EnvelopeHelper setMessageTopic(String topic) {
-		env.setHeader(EnvelopeHeaderConstants.MESSAGE_TOPIC, topic);
-		return this;
-	}
+        sb.append("]");
 
-	public UUID getMessageId() {
-		UUID id = null;
+        return sb.toString();
+    }
 
-		String idString = env.getHeader(EnvelopeHeaderConstants.MESSAGE_ID);
+    public UUID getCorrelationId() {
+        UUID cid = null;
 
-		if (idString != null) {
-			id = UUID.fromString(idString);
-		}
+        String cidString = env.getHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID);
+        if (cidString != null) {
+            cid = UUID.fromString(cidString);
+        }
 
-		return id;
-	}
+        return cid;
+    }
 
-	public EnvelopeHelper setMessageId(UUID id) {
-		env.setHeader(EnvelopeHeaderConstants.MESSAGE_ID, id.toString());
-		return this;
-	}
+    public DateTime getCreationTime() {
+        String createTicks = null;
 
-	public UUID getCorrelationId() {
-		UUID cid = null;
+        if (env.getHeaders().containsKey(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME)) {
+            createTicks = env.getHeaders().get(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME);
+        }
 
-		String cidString = env
-				.getHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID);
-		if (cidString != null) {
-			cid = UUID.fromString(cidString);
-		}
+        return new DateTime(Long.parseLong(createTicks));
+    }
 
-		return cid;
-	}
+    public byte[] getDigitalSignature() {
+        String base64String = env.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE);
+        if (null == base64String) {
+            return null;
+        }
 
-	public EnvelopeHelper setCorrelationId(UUID cid) {
-		env.setHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID,
-				cid.toString());
-		return this;
-	}
+        return Base64.decodeBase64(base64String);
+    }
 
-	public String getMessageType() {
-		return env.getHeader(EnvelopeHeaderConstants.MESSAGE_TYPE);
-	}
+    public Envelope getEnvelope() {
+        return env;
+    }
 
-	public EnvelopeHelper setMessageType(String messageType) {
-		env.setHeader(EnvelopeHeaderConstants.MESSAGE_TYPE, messageType);
-		return this;
-	}
+    public String getHeader(String key) {
+        return env.getHeader(key);
+    }
 
-	public String getMessagePattern() {
-		return env.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN);
-	}
+    public UUID getMessageId() {
+        UUID id = null;
 
-	public EnvelopeHelper setMessagePattern(String pattern) {
-		env.setHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN, pattern);
-		return this;
-	}
+        String idString = env.getHeader(EnvelopeHeaderConstants.MESSAGE_ID);
 
-	public Duration getRpcTimeout() {
-		String timeString = env
-				.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT);
-		if (null == timeString) {
-			return Duration.ZERO;
-		}
+        if (idString != null) {
+            id = UUID.fromString(idString);
+        }
 
-		long totalMilliseconds = Long.parseLong(timeString);
-		return new Duration(totalMilliseconds);
-	}
+        return id;
+    }
 
-	public EnvelopeHelper setRpcTimeout(Duration timeout) {
-		env.setHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT,
-				Long.toString(timeout.getMillis()));
-		return this;
-	}
+    public String getMessagePattern() {
+        return env.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN);
+    }
 
-	public DateTime getCreationTime() {
-		String createTicks = null;
+    public String getMessageTopic() {
+        return env.getHeader(EnvelopeHeaderConstants.MESSAGE_TOPIC);
+    }
 
-		if (env.getHeaders().containsKey(
-				EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME)) {
-			createTicks = env.getHeaders().get(
-					EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME);
-		}
+    public String getMessageType() {
+        return env.getHeader(EnvelopeHeaderConstants.MESSAGE_TYPE);
+    }
 
-		return new DateTime(Long.parseLong(createTicks));
-	}
+    public byte[] getPayload() {
+        return env.getPayload();
+    }
 
-	public EnvelopeHelper setCreationTime(DateTime date) {
-		env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME,
-				Long.toString(date.getMillis()));
-		return this;
-	}
+    public DateTime getReceiptTime() {
+        String receiptTicks = null;
 
-	public DateTime getReceiptTime() {
-		String receiptTicks = null;
+        if (env.getHeaders().containsKey(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME)) {
+            receiptTicks = env.getHeaders().get(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME);
+        }
 
-		if (env.getHeaders().containsKey(
-				EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME)) {
-			receiptTicks = env.getHeaders().get(
-					EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME);
-		}
+        return new DateTime(Long.parseLong(receiptTicks));
+    }
 
-		return new DateTime(Long.parseLong(receiptTicks));
-	}
+    public Duration getRpcTimeout() {
+        String timeString = env.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT);
+        if (null == timeString) {
+            return Duration.ZERO;
+        }
 
-	public EnvelopeHelper setReceiptTime(DateTime date) {
-		env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME,
-				Long.toString(date.getMillis()));
-		return this;
-	}
+        long totalMilliseconds = Long.parseLong(timeString);
+        return new Duration(totalMilliseconds);
+    }
 
-	public String getSenderIdentity() {
-		return env.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY);
-	}
+    public String getSenderIdentity() {
+        return env.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY);
+    }
 
-	public EnvelopeHelper setSenderIdentity(String distinguishedName) {
-		env.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY,
-				distinguishedName);
-		return this;
-	}
+    public boolean IsPubSub() {
+        return EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB.equals(env
+                        .getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN));
+    }
 
-	public byte[] getDigitalSignature() {
-		String base64String = env
-				.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE);
-		if (null == base64String) {
-			return null;
-		}
+    public boolean IsRequest() {
+        // we assume that the envelope is holding a request if it is marked
+        // as an rpc message that has no correlation id set.
+        UUID correlationId = new EnvelopeHelper(env).getCorrelationId();
 
-		return Base64.decodeBase64(base64String);
-	}
+        return new EnvelopeHelper(env).IsRpc() && null == correlationId;
+    }
 
-	public EnvelopeHelper setDigitalSignature(byte[] signature) {
-		env.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE,
-				Base64.encodeBase64String(signature));
-		return this;
-	}
+    public boolean IsRpc() {
+        return EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC.equals(env
+                        .getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN));
+    }
 
-	public boolean IsRpc() {
-		return EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC.equals(env
-				.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN));
-	}
+    public EnvelopeHelper setCorrelationId(UUID cid) {
+        env.setHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID, cid.toString());
+        return this;
+    }
 
-	public boolean IsPubSub() {
-		return EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB.equals(env
-				.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN));
-	}
+    public EnvelopeHelper setCreationTime(DateTime date) {
+        env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME, Long.toString(date.getMillis()));
+        return this;
+    }
 
-	public boolean IsRequest() {
-		// we assume that the envelope is holding a request if it is marked
-		// as an rpc message that has no correlation id set.
-		UUID correlationId = new EnvelopeHelper(env).getCorrelationId();
+    public EnvelopeHelper setDigitalSignature(byte[] signature) {
+        env.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE, Base64.encodeBase64String(signature));
+        return this;
+    }
 
-		return ((new EnvelopeHelper(env).IsRpc()) && (null == correlationId));
-	}
+    public EnvelopeHelper setHeader(String key, String value) {
+        env.setHeader(key, value);
+        return this;
+    }
 
-	public String flatten() {
-		return this.flatten(",");
-	}
+    public EnvelopeHelper setMessageId(UUID id) {
+        env.setHeader(EnvelopeHeaderConstants.MESSAGE_ID, id.toString());
+        return this;
+    }
 
-	public String flatten(String separator) {
-		StringBuilder sb = new StringBuilder();
+    public EnvelopeHelper setMessagePattern(String pattern) {
+        env.setHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN, pattern);
+        return this;
+    }
 
-		sb.append("[");
+    public EnvelopeHelper setMessageTopic(String topic) {
+        env.setHeader(EnvelopeHeaderConstants.MESSAGE_TOPIC, topic);
+        return this;
+    }
 
-		for (Entry<String, String> kvp : this.env.getHeaders().entrySet()) {
-			sb.append(String.format("%s{%s:%s}", separator, kvp.getKey(),
-					kvp.getValue()));
-		}
+    public EnvelopeHelper setMessageType(String messageType) {
+        env.setHeader(EnvelopeHeaderConstants.MESSAGE_TYPE, messageType);
+        return this;
+    }
 
-		if (sb.length() > 1) {
-			sb.delete(1, 1 + separator.length());
-		}
+    public EnvelopeHelper setPayload(byte[] payload) {
+        env.setPayload(payload);
+        return this;
+    }
 
-		sb.append("]");
+    public EnvelopeHelper setReceiptTime(DateTime date) {
+        env.getHeaders().put(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME, Long.toString(date.getMillis()));
+        return this;
+    }
 
-		return sb.toString();
-	}
+    public EnvelopeHelper setRpcTimeout(Duration timeout) {
+        env.setHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT, Long.toString(timeout.getMillis()));
+        return this;
+    }
+
+    public EnvelopeHelper setSenderIdentity(String distinguishedName) {
+        env.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY, distinguishedName);
+        return this;
+    }
 
 }

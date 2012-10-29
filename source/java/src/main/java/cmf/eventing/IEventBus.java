@@ -1,5 +1,7 @@
 package cmf.eventing;
 
-public interface IEventBus extends IEventProducer, IEventConsumer {
+import cmf.bus.IDisposable;
+
+public interface IEventBus extends IEventProducer, IEventConsumer, IDisposable {
 
 }

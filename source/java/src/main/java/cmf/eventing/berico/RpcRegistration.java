@@ -21,31 +21,10 @@ public class RpcRegistration implements IRegistration {
     protected static final Logger log = LoggerFactory.getLogger(RpcRegistration.class);
 
     protected Collection<IInboundEventProcessor> inboundChain;
-    protected IEnvelopeFilterPredicate responseFilter;
-    protected Object responseEvent;
-    protected Envelope responseEnvelope;
     protected Map<String, String> registrationInfo;
-
-    @Override
-    public IEnvelopeFilterPredicate getFilterPredicate() {
-        return responseFilter;
-    }
-
-    @Override
-    public Map<String, String> getRegistrationInfo() {
-        return registrationInfo;
-    }
-
-    @Override
-    public Object handleFailed(Envelope envelope, Exception ex) throws Exception {
-        log.error("Failed to handle an envelope: " + new EnvelopeHelper(envelope).flatten(), ex);
-
-        return null;
-    }
-
-    protected void setRegistrationInfo(Map<String, String> registrationInfo) {
-        this.registrationInfo = registrationInfo;
-    }
+    protected Envelope responseEnvelope;
+    protected Object responseEvent;
+    protected IEnvelopeFilterPredicate responseFilter;
 
     public RpcRegistration(final UUID requestId, String expectedTopic, Collection<IInboundEventProcessor> chain) {
         inboundChain = chain;
@@ -64,16 +43,18 @@ public class RpcRegistration implements IRegistration {
         new EnvelopeHelper(tmpInfoEnvelope).setMessageTopic(buildRpcTopic(expectedTopic, requestId));
     }
 
+    protected String buildRpcTopic(String expectedTopic, UUID requestId) {
+        return String.format("%s#%s", expectedTopic, requestId.toString());
+    }
+
     @Override
-    public Object handle(Envelope envelope) throws Exception {
-        Object event = null;
+    public IEnvelopeFilterPredicate getFilterPredicate() {
+        return responseFilter;
+    }
 
-        ProcessingContext processorContext = new ProcessingContext(envelope, event);
-        if (this.processInbound(processorContext)) {
-            responseEvent = processorContext.getEvent();
-        }
-
-        return null;
+    @Override
+    public Map<String, String> getRegistrationInfo() {
+        return registrationInfo;
     }
 
     public Object getResponse(Duration timeout) throws TimeoutException {
@@ -88,9 +69,10 @@ public class RpcRegistration implements IRegistration {
         }
         watch.stop();
 
-        if (responseEvent == null) {
-            throw new TimeoutException();
-        }
+        // TODO - should we throw a timeout exception or just return null?
+        // if (responseEvent == null) {
+        // throw new TimeoutException();
+        // }
 
         Object response = responseEvent;
         responseEvent = null;
@@ -98,11 +80,30 @@ public class RpcRegistration implements IRegistration {
         return response;
     }
 
+    @Override
+    public Object handle(Envelope envelope) throws Exception {
+        Object event = null;
+
+        ProcessingContext processorContext = new ProcessingContext(envelope, event);
+        if (processInbound(processorContext)) {
+            responseEvent = processorContext.getEvent();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object handleFailed(Envelope envelope, Exception ex) throws Exception {
+        log.error("Failed to handle an envelope: " + new EnvelopeHelper(envelope).flatten(), ex);
+
+        return null;
+    }
+
     protected boolean processInbound(ProcessingContext processorContext) {
         boolean processed = true;
 
         try {
-            for (IInboundEventProcessor processor : this.inboundChain) {
+            for (IInboundEventProcessor processor : inboundChain) {
                 if (!processor.processInbound(processorContext)) {
                     processed = false;
                     break;
@@ -115,7 +116,7 @@ public class RpcRegistration implements IRegistration {
         return processed;
     }
 
-    protected String buildRpcTopic(String expectedTopic, UUID requestId) {
-        return String.format("%s#%s", expectedTopic, requestId.toString());
+    protected void setRegistrationInfo(Map<String, String> registrationInfo) {
+        this.registrationInfo = registrationInfo;
     }
 }
