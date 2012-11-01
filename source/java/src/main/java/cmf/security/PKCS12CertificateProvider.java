@@ -14,14 +14,12 @@ public class PKCS12CertificateProvider implements ICertificateProvider {
 
 	protected String pathToP12File;
 	protected String password;
-	protected String providerUrl;
 	protected Logger log;
 	
 	
-	public PKCS12CertificateProvider(String pathToP12File, String password, String providerUrl) {
+	public PKCS12CertificateProvider(String pathToP12File, String password) {
 		this.pathToP12File = pathToP12File;
 		this.password = password;
-		this.providerUrl = providerUrl;
 		
 		log = LoggerFactory.getLogger(this.getClass());
 	}
