@@ -33,13 +33,15 @@
 
 	<bean id="cmf.eventing.berico.ISerializer" class="cmf.eventing.berico.GsonSerializer" />
 	
-	<bean id="OutboundHeadersProcessor" class="cmf.eventing.berico.OutboundHeadersProcessor" />
+	<bean id="OutboundHeadersProcessor" class="cmf.eventing.berico.OutboundHeadersProcessor">
+		<constructor-arg name="userInfoRepository" ref="cmf.security.IUserInfoRepository" />
+	</bean>
 
 	<bean id="RpcFilter" class="cmf.eventing.berico.RpcFilter" />
 
 	<bean id="DigitalSignatureProcessor" class="cmf.eventing.berico.DigitalSignatureProcessor">
-		<constructor-arg name="certProvider"
-			ref="cmf.security.ICertificateProvider" />
+		<constructor-arg name="certProvider" ref="cmf.security.ICertificateProvider" />
+		<constructor-arg name="userInfoRepository" ref="cmf.security.IUserInfoRepository" />
 	</bean>
 
 	<bean id="cmf.bus.IEnvelopeBus" class="cmf.bus.berico.DefaultEnvelopeBus">
@@ -48,10 +50,8 @@
 	</bean>
 
 	<bean id="cmf.bus.berico.ITransportProvider" class="cmf.rabbit.RabbitTransportProvider">
-		<constructor-arg name="topologyService"
-			ref="cmf.rabbit.topology.ITopologyService" />
-		<constructor-arg name="connFactory"
-			ref="cmf.rabbit.RabbitConnectionProvider" />
+		<constructor-arg name="topologyService" ref="cmf.rabbit.topology.ITopologyService" />
+		<constructor-arg name="connFactory" ref="cmf.rabbit.RabbitConnectionProvider" />
 	</bean>
 
 	<bean id="cmf.rabbit.RabbitConnectionProvider" class="cmf.rabbit.CertificateConnectionFactory">
@@ -68,8 +68,12 @@
 		<constructor-arg name="port" value="5671" />
 	</bean>
 
-	<bean id="cmf.security.ICertificateProvider" class="cmf.security.WindowsCertificateProvider">
+	<bean id="cmf.security.IUserInfoRepository" class="cmf.security.LdapUserInfoRepository">
 		<constructor-arg name="ldapProviderUrl" value="ldap://dc01.johnruiz.com/DC=johnruiz,DC=com" />
+	</bean>
+	
+	<bean id="cmf.security.ICertificateProvider" class="cmf.security.WindowsCertificateProvider">
+		<constructor-arg name="userInfoRepository" ref="cmf.security.IUserInfoRepository" />
 	</bean>
 
 </beans>

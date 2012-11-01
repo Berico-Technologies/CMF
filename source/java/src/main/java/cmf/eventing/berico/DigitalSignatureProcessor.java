@@ -9,16 +9,20 @@ import org.slf4j.LoggerFactory;
 import cmf.bus.berico.EnvelopeHelper;
 import cmf.security.CredentialHolder;
 import cmf.security.ICertificateProvider;
+import cmf.security.IUserInfoRepository;
 
 public class DigitalSignatureProcessor implements IInboundEventProcessor, IOutboundEventProcessor {
 
 	protected ICertificateProvider certProvider;
+	protected IUserInfoRepository userInfoRepo;
 	protected CredentialHolder credentials;
 	protected Logger log;
 	
 	
-	public DigitalSignatureProcessor(ICertificateProvider certProvider) throws Exception {
+	public DigitalSignatureProcessor(ICertificateProvider certProvider, IUserInfoRepository userInfoRepository) throws Exception {
 		this.certProvider = certProvider;
+		this.userInfoRepo = userInfoRepository;
+		
 		this.log = LoggerFactory.getLogger(this.getClass());
 		
 		try {
@@ -68,7 +72,7 @@ public class DigitalSignatureProcessor implements IInboundEventProcessor, IOutbo
 			// remove spaces from the sender identity
 			senderIdentity = senderIdentity.replace(", ", ",");
 			
-			X509Certificate senderCert = this.certProvider.getCertificateFor(senderIdentity);
+			X509Certificate senderCert = this.userInfoRepo.getPublicCertificateFor(senderIdentity);
 			
 			Signature instance = Signature.getInstance("SHA1withRSA");
 			instance.initVerify(senderCert);
