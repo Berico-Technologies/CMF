@@ -25,14 +25,20 @@ public class InMemoryEnvelopeBus implements IEnvelopeBus {
                         registration.handle(envelope);
                     } catch (Exception e) {
                         try {
-							registration.handleFailed(envelope, e);
-						} catch (Exception failedToFail) {
-							failedToFail.printStackTrace();
-						}
+                            registration.handleFailed(envelope, e);
+                        } catch (Exception failedToFail) {
+                            failedToFail.printStackTrace();
+                        }
                     }
                 }
             }
         }.run();
+    }
+
+    @Override
+    public void dispose() {
+        // TODO Auto-generated method stub
+
     }
 
     @Override
@@ -44,7 +50,10 @@ public class InMemoryEnvelopeBus implements IEnvelopeBus {
     public synchronized void send(Envelope envelope) {
         List<IRegistration> registrations = new LinkedList<IRegistration>();
         for (IRegistration registration : registrationList) {
-            if (registration.getFilterPredicate().filter(envelope)) {
+            if (null != registration.getFilterPredicate() && !registration.getFilterPredicate().filter(envelope)) {
+
+                registrations.add(registration);
+            } else {
                 registrations.add(registration);
             }
         }
@@ -55,10 +64,4 @@ public class InMemoryEnvelopeBus implements IEnvelopeBus {
     public synchronized void unregister(IRegistration registration) {
         registrationList.remove(registration);
     }
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
-	}
 }

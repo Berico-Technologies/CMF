@@ -7,8 +7,8 @@ import com.rabbitmq.client.ConnectionFactory;
 
 public class BasicConnectionFactory implements RabbitConnectionFactory {
 
-    protected String username;
     protected String password;
+    protected String username;
 
     public BasicConnectionFactory(String username, String password) {
         this.username = username;
@@ -34,6 +34,6 @@ public class BasicConnectionFactory implements RabbitConnectionFactory {
 
     @Override
     protected void finalize() {
-        this.dispose();
+        dispose();
     }
 }

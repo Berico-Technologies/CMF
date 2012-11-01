@@ -3,94 +3,130 @@ package cmf.rabbit.topology;
 import java.util.Map;
 
 public class Exchange {
-	
-	protected String name;
-	protected String hostName;
-	protected String virtualHost;
-	protected int port;
-	protected String routingKey;
-	protected String queueName;
-	protected String exchangeType;
-	protected boolean isDurable;
-	protected boolean isAutoDelete;
-	@SuppressWarnings("rawtypes")
-	protected Map arguments;
-	
-	
-	public String getName() { return name; }
-	protected void setName(String name) { this.name = name; }
-	
-	public String getHostName() { return hostName; }
-	protected void setHostName(String hostName) { this.hostName = hostName; }
-	
-    public String getVirtualHost() { return virtualHost; }
-    protected void setVirtualHost(String virtualHost) { this.virtualHost = virtualHost; }
-    
-    public int getPort() { return port; }
-    protected void setPort(int port) { this.port = port; }
-    
-    public String getRoutingKey() { return routingKey; }
-    protected void setRoutingKey(String routingKey) { this.routingKey = routingKey; }
-    
-    public String getQueueName() { return queueName; }
-    protected void setQueueName(String queueName) { this.queueName = queueName; }
-    
-    public String getExchangeType() { return exchangeType; }
-    protected void setExchangeType(String exchangeType) { this.exchangeType = exchangeType; }
-    
-    public boolean getIsDurable() { return isDurable; }
-    protected void setIsDurable(boolean isDurable) { this.isDurable = isDurable; }
-    
-    public boolean getIsAutoDelete() { return isAutoDelete; }
-    protected void setIsAutoDelete(boolean isAutoDelete) { this.isAutoDelete = isAutoDelete; }
-    
-    @SuppressWarnings("rawtypes")
-	public Map getArguments() { return arguments; }
-    @SuppressWarnings("rawtypes")
-	protected void setArguments(Map arguments) { this.arguments = arguments; }
-
 
     @SuppressWarnings("rawtypes")
-	public Exchange(
-        String name, 
-        String hostName, 
-        String vHost, 
-        int port, 
-        String routingKey, 
-        String queueName, 
-        String exchangeType, 
-        boolean isDurable, 
-        boolean autoDelete, 
-        Map arguments)
-    {
+    protected Map arguments;
+    protected String exchangeType;
+    protected String hostName;
+    protected boolean isAutoDelete;
+    protected boolean isDurable;
+    protected String name;
+    protected int port;
+    protected String queueName;
+    protected String routingKey;
+    protected String virtualHost;
+
+    @SuppressWarnings("rawtypes")
+    public Exchange(String name, String hostName, String vHost, int port, String routingKey, String queueName,
+                    String exchangeType, boolean isDurable, boolean autoDelete, Map arguments) {
         this.name = name;
         this.hostName = hostName;
-        this.virtualHost = vHost;
+        virtualHost = vHost;
         this.port = port;
         this.routingKey = routingKey;
         this.queueName = queueName;
         this.exchangeType = exchangeType;
         this.isDurable = isDurable;
-        this.isAutoDelete = autoDelete;
+        isAutoDelete = autoDelete;
         this.arguments = arguments;
     }
 
-    
+    @SuppressWarnings("rawtypes")
+    public Map getArguments() {
+        return arguments;
+    }
+
+    public String getExchangeType() {
+        return exchangeType;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public boolean getIsAutoDelete() {
+        return isAutoDelete;
+    }
+
+    public boolean getIsDurable() {
+        return isDurable;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getQueueName() {
+        return queueName;
+    }
+
+    public String getRoutingKey() {
+        return routingKey;
+    }
+
+    public String getVirtualHost() {
+        return virtualHost;
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected void setArguments(Map arguments) {
+        this.arguments = arguments;
+    }
+
+    protected void setExchangeType(String exchangeType) {
+        this.exchangeType = exchangeType;
+    }
+
+    protected void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    protected void setIsAutoDelete(boolean isAutoDelete) {
+        this.isAutoDelete = isAutoDelete;
+    }
+
+    protected void setIsDurable(boolean isDurable) {
+        this.isDurable = isDurable;
+    }
+
+    protected void setName(String name) {
+        this.name = name;
+    }
+
+    protected void setPort(int port) {
+        this.port = port;
+    }
+
+    protected void setQueueName(String queueName) {
+        this.queueName = queueName;
+    }
+
+    protected void setRoutingKey(String routingKey) {
+        this.routingKey = routingKey;
+    }
+
+    protected void setVirtualHost(String virtualHost) {
+        this.virtualHost = virtualHost;
+    }
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder();
 
         sb.append("{");
-        sb.append(String.format("Name:%s,", this.name));
-        sb.append(String.format("HostName:%s,", this.hostName));
-        sb.append(String.format("VirtualHost:%s,", this.virtualHost));
-        sb.append(String.format("Port:%d,", this.port));
-        sb.append(String.format("RoutingKey:%s,", this.routingKey));
-        sb.append(String.format("QueueName:%s,", this.queueName));
-        sb.append(String.format("ExchangeType:%s,", this.exchangeType));
-        sb.append(String.format("IsDurable:%s,", this.isDurable));
-        sb.append(String.format("IsAutoDelete:%s,", this.isAutoDelete));
+        sb.append(String.format("Name:%s,", name));
+        sb.append(String.format("HostName:%s,", hostName));
+        sb.append(String.format("VirtualHost:%s,", virtualHost));
+        sb.append(String.format("Port:%d,", port));
+        sb.append(String.format("RoutingKey:%s,", routingKey));
+        sb.append(String.format("QueueName:%s,", queueName));
+        sb.append(String.format("ExchangeType:%s,", exchangeType));
+        sb.append(String.format("IsDurable:%s,", isDurable));
+        sb.append(String.format("IsAutoDelete:%s,", isAutoDelete));
 
         sb.append("}");
         return sb.toString();
