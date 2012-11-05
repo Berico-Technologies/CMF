@@ -6,7 +6,7 @@ using System.Text;
 
 namespace cmf.rabbit.topology
 {
-    public struct Exchange
+    public struct Exchange : IEquatable<Exchange>
     {
         public string Name { get; private set; }
         public string HostName { get; private set; }
@@ -63,6 +63,43 @@ namespace cmf.rabbit.topology
 
             sb.Append("}");
             return sb.ToString();
+        }
+
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 71;
+
+                hash = hash * 97 + this.Name.GetHashCode();
+                hash = hash * 97 + this.HostName.GetHashCode();
+                hash = hash * 97 + this.VirtualHost.GetHashCode();
+                hash = hash * 97 + this.Port.GetHashCode();
+
+                return hash;
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            bool isEqual = false;
+
+            try
+            {
+                if (obj is Exchange)
+                {
+                    isEqual = this.Equals((Exchange)obj);
+                }
+            }
+            catch { }
+
+            return isEqual;
+        }
+        
+        public bool Equals(Exchange other)
+        {
+            return this.GetHashCode() == other.GetHashCode();
         }
     }
 }
