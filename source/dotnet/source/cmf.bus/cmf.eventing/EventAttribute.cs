@@ -7,9 +7,13 @@ namespace cmf.eventing
 {
     public class EventAttribute : Attribute
     {
-        public string EventType { get; protected set; }
-        public string EventTopic { get; protected set; }
+        public string EventType { get; set; }
+        public string EventTopic { get; set; }
 
+
+        public EventAttribute()
+        {
+        }
 
         public EventAttribute(string eventTopic = null, string eventType = null)
         {
