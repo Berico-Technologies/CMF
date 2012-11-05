@@ -43,7 +43,7 @@ namespace cmf.eventing.berico
             {
                 object[] attributes = ev.GetType().GetCustomAttributes(typeof(EventAttribute), true);
                 EventAttribute attr = attributes.OfType<EventAttribute>().FirstOrDefault();
-                if (null != attr)
+                if ((null != attr) && (false == string.IsNullOrEmpty(attr.EventTopic)))
                 {
                     topic = attr.EventTopic;
                 }
@@ -61,7 +61,7 @@ namespace cmf.eventing.berico
             {
                 object[] attributes = ev.GetType().GetCustomAttributes(typeof(EventAttribute), true);
                 EventAttribute attr = attributes.OfType<EventAttribute>().FirstOrDefault();
-                if (null != attr)
+                if ((null != attr) && (false == string.IsNullOrEmpty(attr.EventType)))
                 {
                     type = attr.EventType;
                 }
