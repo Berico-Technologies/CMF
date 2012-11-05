@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventAttribute.cs" />
     <Compile Include="IEventBus.cs" />
     <Compile Include="IEventConsumer.cs" />
     <Compile Include="IEventHandler.cs" />
