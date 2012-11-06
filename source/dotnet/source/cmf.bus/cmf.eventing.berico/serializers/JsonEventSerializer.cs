@@ -41,6 +41,7 @@ namespace cmf.eventing.berico.serializers
 
             _settings = new JsonSerializerSettings();
             _settings.ContractResolver = new LowercaseContractResolver();
+            _settings.TypeNameHandling = TypeNameHandling.Objects;
         }
 
 
@@ -84,7 +85,8 @@ namespace cmf.eventing.berico.serializers
 
                 if (null != type) // if we did get a Type, we can deserialize the event
                 {
-                    string jsonString = Encoding.UTF8.GetString(env.Payload);
+
+                    string jsonString = new UTF8Encoding().GetString(env.Payload); //Encoding.UTF8.GetString(env.Payload);
                     _log.Debug("Will attempt to deserialize: " + jsonString);
                     ev = JsonConvert.DeserializeObject(jsonString, type, _settings);
 
