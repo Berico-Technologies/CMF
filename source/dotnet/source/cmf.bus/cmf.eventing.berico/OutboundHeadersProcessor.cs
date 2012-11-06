@@ -19,11 +19,11 @@ namespace cmf.eventing.berico
             Guid correlationId = env.GetCorrelationId();
 
             string messageType = env.GetMessageType();
-            messageType = string.IsNullOrEmpty(messageType) ? ev.GetType().FullName : messageType;
+            messageType = string.IsNullOrEmpty(messageType) ? this.GetMessageType(ev) : messageType;
             env.SetMessageType(messageType);
 
             string messageTopic = env.GetMessageTopic();
-            messageTopic = string.IsNullOrEmpty(messageTopic) ? ev.GetType().FullName : messageTopic;
+            messageTopic = string.IsNullOrEmpty(messageTopic) ? this.GetMessageTopic(ev) : messageTopic;
             if (Guid.Empty != correlationId)
             {
                 messageTopic = messageTopic + "#" + correlationId.ToString();
@@ -33,6 +33,42 @@ namespace cmf.eventing.berico
             string senderIdentity = env.GetSenderIdentity();
             senderIdentity = string.IsNullOrEmpty(senderIdentity) ? UserPrincipal.Current.DistinguishedName.Replace(",", ", ") : senderIdentity;
             env.SetSenderIdentity(senderIdentity);
+        }
+
+        public string GetMessageTopic(object ev)
+        {
+            string topic = ev.GetType().FullName;
+
+            try
+            {
+                object[] attributes = ev.GetType().GetCustomAttributes(typeof(EventAttribute), true);
+                EventAttribute attr = attributes.OfType<EventAttribute>().FirstOrDefault();
+                if ((null != attr) && (false == string.IsNullOrEmpty(attr.EventTopic)))
+                {
+                    topic = attr.EventTopic;
+                }
+            }
+            catch { }
+
+            return topic;
+        }
+
+        public string GetMessageType(object ev)
+        {
+            string type = ev.GetType().FullName;
+
+            try
+            {
+                object[] attributes = ev.GetType().GetCustomAttributes(typeof(EventAttribute), true);
+                EventAttribute attr = attributes.OfType<EventAttribute>().FirstOrDefault();
+                if ((null != attr) && (false == string.IsNullOrEmpty(attr.EventType)))
+                {
+                    type = attr.EventType;
+                }
+            }
+            catch { }
+
+            return type;
         }
     }
 }
