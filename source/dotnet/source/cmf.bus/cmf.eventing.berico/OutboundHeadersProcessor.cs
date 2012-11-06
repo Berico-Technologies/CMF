@@ -5,11 +5,14 @@ using System.Linq;
 using System.Text;
 
 using cmf.bus;
+using Common.Logging;
 
 namespace cmf.eventing.berico
 {
     public class OutboundHeadersProcessor : IOutboundEventProcessor
     {
+        protected ILog _log = LogManager.GetLogger(typeof(OutboundHeadersProcessor));
+
         public virtual void ProcessOutbound(ref object ev, ref bus.Envelope env, IDictionary<string, object> context)
         {
             Guid messageId = env.GetMessageId();
@@ -45,6 +48,7 @@ namespace cmf.eventing.berico
                 EventAttribute attr = attributes.OfType<EventAttribute>().FirstOrDefault();
                 if ((null != attr) && (false == string.IsNullOrEmpty(attr.EventTopic)))
                 {
+                    _log.Debug("EventAttribute: " + attr.EventTopic);
                     topic = attr.EventTopic;
                 }
             }
@@ -63,6 +67,7 @@ namespace cmf.eventing.berico
                 EventAttribute attr = attributes.OfType<EventAttribute>().FirstOrDefault();
                 if ((null != attr) && (false == string.IsNullOrEmpty(attr.EventType)))
                 {
+                    _log.Debug("EventAttribute: " + attr.EventType);
                     type = attr.EventType;
                 }
             }
