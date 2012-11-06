@@ -3,17 +3,30 @@ package cmf.eventing.berico;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class GsonSerializer implements ISerializer {
 
-    protected Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
-    protected Logger log;
+    private static final Logger log = LoggerFactory.getLogger(GsonSerializer.class);
+    
+    private class DotNetTypeExclusionStrategy implements ExclusionStrategy {
 
-    public GsonSerializer() {
-        log = LoggerFactory.getLogger(this.getClass());
+        @Override
+        public boolean shouldSkipClass(Class<?> arg0) {
+            return false; // don't skip any classes
+        }
+
+        @Override
+        public boolean shouldSkipField(FieldAttributes arg0) {
+            return "$type".equals(arg0.getName()); // ignore fields named $type which may be added by the dotnet serializer
+        }
+        
     }
+    
+    protected Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setExclusionStrategies(new DotNetTypeExclusionStrategy()).create();
 
     @Override
     public <TYPE> TYPE byteDeserialize(byte[] serialized, Class<TYPE> type) {
