@@ -74,7 +74,8 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
                         log.debug("Dispatched envelope");
                     }
                 } catch (Exception ex) {
-                    log.warn("Failed to dispatch envelope; raising EnvelopeFailed event");
+                	
+                    log.warn("Failed to dispatch envelope; raising EnvelopeFailed event: {}", ex);
                     dispatcher.dispatchFailed(env, ex);
                 }
             } // end of the callback method
@@ -92,6 +93,8 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
         Map<String, Object> context = new HashMap<String, Object>();
         for (IInboundEnvelopeProcessor inboundEnvelopeProcessor : inboundProcessors) {
 
+        		log.trace("Processor {} is handling envelope.", inboundEnvelopeProcessor.getClass().getCanonicalName());
+        	
             if (inboundEnvelopeProcessor.processInbound(envelope, context)) {
                 continue;
             } else {

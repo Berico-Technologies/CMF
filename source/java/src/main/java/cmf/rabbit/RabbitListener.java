@@ -46,6 +46,9 @@ public class RabbitListener extends Thread implements IDisposable {
 
     @Override
     public void dispose() {
+    	
+    		log.info("Dispose called.");
+    		
         shouldContinue = false;
     }
 
@@ -107,11 +110,14 @@ public class RabbitListener extends Thread implements IDisposable {
             log.debug("Will now continuously listen for events using routing key: " + exchange.getRoutingKey());
             while (shouldContinue) {
                 try {
-                    QueueingConsumer.Delivery result = consumer.nextDelivery(100);
 
+                    QueueingConsumer.Delivery result = consumer.nextDelivery(100);
+                    
                     if (null == result) {
                         continue;
                     }
+                    
+                    log.debug("Got something.");
 
                     EnvelopeHelper env = new EnvelopeHelper(new Envelope());
                     env.setReceiptTime(DateTime.now());
@@ -139,6 +145,8 @@ public class RabbitListener extends Thread implements IDisposable {
                         raise_onEnvelopeReceivedEvent(dispatcher);
                     }
                 } catch (InterruptedException interruptedException) {
+                	
+                		log.error("Listener interrupted...", interruptedException);
                     // The consumer was removed, either through
                     // channel or connection closure, or through the
                     // action of IModel.BasicCancel().

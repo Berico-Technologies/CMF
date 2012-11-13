@@ -146,7 +146,7 @@ public class RabbitTransportProvider implements ITransportProvider {
 
         // for each exchange, send the envelope
         for (Exchange ex : exchanges) {
-            log.debug("Sending to exchange: " + ex.toString());
+            log.info("Sending to exchange: " + ex.toString());
             Connection conn = connFactory.connectTo(ex);
 
             Channel channel = null;
@@ -159,7 +159,7 @@ public class RabbitTransportProvider implements ITransportProvider {
                     headers.put(entry.getKey(), entry.getValue());
                 }
                 props.setHeaders(headers);
-
+                
                 channel.exchangeDeclare(ex.getName(), ex.getExchangeType(), ex.getIsDurable(), ex.getIsAutoDelete(),
                                 ex.getArguments());
                 channel.basicPublish(ex.getName(), ex.getRoutingKey(), props, env.getPayload());

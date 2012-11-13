@@ -17,6 +17,7 @@ public class BasicConnectionFactory implements RabbitConnectionFactory {
 
     @Override
     public Connection connectTo(Exchange exchange) throws Exception {
+    		
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername(username);
         factory.setPassword(password);
