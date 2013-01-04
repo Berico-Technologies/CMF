@@ -129,6 +129,8 @@ designed for you to use -- just like the event bus uses it.
 
 Yep.  This should clear things up a bit.
 
+![There is supposed to be an image of the conceptual architecture here](/docs/architecture/CMF_Conceptual.png "CMF Implementation")
+
 ### That makes more sense.  Which should I use?
 
 Is your architecture following the Domain Events pattern?  Or are you just trying to send and receive events? If 
