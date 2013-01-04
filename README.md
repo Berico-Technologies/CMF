@@ -28,8 +28,7 @@ So remember as you look at the code and examples below, that we're showing the i
 for your edification -- we typically just inject one of the bus interfaces and get on with it.
 
 
-Producing (aka publishing) events
----------------------------------
+### Producing (aka publishing) events
 
 This is the interface that defines a component that can produce events:
 
@@ -67,8 +66,7 @@ class MyEventProducer
 ```
 
 
-Consuming (aka subscribing to) events
--------------------------------------
+### Consuming (aka subscribing to) events
 
 This is the interface that defines a component that can consume (or subscribe to) events:
 ```java
@@ -111,3 +109,23 @@ class MyEventConsumer
 Honestly?  The only other thing you need to know in order to start producing and consuming events is how to 
 configure your IoC container in order to wire up the implementation that comes with CMF.  But even without 
 that knowledge, you could begin writing (and unit testing!) software components written against the interfaces!
+
+Common Questions
+----------------
+
+### Aren't the event bus interfaces a bit *too* simple?
+
+We don't think so, and we think that our opinion is justified by our experiences in using it.  If you have a list
+of scenarios that you think our interfaces can't handle, you're probably approaching the event bus expecting it
+to be a kafka/rabbit/mule kind of messaging/esb framework instead of a bus for passing [Domain Events](https://www.google.com/search?q=domain+event).
+
+### But the name of this project is common *messaging* framework!!
+
+Yes indeed.  See, we've written a very thin wrapper around a messaging framework (RabbitMQ), and the "event bus" 
+*uses* that thin wrapper to actually send and receive domain events.  We call it the Envelope Bus, and it's been
+designed for you to use -- just like the event bus uses it.
+
+### Ok, I'm confused.  Can you show me a picture?
+
+Yep.  This should clear things up a bit.
+
