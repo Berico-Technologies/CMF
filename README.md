@@ -1,5 +1,5 @@
 CMF - The Common Messaging Framework
-=======
+====================================
 
 CMF is two things:
   - A set of interfaces that describe how software components can publish and subscribe to events
@@ -12,7 +12,8 @@ CMF takes the opinion that:
   - The sender and receiver should [conceptually] be unaware of each other (Publish-Subscribe Pattern)
 
 
--- The Interfaces --
+The Interfaces
+--------------
 
 ```java
 public interface IEventBus extends IEventProducer, IEventConsumer
@@ -28,6 +29,7 @@ for your edification -- we typically just inject one of the bus interfaces and g
 
 
 Producing (aka publishing) events
+---------------------------------
 
 This is the interface that defines a component that can produce events:
 
@@ -66,6 +68,7 @@ class MyEventProducer
 
 
 Consuming (aka subscribing to) events
+-------------------------------------
 
 This is the interface that defines a component that can consume (or subscribe to) events:
 ```java
