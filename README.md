@@ -14,6 +14,19 @@ CMF takes the opinion that:
 
 -- The Interfaces --
 
+```java
+public interface IEventBus extends IEventProducer, IEventConsumer
+```
+
+Typically, our developers inject the IEventBus or IRpcEventBus interface into their components.  That's 
+because most of our components publish AND consume events, and the "bus" interfaces implement both the
+producer and the consumer interfaces.  But if you're writing a program that only does one or the other,
+you're welcome to merely inject IEventProducer or IEventConsumer into your components.
+
+So remember as you look at the code and examples below, that we're showing the individual interfaces just
+for your edification.
+
+
 Producing (aka publishing) events
 
 This is the interface that defines a component that can produce events:
@@ -41,10 +54,18 @@ class MyEventProducer
     // this is your POJO that you want to publish
     MyEvent event = new MyEvent("Hello!");
     
-    this.producer.publish(event);
+    try {
+      this.producer.publish(event);
+    }
+    catch(Exception ex) {
+      // failed to publish the event!
+    }
   }
 }
 ```
+
+
+Consuming (aka subscribing to) events
 
 This is the interface that defines a component that can consume (or subscribe to) events:
 ```java
@@ -83,3 +104,7 @@ class MyEventConsumer
   }
 }
 ```
+
+Honestly?  The only other thing you need to know in order to start producing and consuming events is how to 
+configure your IoC container in order to wire up the implementation that comes with CMF.  But even without 
+that knowledge, you could begin writing (and unit testing!) software components written against the interfaces!
