@@ -129,3 +129,29 @@ designed for you to use -- just like the event bus uses it.
 
 Yep.  This should clear things up a bit.
 
+### That makes more sense.  Which should I use?
+
+Is your architecture following the Domain Events pattern?  Or are you just trying to send and receive events? If 
+so, use the event bus.  If you have a scenario like "I want to send and receive media, not events!", you should
+either use the envelope bus or write your own "Media Bus" on top of our envelope bus.  Another example?  User 
+Notification.  If you're just doing simple user notification, you can make clever use of the event bus.  But if 
+you have more sophisticated requirements, write your own "User Notification Bus" on top of the envelope bus.
+
+### If I'm writing my own "bus" anyway, why use CMF at all?
+
+Ah, now we come to one of the really beautiful value propositions that CMF has to offer.  The envelope bus knows 
+how to route envelopes, and envelopes are just a map/dictionary of headers and a byte array of content.  By using 
+our event bus - or by writing your own bus on our envelope bus - you reap a number of valuable rewards:
+
+ - Routing is flexible and dynamic. 
+   - Send to - or listen on - multiple queues/exchanges for a given message type
+   - Change routing at runtime without stopping anything
+   - Redirect message traffic (at runtime) in the event of performance bottlenecks
+   - Configure secondary brokers in the event of a crash by the primary brokers
+ - Governance
+   - Target certain message types to be passed through a policy interdiction point before proceeding onto consumers
+   - Inspect the stream of messages at a system-wide level in order to recognize more complex events
+   - Record selected messages for system-wide auditing
+ - Security
+   - Envelope payloads can be signed to provide message integrity and authenticity
+   - Envelope payloads can be encrypted to provide message confidentiality
