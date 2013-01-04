@@ -24,7 +24,7 @@ producer and the consumer interfaces.  But if you're writing a program that only
 you're welcome to merely inject IEventProducer or IEventConsumer into your components.
 
 So remember as you look at the code and examples below, that we're showing the individual interfaces just
-for your edification.
+for your edification -- we typically just inject one of the bus interfaces and get on with it.
 
 
 Producing (aka publishing) events
