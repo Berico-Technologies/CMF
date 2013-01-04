@@ -7,7 +7,7 @@ CMF is two things:
 
 CMF takes the opinion that:
   - The client API should be exceedingly simple
-  - The client implementation should be extensible and designed with scale in mind
+  - The client implementation should be extensible and designed with scale and fault tolerance in mind
   - Messaging should be fundamentally asynchronous (it can 'act' synchronous if you want it to)
   - The sender and receiver should [conceptually] be unaware of each other (Publish-Subscribe Pattern)
 
