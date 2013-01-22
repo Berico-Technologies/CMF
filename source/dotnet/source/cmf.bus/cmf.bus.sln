@@ -13,7 +13,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.rabbit", "cmf.rabbit\cm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.tests", "cmf.tests\cmf.tests.csproj", "{1553D312-9ABE-42FA-9A25-09BE1AE5EB67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.security", "source\cmf.security\cmf.security.csproj", "{55E3C8AB-52AA-4170-8326-B09F795C9449}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2D5A7080-FF09-4788-9EAF-645202A1393E}"
+	ProjectSection(SolutionItems) = preProject
+		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.security", "cmf.security\cmf.security.csproj", "{55E3C8AB-52AA-4170-8326-B09F795C9449}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
