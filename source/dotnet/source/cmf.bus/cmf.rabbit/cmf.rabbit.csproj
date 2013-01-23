@@ -52,6 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="CertificateConnectionFactory.cs" />
     <Compile Include="DeliveryOutcomes.cs" />
     <Compile Include="IRabbitConnectionFactory.cs" />
@@ -75,7 +78,7 @@
       <Project>{5386254B-6A77-4244-9364-1013899A2B11}</Project>
       <Name>cmf.bus</Name>
     </ProjectReference>
-    <ProjectReference Include="..\source\cmf.security\cmf.security.csproj">
+    <ProjectReference Include="..\cmf.security\cmf.security.csproj">
       <Project>{55E3C8AB-52AA-4170-8326-B09F795C9449}</Project>
       <Name>cmf.security</Name>
     </ProjectReference>
