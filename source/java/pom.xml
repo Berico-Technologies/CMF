@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cmf</groupId>
     <artifactId>cmf.bus</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>3.0.0</version>
     <name>Common Messaging Framework</name>
 
     <properties>
@@ -389,14 +389,14 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:git@github.com:jar349/cmf.bus.git</connection>
-        <developerConnection>scm:git:git@github.com:jar349/cmf.bus.git</developerConnection>
-        <url>https://github.com/jar349/cmf.bus/tree/develop</url>
+        <connection>scm:git:git@github.com:Berico-Technologies/CMF.git</connection>
+        <developerConnection>scm:git:git@github.com:Berico-Technologies/CMF.git</developerConnection>
+        <url>https://github.com/Berico-Technologies/CMF/tree/develop</url>
     </scm>
 
     <issueManagement>
-        <system>JIRA</system>
-        <url>http://berico.jira.com</url>
+        <system>GitHub</system>
+        <url>https://github.com/Berico-Technologies/CMF/issues</url>
     </issueManagement>
 
     <ciManagement>
@@ -404,4 +404,5 @@
         <url>http://user:password@teamcity.osd.mil/</url>
     </ciManagement>
 
+    <url>https://github.com/Berico-Technologies/CMF</url>
 </project>
