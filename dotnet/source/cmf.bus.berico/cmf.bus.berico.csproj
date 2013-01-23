@@ -54,9 +54,9 @@
     </Compile>
     <Compile Include="DefaultEnvelopeBus.cs" />
     <Compile Include="IEnvelopeDispatcher.cs" />
-    <Compile Include="IInboundEnvelopeProcessor.cs" />
-    <Compile Include="IOutboundEnvelopeProcessor.cs" />
+    <Compile Include="IEnvelopeProcessor.cs" />
     <Compile Include="ITransportProvider.cs" />
+    <Compile Include="EnvelopeContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

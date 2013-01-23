@@ -26,7 +26,7 @@ namespace cmf.tests
         }
 
 
-        [TestCase]
+        [Test]
         public void Should_Give_Registrations_To_Transport_Layer()
         {
             Mock<ITransportProvider> txMock = _mocker.Create<ITransportProvider>();
@@ -38,7 +38,7 @@ namespace cmf.tests
             txMock.Verify(tx => tx.Register(regMock.Object), Times.Once());
         }
 
-        [TestCase]
+        [Test]
         public void Should_Dispatch_Envelopes_Even_When_InboundChain_Is_Null()
         {
             Envelope env = new Envelope() { Payload = Encoding.UTF8.GetBytes("Test") };
@@ -56,7 +56,7 @@ namespace cmf.tests
             dispatcherMock.Verify(d => d.Dispatch(env), Times.Once());
         }
 
-        [TestCase]
+        [Test]
         public void Should_Send_Envelopes_Even_When_OutboundChain_Is_Null()
         {
             Envelope env = new Envelope() { Payload = Encoding.UTF8.GetBytes("Test") };

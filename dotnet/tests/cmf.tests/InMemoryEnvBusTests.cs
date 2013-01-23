@@ -25,7 +25,7 @@ namespace cmf.tests
         }
 
 
-        [TestCase]
+        [Test]
         public void Should_Receive_Envelopes_When_Filter_Returns_True()
         {
             InMemoryEnvelopeBus bus = new InMemoryEnvelopeBus();
@@ -46,7 +46,7 @@ namespace cmf.tests
             reg.Verify(r => r.Handle(env), Times.Once());
         }
 
-        [TestCase]
+        [Test]
         public void Should_Not_Receive_Envelopes_When_Filter_Returns_False()
         {
             InMemoryEnvelopeBus bus = new InMemoryEnvelopeBus();
@@ -67,7 +67,7 @@ namespace cmf.tests
             reg.Verify(r => r.Handle(env), Times.Never());
         }
 
-        [TestCase]
+        [Test]
         public void Should_Receive_Many_Envelopes_When_Filter_Returns_True()
         {
             InMemoryEnvelopeBus bus = new InMemoryEnvelopeBus();
