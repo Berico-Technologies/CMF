@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -13,10 +14,12 @@ import cmf.bus.Envelope;
 import cmf.bus.IDisposable;
 import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;
+//!Bad we have dependencies on berico stuff in the common stack
 import cmf.bus.berico.EnvelopeHelper;
 import cmf.bus.berico.IEnvelopeReceivedCallback;
 import cmf.rabbit.topology.Exchange;
 
+import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.LongString;
 import com.rabbitmq.client.QueueingConsumer;
@@ -123,7 +126,11 @@ public class RabbitListener extends Thread implements IDisposable {
                     env.setReceiptTime(DateTime.now());
                     env.setPayload(result.getBody());
 
-                    for (Entry<String, Object> prop : result.getProperties().getHeaders().entrySet()) {
+                    BasicProperties props = result.getProperties();
+                    env.setMessageId(UUID.fromString(props.getMessageId()));
+                    env.setMessageType(props.getType());
+                    
+					for (Entry<String, Object> prop : props.getHeaders().entrySet()) {
 
                         try {
                             String key = prop.getKey();
@@ -139,6 +146,7 @@ public class RabbitListener extends Thread implements IDisposable {
                     log.debug("Incoming event headers: " + env.flatten());
 
                     if (shouldRaiseEvent(registration.getFilterPredicate(), env.getEnvelope())) {
+                    	//! Use of new() w/o factory class or method.
                         RabbitEnvelopeDispatcher dispatcher =
                                         new RabbitEnvelopeDispatcher(registration, env.getEnvelope(), channel, result
                                                         .getEnvelope().getDeliveryTag());

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import cmf.bus.Envelope;
 import cmf.bus.IRegistration;
+import cmf.bus.berico.EnvelopeHelper;
 import cmf.bus.berico.IEnvelopeDispatcher;
 import cmf.bus.berico.IEnvelopeReceivedCallback;
 import cmf.bus.berico.ITransportProvider;
@@ -103,6 +104,7 @@ public class RabbitTransportProvider implements ITransportProvider {
             Channel channel = conn.createChannel();
 
             // create a listener
+        	//! Use of new() w/o factory class or method.
             RabbitListener listener = new RabbitListener(registration, ex, channel);
 
             // hook into the listener's events
@@ -158,6 +160,11 @@ public class RabbitTransportProvider implements ITransportProvider {
                 for (Entry<String, String> entry : env.getHeaders().entrySet()) {
                     headers.put(entry.getKey(), entry.getValue());
                 }
+                
+                //HACK! Bad! This introduced a berico namespace into a common component!
+                EnvelopeHelper eh = new EnvelopeHelper(env);
+                props.setType(eh.getMessageType());
+                props.setMessageId(eh.getMessageId().toString());
                 props.setHeaders(headers);
                 
                 channel.exchangeDeclare(ex.getName(), ex.getExchangeType(), ex.getIsDurable(), ex.getIsAutoDelete(),

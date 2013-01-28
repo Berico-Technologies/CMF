@@ -4,6 +4,7 @@ import cmf.bus.Envelope;
 import cmf.bus.IDisposable;
 import cmf.bus.IRegistration;
 
+//!Does this belong in a berico package?
 public interface ITransportProvider extends IDisposable {
 
     void onEnvelopeReceived(IEnvelopeReceivedCallback callback);

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import cmf.bus.Envelope;
 import cmf.bus.IRegistration;
+//!Should IEnvelopeDispatcher be in a berico namespace?
 import cmf.bus.berico.IEnvelopeDispatcher;
 
 import com.rabbitmq.client.Channel;

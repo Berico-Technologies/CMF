@@ -9,6 +9,7 @@ import org.joda.time.Duration;
 
 import cmf.bus.Envelope;
 
+//! Should this be a static class.  Otherwise are we needlessly loading the GC?
 public class EnvelopeHelper {
 
     private Envelope env;

@@ -70,6 +70,7 @@ public class DefaultEventBus implements IEventBus {
         subscribe(eventHandler, filterPredicate);
     }
 
+    //! filterPredicate is unused?
     @Override
     public <TEVENT> void subscribe(final IEventHandler<TEVENT> eventHandler, final IEventFilterPredicate filterPredicate)
                     throws Exception {

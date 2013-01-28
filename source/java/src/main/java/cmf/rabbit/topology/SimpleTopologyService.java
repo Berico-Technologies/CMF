@@ -14,6 +14,9 @@ public class SimpleTopologyService implements ITopologyService {
     protected String clientProfile;
     protected String hostName;
     protected String name;
+    protected boolean isDurable;
+    protected boolean isAutodelete;
+    protected String type;
     protected int port;
     protected String virtualHost;
 
@@ -24,6 +27,9 @@ public class SimpleTopologyService implements ITopologyService {
         hostName = StringUtils.isBlank(hostname) ? "localhost" : hostname;
         virtualHost = StringUtils.isBlank(vhost) ? "/" : vhost;
         this.port = port == 0 ? 5672 : port;
+        type = "direct";
+        isDurable = false;
+        isAutodelete = true;
     }
 
     @Override
@@ -48,6 +54,18 @@ public class SimpleTopologyService implements ITopologyService {
         return name;
     }
 
+    public boolean isDurable() {
+		return isDurable;
+	}
+
+	public boolean isAutodelete() {
+		return isAutodelete;
+	}
+
+	public String getType() {
+        return type;
+    }
+
     public int getPort() {
         return port;
     }
@@ -62,9 +80,9 @@ public class SimpleTopologyService implements ITopologyService {
                         port, // port
                         topic, // routing key
                         String.format("%s#%s", clientProfile, topic), // queue name
-                        "direct", // exchange type
-                        false, // is durable
-                        true, // is auto-delete
+                        type, // exchange type
+                        isDurable, // is durable
+                        isAutodelete, // is auto-delete
                         null); // arguments
 
         RouteInfo theOneRoute = new RouteInfo(theOneExchange, theOneExchange);
@@ -91,7 +109,19 @@ public class SimpleTopologyService implements ITopologyService {
         this.name = name;
     }
 
-    public void setPort(int port) {
+    public void setType(String type) {
+        this.type = type;
+    }
+
+	public void setDurable(boolean isDurable) {
+		this.isDurable = isDurable;
+	}
+
+	public void setAutodelete(boolean isAutodelete) {
+		this.isAutodelete = isAutodelete;
+	}
+
+	public void setPort(int port) {
         this.port = port;
     }
 

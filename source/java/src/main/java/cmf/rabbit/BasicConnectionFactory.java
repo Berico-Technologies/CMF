@@ -7,7 +7,7 @@ import com.rabbitmq.client.ConnectionFactory;
 
 public class BasicConnectionFactory implements RabbitConnectionFactory {
 
-    protected String password;
+	protected String password;
     protected String username;
 
     public BasicConnectionFactory(String username, String password) {
@@ -19,16 +19,21 @@ public class BasicConnectionFactory implements RabbitConnectionFactory {
     public Connection connectTo(Exchange exchange) throws Exception {
     		
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setUsername(username);
+        
+        configureConnectionFactory(factory, exchange);
+        
+        return factory.newConnection();
+    }
+
+	protected void configureConnectionFactory(ConnectionFactory factory, Exchange exchange) {
+		factory.setUsername(username);
         factory.setPassword(password);
         factory.setHost(exchange.getHostName());
         factory.setPort(exchange.getPort());
         factory.setVirtualHost(exchange.getVirtualHost());
+	}
 
-        return factory.newConnection();
-    }
-
-    @Override
+		@Override
     public void dispose() {
         // nothing to do
     }
