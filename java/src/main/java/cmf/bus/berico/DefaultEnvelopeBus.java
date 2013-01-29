@@ -14,8 +14,9 @@ import cmf.bus.IRegistration;
 
 public class DefaultEnvelopeBus implements IEnvelopeBus {
 
+	protected final Logger log = LoggerFactory.getLogger(this.getClass().getCanonicalName());
+	
     protected List<IInboundEnvelopeProcessor> inboundProcessors = new LinkedList<IInboundEnvelopeProcessor>();
-    protected final Logger log = LoggerFactory.getLogger(this.getClass().getCanonicalName());
     protected List<IOutboundEnvelopeProcessor> outboundProcessors = new LinkedList<IOutboundEnvelopeProcessor>();
     protected ITransportProvider transportProvider;
 
@@ -53,38 +54,16 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
         }
     }
 
-    protected void initialize() {
+    void initialize() {
 
         // add a handler to the transport provider's envelope received event
-        transportProvider.onEnvelopeReceived(new IEnvelopeReceivedCallback() {
-
-            // implement the callback method
-            @Override
-            public void handleReceive(IEnvelopeDispatcher dispatcher) {
-
-                log.debug("Got an envelope dispatcher from the transport provider");
-                Envelope env = dispatcher.getEnvelope();
-
-                try {
-                    // send the envelope through the inbound processing chain
-                    if (processInbound(env)) {
-                        // the dispatcher encapsulates the logic of giving the envelope to handlers
-                        dispatcher.dispatch(env);
-
-                        log.debug("Dispatched envelope");
-                    }
-                } catch (Exception ex) {
-                	
-                    log.warn("Failed to dispatch envelope; raising EnvelopeFailed event: {}", ex);
-                    dispatcher.dispatchFailed(env, ex);
-                }
-            } // end of the callback method
-        }); // end of adding event handler
+        transportProvider.onEnvelopeReceived(
+        		new InboundEnvelopeProcessorCallback(this));
 
         log.debug("Initialized");
     }
 
-    protected boolean processInbound(Envelope envelope) {
+    boolean processInbound(Envelope envelope) {
         log.debug("Enter processInbound");
 
         // the inbound process can be cancelled if one of the processors returns false
@@ -96,10 +75,12 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
         		log.trace("Processor {} is handling envelope.", inboundEnvelopeProcessor.getClass().getCanonicalName());
         	
             if (inboundEnvelopeProcessor.processInbound(envelope, context)) {
+            	
                 continue;
+                
             } else {
-                log.info("Inbound envelope cancelled by processor of type {}", inboundEnvelopeProcessor.getClass()
-                                .getCanonicalName());
+            	log.info("Inbound envelope cancelled by processor of type {}", 
+        				inboundEnvelopeProcessor.getClass().getCanonicalName());
 
                 noOneCancelled = false;
                 break;
@@ -110,7 +91,7 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
         return noOneCancelled;
     }
 
-    protected void processOutbound(Envelope envelope) {
+    void processOutbound(Envelope envelope) {
         log.debug("Enter processOutbound");
 
         Map<String, Object> context = new HashMap<String, Object>();

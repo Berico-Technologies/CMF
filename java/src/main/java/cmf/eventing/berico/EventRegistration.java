@@ -12,12 +12,16 @@ import cmf.eventing.IEventHandler;
 
 public class EventRegistration implements IRegistration {
 
-    protected IEventHandler eventHandler;
+    @SuppressWarnings("rawtypes")
+	protected IEventHandler eventHandler;
+    
     protected IEnvelopeFilterPredicate filterPredicate;
+    
     protected List<IInboundEventProcessor> inboundChain;
+    
     protected Map<String, String> registrationInfo;
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     public EventRegistration(IEventHandler eventHandler, List<IInboundEventProcessor> inboundChain) {
 
         this.eventHandler = eventHandler;
@@ -36,9 +40,10 @@ public class EventRegistration implements IRegistration {
     public Map<String, String> getRegistrationInfo() {
         return registrationInfo;
     }
-
-    @Override
-    public Object handle(Envelope env) throws Exception {
+    
+	@Override
+	@SuppressWarnings("unchecked")
+	public Object handle(Envelope env) throws Exception {
         Object ev = null;
         Object result = null;
 

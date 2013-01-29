@@ -8,7 +8,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 public class BasicChannelFactory extends BaseChannelFactory {
-
+	
 	protected String username;
 	protected String password;
 	
@@ -19,14 +19,7 @@ public class BasicChannelFactory extends BaseChannelFactory {
 		this.username = username;
 		this.password = password;
 	}
-
-	public BasicChannelFactory(String username, String password, ChannelEqualityStrategy strategy) {
-		
-		super(strategy);
-		
-		this.username = username;
-		this.password = password;
-	}
+	
 
 	@Override
 	public Connection getConnection(Exchange exchange) throws IOException {
@@ -37,6 +30,7 @@ public class BasicChannelFactory extends BaseChannelFactory {
         factory.setHost(exchange.getHostName());
         factory.setPort(exchange.getPort());
         factory.setVirtualHost(exchange.getVirtualHost());
+        //factory.setRequestedHeartbeat(HEARTBEAT_INTERVAL);
         
         return factory.newConnection();
 	}

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %5p | %t | %-55logger{55} | %m | %n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="org.springframework.integration">
+        <level value="INFO" />
+    </logger>
+
+    <logger name="org.springframework">
+        <level value="INFO" />
+    </logger>
+    
+    <logger name="org.atmosphere.cpr">
+        <level value="INFO" />
+    </logger>
+    
+    <!-- Yes, I know I could have simply scoped the logger to "cmf", but if I ever 
+    		 want to stop seeing John's messages our of "cmf.bus", and need to get them from
+    		 "cmf.rabbit", I'm going to end up doing this anyway. -->
+    
+	<logger name="cmf.web.bridge">
+        <level value="TRACE" />
+    </logger>
+    
+    <logger name="cmf.bus">
+        <level value="TRACE" />
+    </logger>
+    
+    <logger name="cmf.rabbit">
+        <level value="TRACE" />
+    </logger>
+    
+    <logger name="cmf.eventing">
+        <level value="TRACE" />
+    </logger>
+
+	<logger name="cmf.security">
+        <level value="TRACE" />
+    </logger>
+
+    <root>
+        <level value="INFO" />
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+</configuration>
