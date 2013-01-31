@@ -72,8 +72,25 @@ namespace cmf.tests
             txMock.Verify(tx => tx.Send(env), Times.Once());
         }
 
+        [Test]
         public void Should_Send_Outgoing_Envelopes_Through_the_Chain()
         {
+            Envelope env = new Envelope() { Payload = Encoding.UTF8.GetBytes("Test") };
+
+            Mock<ITransportProvider> txMock = _mocker.Create<ITransportProvider>();
+            Mock<IEnvelopeProcessor> procMock = _mocker.Create<IEnvelopeProcessor>();
+
+            procMock
+                .Setup(proc => proc.ProcessEnvelope(It.IsAny<EnvelopeContext>(), It.IsAny<Action<EnvelopeContext>>()));
+
+            DefaultEnvelopeBus bus = new DefaultEnvelopeBus(txMock.Object);
+            bus.InboundChain = null;
+            bus.OutboundChain = new Dictionary<int, IEnvelopeProcessor>();
+            bus.OutboundChain.Add(0, procMock.Object);
+
+            bus.Send(env);
+
+            procMock.VerifyAll();
         }
 
         public void Should_Send_Incoming_Envelopes_Through_the_Chain()
