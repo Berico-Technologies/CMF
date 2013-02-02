@@ -9,8 +9,15 @@
   { "name": "Ken Baltrinic" }
 ]
 , "dependencies": {
-	"amqp" : "https://github.com/postwait/node-amqp/tarball/master"
+	"amqp" : "https://github.com/postwait/node-amqp/tarball/master",
+	"underscore" : ">= 1.4.3",
+	"async": ">=0.0.0",
+	"winston": ">=0.6.2",
+	"vows": ">0.0.0",
+	"assert": ">0.0.0",
+	"dateformat": ">1.0.0"
 }
+, "main" : "./cmf"
 , "repository" :
   { "type" : "git"
   , "url" : "git://github.com/Berico-Technologies/CMF.git"
