@@ -1,18 +1,21 @@
 amqp = require "amqp"
-config = "../../config"
+logger = require "../../logger"
 
-class BasicConnectionFactory
-	
+class ConnectionFactory
+
 	@DefaultConnectionStrategy = (route) ->
-		return "#{route.host}|#{route.vhost}|#{route.exchange}"
-	
-	constructor: ->
+		return "amqp://#{route.host}:#{route.port}#{route.vhost}#/#{route.exchange}"
+
+	constructor: (config) ->
+		config = config ? {}
 		@username = config.username ? "guest"
 		@password = config.password ? "guest"
 		@connectionPool = {}
-		@connectionStrategy = config.connectionStrategy ? BasicConnectionFactory.DefaultConnectionStrategy
-	
+		@connectionStrategy = config.connectionStrategy ? ConnectionFactory.DefaultConnectionStrategy
+		logger.debug "ConnectionFactory.ctor >> instantiated."
+
 	getConnectionFor: (route, callback) ->
+		logger.debug "ConnectionFactory.getConnectionFor >> Getting route"
 		connectionName = @connectionStrategy(route)
 		connection = @connectionPool[connectionName]
 		if connection?
@@ -20,15 +23,17 @@ class BasicConnectionFactory
 		else
 			connection = @_createConnection route
 			@connectionPool[connectionName] = connection
-			connection.on("ready", callback)
-	
+			connection.on("ready", () -> callback(connection))
+
 	removeConnection: (route) ->
+		logger.debug "ConnectionFactory.removeConnection >> Removing connection"
 		connectionName = @connectionStrategy(route)
 		connection = @connectionPool[connectionName]
 		connection.end() if connection?
 		delete @connectionPool[connectionName]
-	
+
 	_createConnection: (route) ->
+		logger.debug "ConnectionFactory._createConnection >> Creating new connection"
 		connection = amqp.createConnection({
 			host: route.host, 
 			port: route.port,
@@ -37,5 +42,5 @@ class BasicConnectionFactory
 			vhost: route.vhost
 		})
 		return connection
-		
-module.exports = BasicConnectionFactory
+
+module.exports = (config) -> return new ConnectionFactory(config)

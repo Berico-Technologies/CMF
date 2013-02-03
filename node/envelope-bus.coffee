@@ -1,16 +1,14 @@
-_ = require "underscore"
-config = require "./config"
-logger = config.logger ? require "winston"
+_ = require "lodash"
+logger = require "./logger"
 
 # Receives and dispatches Envelopes with the supplied 
 # transport provider
 class EnvelopeBus
 	
-	constructor: (conf) ->
-		conf = conf ? config
-		@inboundProcessors = conf.inboundProcessors ? []
-		@outboundProcessors = conf.outboundProcessors ? []
-		@transportProvider = conf.transportProvider
+	constructor: (config) ->
+		@inboundProcessors = config.inboundProcessors ? []
+		@outboundProcessors = config.outboundProcessors ? []
+		@transportProvider = config.transportProvider
 		@transportProvider.onEnvelopeReceived @_handleIncomingEnvelope
 		logger.debug "EnvelopeBus.ctor >> EnvelopeBus instantiated"
 	
@@ -46,14 +44,14 @@ class EnvelopeBus
 		logger.debug "EnvelopeBus._processEnvelope >> processing envelope"
 		context = {}
 		wasSuccessful = true
-		
+		me = @
 		_.map chain, (processor) ->
 			try
 				result = processor(envelope, context) ? true
 				if result is false
 					wasSuccessful = false
 			catch ex
-				logger.error "EnvelopeBus._processEnvelope >> Processor failed to handle envelope: #{ex}"
+				me.logger.error "EnvelopeBus._processEnvelope >> Processor failed to handle envelope: #{ex}"
 				wasSuccessful = false
 		
 		return wasSuccessful
@@ -71,5 +69,5 @@ class EnvelopeBus
 			dispatcher.dispatchFailed envelope, ex
 		
 	
-module.exports = EnvelopeBus
+module.exports = (config) -> return new EnvelopeBus(config)
 

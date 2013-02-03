@@ -1,6 +1,5 @@
 Afluent = require "./afluent"
-config = require "./config"
-logger = config.logger ? require "winston"
+logger = require "./logger"
 
 # These represent the header values we use in CMF for
 # routing, security, serialization, etc.  This list is not

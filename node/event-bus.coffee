@@ -1,16 +1,14 @@
-_ = require "underscore"
-config = require "./config"
-logger = config.logger ? require "winston"
+_ = require "lodash"
+logger = require "./logger"
 Envelope = require "./envelope"
-EnvelopeBus = require "./envelope-bus"
 
 class EventRegistration
 	
-	constructor: (@eb, conf) ->
-		@info = conf
-		@filter = conf.filter ? (e) -> true
-		@handleCallback = conf.handle
-		@handleFailedCallback = conf.handleFailed ? (env, e) -> null
+	constructor: (@eb, registrationContext) ->
+		@info = registrationContext
+		@filter = registrationContext.filter ? (e) -> true
+		@handleCallback = registrationContext.handle
+		@handleFailedCallback = registrationContext.handleFailed ? (env, e) -> null
 		logger.debug "EventRegistration.ctor >> instantiated"
 	
 	handle: (envelope) =>
@@ -27,25 +25,24 @@ class EventBus
 	
 	@DefaultInboundProcessors = [
 		(envelope, event, context) ->
-			logger.debug "DefaultInboundProcessor1 >> parsing payload"
+			context.logger.debug "DefaultInboundProcessor1 >> parsing payload"
 			if envelope.type() is "application/json"
 				event = JSON.parse(envelope.payload())
 	]
 	
 	@DefaultOutboundProcessors = [
 		(envelope, event, context) ->
-			logger.debug "DefaultOutboundProcessor1 >> packaging for transport"
+			context.logger.debug "DefaultOutboundProcessor1 >> packaging for transport"
 			envelope.payload(JSON.stringify event)
 			envelope.type("application/json")
 			topic = event.topic ? context.topic
 			envelope.topic(topic)
 	]
 	
-	constructor: (conf) ->
-		conf = conf ? config
-		@inboundProcessors = conf.inboundEventProcessors ? EventBus.DefaultInboundProcessors
-		@outboundProcessors = conf.outboundEventProcessors ? EventBus.DefaultOutboundProcessors
-		@envelopeBus = conf.envelopeBus ? new EnvelopeBus(conf)
+	constructor: (config) ->
+		@inboundProcessors = config.inboundEventProcessors ? EventBus.DefaultInboundProcessors
+		@outboundProcessors = config.outboundEventProcessors ? EventBus.DefaultOutboundProcessors
+		@envelopeBus = config.envelopeBus
 		logger.debug "EventBus.ctor >> Event Bus started"
 	
 	publish: (event, context) =>
@@ -57,7 +54,8 @@ class EventBus
 	
 	subscribe: (handlingContext) =>
 		logger.debug "EventBus.subscribe >> subscribing to event"
-		registration = new EventRegistration @, handlingContext
+		registrationContext = _.extend { logger: logger }, handlingContext
+		registration = new EventRegistration @, registrationContext
 		@envelopeBus.register registration
 		
 	_processInbound: (envelope) =>
@@ -81,9 +79,8 @@ class EventBus
 		
 	_processEvent: (chain, envelope, event, context) =>
 		logger.debug "EventBus._processEvent >> Processing event"
-		context = {}
+		context = { logger: logger }
 		wasSuccessful = true
-
 		_.map chain, (processor) ->
 			try
 				result = processor(envelope, event, context) ? true
@@ -95,4 +92,4 @@ class EventBus
 
 		return wasSuccessful
 		
-module.exports = EventBus
+module.exports = (config) -> new EventBus(config)

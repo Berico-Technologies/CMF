@@ -1,4 +1,4 @@
-_ = require "underscore"
+_ = require "lodash"
 
 # This is a class that allows the fluent setting and getting of properties
 # contained within a property bag.  It creates function for each property
