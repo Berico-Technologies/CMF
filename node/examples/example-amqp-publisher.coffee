@@ -10,18 +10,7 @@ eventBus = (require "../event-bus")({
 	})
 })
 
-eventBus.subscribe {
-	topic: "test-topic"
-	handle: (event, headers) ->
-		logger.debug "Event: #{event.msg}"
-	handleFailed: (envelope, exception) ->
-		logger.error "Failed to handle event #{exception}"
-}
+recursivePublish = () ->
+	eventBus.publish { msg: "hi mom!", topic: "test-topic" }, recursivePublish
 
-fireMessage = () ->
-	eventBus.publish { msg: "hi mom!", topic: "test-topic" }
-
-startPinging = () ->
-	setInterval fireMessage, 5
-
-setTimeout startPinging, 1000
+recursivePublish()

@@ -12,13 +12,13 @@ class EnvelopeBus
 		@transportProvider.onEnvelopeReceived @_handleIncomingEnvelope
 		logger.debug "EnvelopeBus.ctor >> EnvelopeBus instantiated"
 	
-	send: (envelope) =>
+	send: (envelope, callback) =>
 		logger.debug "EnvelopeBus.send >> Sending envelope #{envelope}"
 		if _.isUndefined envelope or _.isNull envelope
 			throw "Envelope must not be null" 
 		isValid = @_processOutbound envelope
 		logger.debug "EnvelopeBus.send >> Outcome of outbound chain: #{isValid}"
-		@transportProvider.send envelope if isValid
+		@transportProvider.send envelope, callback if isValid
 	
 	register: (registration) =>
 		logger.debug "EnvelopeBus.register >> registering handler"

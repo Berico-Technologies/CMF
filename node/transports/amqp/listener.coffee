@@ -46,7 +46,6 @@ class AmqpListener
 			# acknowledge or reject it later.
 			me.messageBuffer[envelope.id()] = message
 			logger.debug "AmqpListener._receiveEnvelope >> Notifying EnvelopeReceivedCallbacks"
-			console.log me.envelopeReceivedCallbacks
 			# Notify all of the listeners
 			_.map me.envelopeReceivedCallbacks, (callback) ->
 				callback(envelope, me)
@@ -74,6 +73,7 @@ class AmqpListener
 		if @registration.filter envelope
 			result = @registration.handle envelope
 		if result is false then message.reject() else message.acknowledge()
+		delete @messageBuffer[envelope.id()]
 
 	dispatchFailed: (envelope, exception) =>
 		logger.error("AmqpListener.dispatchFailed >> Could not dispatch envelope because: #{exception}")
@@ -85,5 +85,6 @@ class AmqpListener
 		catch ex
 			logger.error "AmqpListener.dispatchFailed >> Registration.handleFailed threw exception: #{ex}"
 			message.reject()
+		delete @messageBuffer[envelope.id()]
 	
 module.exports = AmqpListener

@@ -17,11 +17,3 @@ eventBus.subscribe {
 	handleFailed: (envelope, exception) ->
 		logger.error "Failed to handle event #{exception}"
 }
-
-fireMessage = () ->
-	eventBus.publish { msg: "hi mom!", topic: "test-topic" }
-
-startPinging = () ->
-	setInterval fireMessage, 5
-
-setTimeout startPinging, 1000

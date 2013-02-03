@@ -12,6 +12,7 @@ class AmqpTransportProvider
 			type: route.exchangeType
 			durable: route.isDurable
 			autoDelete: route.isAutoDelete
+			confirm: true
 		return opts
 		
 	@routeToPublishOptions = (route, envelope) ->
@@ -49,7 +50,7 @@ class AmqpTransportProvider
 		logger.debug "AmqpTransportProvider.unregister >> Received unregistration"
 	
 	
-	send: (envelope) =>
+	send: (envelope, callback) =>
 		logger.debug "AmqpTransportProvider.send >> Sending envelope"
 		routes = @_getRoutes envelope.headers, "producerRoute"
 		me = @
@@ -58,7 +59,8 @@ class AmqpTransportProvider
 			me._initiateConnection route, false, (exchange, connection) ->
 				publishOptions = AmqpTransportProvider.routeToPublishOptions route, envelope
 				logger.debug "AmqpTransportProvider.send >> Sending to exchange '#{route.exchange}'"
-				exchange.publish route.routingKey, envelope.payload(), publishOptions
+				console.log callback
+				exchange.publish route.routingKey, envelope.payload(), publishOptions, callback
 				logger.debug "AmqpTransportProvider.send >> Published message"
 	
 	onEnvelopeReceived: (callback) =>
@@ -74,7 +76,7 @@ class AmqpTransportProvider
 		return routes
 	
 	_initiateConnection: (route, dedicatedConnection, onReady) =>
-		logger.debug "AmqpTransportProvider._initiateConnection >> initiating connection to amqp://#{route.host}:#{route.port}#{route.vhost}!#{route.exchange}"
+		logger.debug "AmqpTransportProvider._initiateConnection >> initiating connection to #{@_prettyRoute route}"
 		me = @
 		@connectionFactory.getConnectionFor route, dedicatedConnection, (connection, usePassive) ->
 			logger.debug "AmqpTransportProvider._initiateConnection >> Connection received"
@@ -84,6 +86,7 @@ class AmqpTransportProvider
 				logger.debug "AmqpTransportProvider._initiateConnection >> Exchange ready"
 				onReady.call(me, exchange, connection)
 	
+	_prettyRoute: (route) -> "amqp://#{route.host}:#{route.port}#{route.vhost}!#{route.exchange}"
 	
 
 module.exports = (config) -> return new AmqpTransportProvider(config)

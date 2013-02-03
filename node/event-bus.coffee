@@ -1,6 +1,8 @@
 _ = require "lodash"
 logger = require "./logger"
 Envelope = require "./envelope"
+jsonProcessor = require "./processors/event/serializer-json"
+outboundRoutingProcessor = require "./processors/event/outbound-routing"
 
 class EventRegistration
 	
@@ -23,20 +25,13 @@ class EventRegistration
 
 class EventBus
 	
-	@DefaultInboundProcessors = [
-		(envelope, event, context) ->
-			context.logger.debug "DefaultInboundProcessor1 >> parsing payload"
-			if envelope.type() is "application/json"
-				event = JSON.parse(envelope.payload())
+	@DefaultInboundProcessors = [ 
+		jsonProcessor.inbound 
 	]
 	
-	@DefaultOutboundProcessors = [
-		(envelope, event, context) ->
-			context.logger.debug "DefaultOutboundProcessor1 >> packaging for transport"
-			envelope.payload(JSON.stringify event)
-			envelope.type("application/json")
-			topic = event.topic ? context.topic
-			envelope.topic(topic)
+	@DefaultOutboundProcessors = [ 
+		outboundRoutingProcessor
+		jsonProcessor.outbound
 	]
 	
 	constructor: (config) ->
@@ -45,12 +40,13 @@ class EventBus
 		@envelopeBus = config.envelopeBus
 		logger.debug "EventBus.ctor >> Event Bus started"
 	
-	publish: (event, context) =>
-		logger.debug "EventBus.publish >> Sending event with context: #{context}"
-		context = context ? {}
+	publish: (event, context, callback) =>
+		logger.debug "EventBus.publish >> Sending event."
+		callback = context if _.isFunction context
+		context = {} if _.isFunction context
 		results = @_processOutbound event, context
 		if results.wasSuccessful
-			@envelopeBus.send results.envelope
+			@envelopeBus.send results.envelope, callback
 	
 	subscribe: (handlingContext) =>
 		logger.debug "EventBus.subscribe >> subscribing to event"
@@ -60,10 +56,10 @@ class EventBus
 		
 	_processInbound: (envelope) =>
 		logger.debug "EventBus._processOutbound >> Processing inbound message"
-		event = {}
-		wasSuccessful = @_processEvent @inboundProcessors, envelope, event, {}
+		eventObject = {}
+		wasSuccessful = @_processEvent @inboundProcessors, envelope, eventObject, {}
 		results =
-			event: event
+			event: eventObject
 			headers: envelope.headers
 			wasSuccessful: wasSuccessful
 		return results
@@ -77,19 +73,18 @@ class EventBus
 			wasSuccessful: wasSuccessful
 		return results
 		
-	_processEvent: (chain, envelope, event, context) =>
+	_processEvent: (chain, envelope, eventObject, context) =>
 		logger.debug "EventBus._processEvent >> Processing event"
 		context = { logger: logger }
 		wasSuccessful = true
 		_.map chain, (processor) ->
 			try
-				result = processor(envelope, event, context) ? true
+				result = processor(envelope, eventObject, context) ? true
 				if result is false
 					wasSuccessful = false
 			catch ex
 				logger.error "EventBus._processEvent >> Processor failed to handle event: #{ex}"
 				wasSuccessful = false
-
 		return wasSuccessful
 		
 module.exports = (config) -> new EventBus(config)
