@@ -4,7 +4,7 @@ logger = require "../../logger"
 class ConnectionFactory
 
 	@DefaultConnectionStrategy = (route) ->
-		return "amqp://#{route.host}:#{route.port}#{route.vhost}#/#{route.exchange}"
+		return "amqp://#{route.host}:#{route.port}#{route.vhost}!#{route.exchange}"
 
 	constructor: (config) ->
 		config = config ? {}
@@ -14,17 +14,19 @@ class ConnectionFactory
 		@connectionStrategy = config.connectionStrategy ? ConnectionFactory.DefaultConnectionStrategy
 		logger.debug "ConnectionFactory.ctor >> instantiated."
 
-	getConnectionFor: (route, callback) ->
+	getConnectionFor: (route, dedicated, callback) ->
 		logger.debug "ConnectionFactory.getConnectionFor >> Getting route"
 		connectionName = @connectionStrategy(route)
 		connection = @connectionPool[connectionName]
-		if connection?
-			callback(connection)
-		else
+		if dedicated or not connection?
+			logger.debug "ConnectionFactory.getConnectionFor >> creating new connection"
 			connection = @_createConnection route
-			@connectionPool[connectionName] = connection
-			connection.on("ready", () -> callback(connection))
-
+			@connectionPool[connectionName] = connection unless dedicated
+			connection.on("ready", () -> callback(connection, false))
+		else
+			logger.debug "ConnectionFactory.getConnectionFor >> returning existing connection"
+			callback(connection, true)
+			
 	removeConnection: (route) ->
 		logger.debug "ConnectionFactory.removeConnection >> Removing connection"
 		connectionName = @connectionStrategy(route)

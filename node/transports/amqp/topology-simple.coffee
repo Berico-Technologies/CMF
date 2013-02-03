@@ -19,8 +19,8 @@ class SimpleTopologyService
 	getRoutingInfo: (context) =>
 		logger.debug "SimpleTopologyService.getRoutingInfo >> getting routing info"
 		route = _.clone @routePrototype
-		route.routingKey = context[HeaderConstants.MESSAGE_TOPIC.key]
-		route.queue = "#{@routePrototype.clientProfile}##{route.topic}"
+		route.routingKey = context[HeaderConstants.MESSAGE_TOPIC.key] ? context.topic
+		route.queue = "#{@routePrototype.clientProfile}##{route.routingKey}"
 		route.exchangeType = "direct"
 		route.isDurable = true
 		route.isAutoDelete = true

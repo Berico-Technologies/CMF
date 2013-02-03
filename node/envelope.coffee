@@ -1,5 +1,6 @@
 Afluent = require "./afluent"
 logger = require "./logger"
+uuid = require "node-uuid"
 
 # These represent the header values we use in CMF for
 # routing, security, serialization, etc.  This list is not
@@ -49,7 +50,13 @@ class Envelope extends Afluent
 		@headers = headers ? {}
 		@body = body ? {}
 		super("headers", Constants)
+		@_setReasonableDefaults()
 		logger.debug "Envelope.ctor >> created"
+	
+	_setReasonableDefaults: =>
+		@id uuid.v4() unless @id()?
+		@created new Date().getTime() unless @created()?
+		@type "application/json" unless @type()?
 	
 	# The payload of the message.
 	payload: (value) =>
