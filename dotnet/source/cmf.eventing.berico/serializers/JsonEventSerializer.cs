@@ -71,17 +71,20 @@ namespace cmf.eventing.berico.serializers
                 Type type = null;
 
                 // go through each assembly loaded into the app domain
-                foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
+                StringBuilder assembliesLoaded = new StringBuilder();
+                foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
+                    assembliesLoaded.AppendLine("Loaded Assembly Found: " + assembly.FullName);
+
                     // and see if it can get us our Type
-                    type = ass.GetType(eventType);
+                    type = assembly.GetType(eventType);
                     if (null != type)
                     {
-                        _log.Debug("Found type " + type + " in assembly " + ass.FullName);
+                        _log.Debug("Found type " + type + " in assembly " + assembly.FullName);
                         break;
                     }
                 }
-
+                _log.Debug("Currently Loaded Assemblies:" + "\r\n" + assembliesLoaded.ToString());
 
                 if (null != type) // if we did get a Type, we can deserialize the event
                 {

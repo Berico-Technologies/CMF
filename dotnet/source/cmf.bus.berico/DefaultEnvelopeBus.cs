@@ -16,8 +16,8 @@ namespace cmf.bus.berico
         protected ILog _log;
 
 
-        public IDictionary<int, IInboundEnvelopeProcessor> InboundChain { get; set; }
-        public IDictionary<int, IOutboundEnvelopeProcessor> OutboundChain { get; set; }
+        public IDictionary<int, IEnvelopeProcessor> InboundChain { get; set; }
+        public IDictionary<int, IEnvelopeProcessor> OutboundChain { get; set; }
 
 
         public DefaultEnvelopeBus(ITransportProvider transportProvider)
@@ -36,15 +36,16 @@ namespace cmf.bus.berico
             if (null == env) { throw new ArgumentNullException("Cannot send a null envelope"); }
             
             // send the envelope through the outbound chain
-            this.ProcessOutbound(ref env, this.OutboundChain.Sort());
+            this.ProcessEnvelope(new EnvelopeContext(env), this.OutboundChain.Sort(), context =>
+            {
+                // send the envelope to the transport provider
+                _txProvider.Send(context.Envelope);
 
-            // send the envelope to the transport provider
-            _txProvider.Send(env);
+                // log the headers of the outgoing envelope
+                _log.Debug(string.Format("Outgoing headers: {0}", context.Envelope.Headers.Flatten()));
 
-            // log the headers of the outgoing envelope
-            _log.Debug(string.Format("Outgoing headers: {0}", env.Headers.Flatten()));
-
-            _log.Debug("Leave Send");
+                _log.Debug("Leave Send");
+            });
         }
 
         public virtual void Register(IRegistration registration)
@@ -77,13 +78,11 @@ namespace cmf.bus.berico
                 Envelope env = dispatcher.Envelope;
 
                 // send the envelope through the inbound processing chain
-                if (this.ProcessInbound(ref env, this.InboundChain.Sort()))
+                this.ProcessEnvelope(new EnvelopeContext(env), this.InboundChain.Sort(), context =>
                 {
-                    // the dispatcher encapsulates the logic of giving the envelope to handlers
                     dispatcher.Dispatch(env);
-
                     _log.Debug("Dispatched envelope");
-                }
+                });
             }
             catch (Exception ex)
             {
@@ -102,44 +101,29 @@ namespace cmf.bus.berico
         }
 
 
-        protected virtual void ProcessOutbound(ref Envelope env, IEnumerable<IOutboundEnvelopeProcessor> processorChain)
+        // recursive function that processes envelopes
+        protected virtual void ProcessEnvelope(
+            EnvelopeContext context, 
+            IEnumerable<IEnvelopeProcessor> processorChain, 
+            Action<EnvelopeContext> processingComplete)
         {
-            if ((null == processorChain) || (0 == processorChain.Count())) { return; }
-
-            IDictionary<string, object> processorContext = new Dictionary<string, object>();
-
-            foreach (IOutboundEnvelopeProcessor processor in processorChain)
+            // if the chain is null or empty, complete processing
+            if ((null == processorChain) || (0 == processorChain.Count()))
             {
-                processor.ProcessOutbound(ref env, ref processorContext);
-            }
-        }
-
-        protected virtual bool ProcessInbound(ref Envelope env, IEnumerable<IInboundEnvelopeProcessor> processorChain)
-        {
-            if ((null == processorChain) || (0 == processorChain.Count())) { return true; }
-
-            bool processed = true;
-            IDictionary<string, object> processorContext = new Dictionary<string, object>();
-
-            try
-            {
-                foreach (IInboundEnvelopeProcessor processor in processorChain)
-                {
-                    if (!processor.ProcessInbound(ref env, ref processorContext))
-                    {
-                        processed = false;
-                        _log.Warn(string.Format("A processor of type {0} halted the inbound processing chain", processor.GetType().FullName));
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Error("Caught an exception while sending an inbound envelope through the processing chain", ex);
-                processed = false;
+                processingComplete(context);
+                return;
             }
 
-            return processed;
+            // grab the next procesor
+            IEnvelopeProcessor nextProcessor = processorChain.First();
+
+            // let it process the envelope and pass its "next" processor: a
+            // method that recursively calls this function with the current
+            // processor removed
+            nextProcessor.ProcessEnvelope(context, newContext =>
+            {
+                this.ProcessEnvelope(newContext, processorChain.Skip(1), processingComplete);
+            });
         }
     }
 
@@ -148,29 +132,15 @@ namespace cmf.bus.berico
 
     public static class ChainExtensions
     {
-        public static IEnumerable<IOutboundEnvelopeProcessor> Sort(this IDictionary<int, IOutboundEnvelopeProcessor> chain)
+        public static IEnumerable<IEnvelopeProcessor> Sort(this IDictionary<int, IEnvelopeProcessor> chain)
         {
-            IEnumerable<IOutboundEnvelopeProcessor> sortedChain = new List<IOutboundEnvelopeProcessor>();
+            IEnumerable<IEnvelopeProcessor> sortedChain = new List<IEnvelopeProcessor>();
 
             if (null != chain)
             {
                 sortedChain = chain
                     .OrderBy(kvp => kvp.Key)
-                    .Select<KeyValuePair<int, IOutboundEnvelopeProcessor>, IOutboundEnvelopeProcessor>(kvp => kvp.Value);
-            }
-
-            return sortedChain;
-        }
-
-        public static IEnumerable<IInboundEnvelopeProcessor> Sort(this IDictionary<int, IInboundEnvelopeProcessor> chain)
-        {
-            IEnumerable<IInboundEnvelopeProcessor> sortedChain = new List<IInboundEnvelopeProcessor>();
-
-            if (null != chain)
-            {
-                sortedChain = chain
-                    .OrderBy(kvp => kvp.Key)
-                    .Select<KeyValuePair<int, IInboundEnvelopeProcessor>, IInboundEnvelopeProcessor>(kvp => kvp.Value);
+                    .Select<KeyValuePair<int, IEnvelopeProcessor>, IEnvelopeProcessor>(kvp => kvp.Value);
             }
 
             return sortedChain;

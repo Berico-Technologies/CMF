@@ -78,6 +78,9 @@ Servers/
 *.pdb*
 *.opensdf
 *.unsuccessfulbuild
+!/dotnet/binaries/
+/dotnet/binaries/*
+!/dotnet/binaries/libraries/
 ipch/
 [Oo]bj/
 [Bb]in
