@@ -1,16 +1,12 @@
 logger = require "../logger"
+eventBus = (require "../cmf").amqp.eventBus({host: "127.0.0.1"})
 
-eventBus = (require "../event-bus")({
-	envelopeBus: (require "../envelope-bus")({
-		transportProvider: (require "../transports/transport-amqp")({
-			connectionFactory: (require "../transports/amqp/connection-factory")()
-			topologyService: (require "../transports/amqp/topology-simple")()
-			amqpListenerClass: require "../transports/amqp/listener"
-		})
-	})
-})
-
-recursivePublish = () ->
+recursivePublish = ->
 	eventBus.publish { msg: "hi mom!", topic: "test-topic" }, recursivePublish
 
 recursivePublish()
+
+andWereDone = ->
+	eventBus.close -> process.exit()
+	
+setTimeout andWereDone, 10000

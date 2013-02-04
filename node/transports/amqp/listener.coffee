@@ -86,5 +86,9 @@ class AmqpListener
 			logger.error "AmqpListener.dispatchFailed >> Registration.handleFailed threw exception: #{ex}"
 			message.reject()
 		delete @messageBuffer[envelope.id()]
+		
+	close: =>
+		logger.info "AmqpListener.close >> closing the connection"
+		@connection.end()
 	
 module.exports = AmqpListener

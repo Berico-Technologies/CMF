@@ -30,7 +30,7 @@ class AmqpTransportProvider
 		@amqpListenerClass = config.amqpListenerClass
 		logger.debug "AmqpTransportProvider.ctor >> instantiated"
 
-	register: (registration) =>
+	register: (registration, callback) =>
 		logger.debug "AmqpTransportProvider.register >> Received registration"
 		routes = @_getRoutes registration.info, "consumerRoute"
 		me = @
@@ -45,10 +45,17 @@ class AmqpTransportProvider
 					envelopeReceivedCallbacks: me.envelopeReceivedCallbacks
 				listener = new @amqpListenerClass listenerConfig, ->
 					logger.debug "AmqpTransportProvider.register >> Listener started"
+					me.registrations.push { registration: registration, listener: listener }
+					callback() if callback?
 	
-	unregister: (registration) =>
-		logger.debug "AmqpTransportProvider.unregister >> Received unregistration"
-	
+	unregister: (registration, callback) =>
+		logger.debug "AmqpTransportProvider.unregister >> unregistering"
+		registration = _.find @registrations, (reg) -> reg.registration is registration
+		if registration?
+			registration.listener.close()
+			@registrations = _.without @registrations, registration
+			logger.debug "AmqpTransportProvider.unregister >> closed listener and removed registration"
+		callback() if callback?
 	
 	send: (envelope, callback) =>
 		logger.debug "AmqpTransportProvider.send >> Sending envelope"
@@ -59,7 +66,6 @@ class AmqpTransportProvider
 			me._initiateConnection route, false, (exchange, connection) ->
 				publishOptions = AmqpTransportProvider.routeToPublishOptions route, envelope
 				logger.debug "AmqpTransportProvider.send >> Sending to exchange '#{route.exchange}'"
-				console.log callback
 				exchange.publish route.routingKey, envelope.payload(), publishOptions, callback
 				logger.debug "AmqpTransportProvider.send >> Published message"
 	
@@ -88,5 +94,11 @@ class AmqpTransportProvider
 	
 	_prettyRoute: (route) -> "amqp://#{route.host}:#{route.port}#{route.vhost}!#{route.exchange}"
 	
+	close: (callback) =>
+		logger.info "AmqpTransportProvider.close >> closing all active listeners"
+		_.map @registrations, (registration) ->
+			registration.listener.close()
+		@registrations.length = 0
+		callback() if callback?
 
 module.exports = (config) -> return new AmqpTransportProvider(config)

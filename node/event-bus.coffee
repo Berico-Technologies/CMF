@@ -38,6 +38,7 @@ class EventBus
 		@inboundProcessors = config.inboundEventProcessors ? EventBus.DefaultInboundProcessors
 		@outboundProcessors = config.outboundEventProcessors ? EventBus.DefaultOutboundProcessors
 		@envelopeBus = config.envelopeBus
+		@subscriptions = []
 		logger.debug "EventBus.ctor >> Event Bus started"
 	
 	publish: (event, context, callback) =>
@@ -48,12 +49,23 @@ class EventBus
 		if results.wasSuccessful
 			@envelopeBus.send results.envelope, callback
 	
-	subscribe: (handlingContext) =>
+	subscribe: (handlingContext, callback) =>
 		logger.debug "EventBus.subscribe >> subscribing to event"
 		registrationContext = _.extend { logger: logger }, handlingContext
 		registration = new EventRegistration @, registrationContext
-		@envelopeBus.register registration
+		@subscriptions.push { context: handlingContext, registration: registration }
+		@envelopeBus.register registration, callback
 		
+	unsubscribe: (handlingContext, callback) =>
+		logger.debug "EventBus.unsubscribe >> unsubscribing from event"
+		subscription = _.find @subscriptions, (sub) -> sub.context is handlingContext
+		@subscriptions = _.without @subscriptions, subscription
+		@envelopeBus.unregister subscription.registration, callback
+	
+	close: (callback) =>
+		logger.debug "EventBus.close >> closing the EventBus"
+		@envelopeBus.close(callback)
+	
 	_processInbound: (envelope) =>
 		logger.debug "EventBus._processOutbound >> Processing inbound message"
 		eventObject = {}

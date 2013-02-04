@@ -13,20 +13,23 @@ class InMemoryTransportProvider
 		@isRouteMatch = config.routingPredicate ? InMemoryTransportProvider.routeByType
 		logger.debug "InMemoryTransportProvider.ctor >> InMemoryTransportProvider instantiated"
 
-	register: (registration) =>
+	register: (registration, callback) =>
 		logger.debug "InMemoryTransportProvider.register >> Received registration"
 		registration.filter = InMemoryTransportProvider.acceptAllFilter unless registration.filter?
 		@registrations.push registration
+		callback() if callback?
 	
-	unregister: (registration) =>
+	unregister: (registration, callback) =>
 		logger.debug "InMemoryTransportProvider.unregister >> Received unregistration"
 		@registration = _.without @registration, registration
+		callback() if callback?
 
-	send: (envelope) =>
+	send: (envelope, callback) =>
 		logger.debug "InMemoryTransportProvider.send >> Sending envelope"
 		dispatcher = @
-		_.map @envelopeReceivedCallbacks, (callback) ->
-			callback(envelope, dispatcher)
+		_.map @envelopeReceivedCallbacks, (receivedCallback) ->
+			receivedCallback(envelope, dispatcher)
+		callback() if callback?
 	
 	onEnvelopeReceived: (callback) =>
 		logger.debug "InMemoryTransportProvider.onEnvelopeReceived >> Registering callback handler"
@@ -50,5 +53,8 @@ class InMemoryTransportProvider
 					registration.handleFailed envelope, exception if registration.handleFailed?
 			catch ex
 				logger.error("InMemoryTransportProvider.dispatchFailed >> Error trying to call fail handler for envelope: #{ex}")
+	
+	close: (callback) ->
+		callback() if callback?
 
 module.exports = (config) -> return new InMemoryTransportProvider(config)

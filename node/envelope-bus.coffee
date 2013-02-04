@@ -12,6 +12,7 @@ class EnvelopeBus
 		@transportProvider.onEnvelopeReceived @_handleIncomingEnvelope
 		logger.debug "EnvelopeBus.ctor >> EnvelopeBus instantiated"
 	
+	# Send an Envelope over the bus
 	send: (envelope, callback) =>
 		logger.debug "EnvelopeBus.send >> Sending envelope #{envelope}"
 		if _.isUndefined envelope or _.isNull envelope
@@ -20,17 +21,17 @@ class EnvelopeBus
 		logger.debug "EnvelopeBus.send >> Outcome of outbound chain: #{isValid}"
 		@transportProvider.send envelope, callback if isValid
 	
-	register: (registration) =>
+	register: (registration, callback) =>
 		logger.debug "EnvelopeBus.register >> registering handler"
 		if _.isUndefined registration or _.isNull registration
 			throw "Registration must not be null" 
-		@transportProvider.register registration
+		@transportProvider.register registration, callback
 		
-	unregister: (registration) =>
+	unregister: (registration, callback) =>
 		logger.debug "EnvelopeBus.unregister >> unregistering handler"
 		if _.isUndefined registration or _.isNull registration
 			throw "Registration must not be null"
-		@transportProvider.unregister registration
+		@transportProvider.unregister registration, callback
 	
 	_processInbound: (envelope) =>
 		logger.debug "EnvelopeBus._processInbound >> processing inbound envelope"
@@ -67,7 +68,10 @@ class EnvelopeBus
 		catch ex
 			logger.warn "EnvelopeBus._handleIncomingEnvelope >> Failed to dispatch envelope"
 			dispatcher.dispatchFailed envelope, ex
-		
+	
+	close: (callback) =>
+		logger.debug "EnvelopeBus.close >> closing the EnvelopeBus"
+		@transportProvider.close(callback)
 	
 module.exports = (config) -> return new EnvelopeBus(config)
 
