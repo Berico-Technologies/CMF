@@ -41,23 +41,27 @@ namespace cmf.eventing.berico
                 env.SetMessagePattern(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC);
                 env.SetRpcTimeout(timeout);
 
+                // create an event context
+                EventContext context = new EventContext(EventContext.Directions.Out, env, request);
+
                 // let the outbound processor do its thing
-                this.ProcessOutbound(request, env);
+                this.ProcessEvent(context, this.OutboundChain.Sort(), () =>
+                {
+                    // create an RPC registration
+                    RpcRegistration rpcRegistration = new RpcRegistration(requestId, expectedTopic, this.ProcessInbound);
 
-                // create an RPC registration
-                RpcRegistration rpcRegistration = new RpcRegistration(requestId, expectedTopic, this.InboundChain.Sort());
+                    // register with the envelope bus
+                    _envBus.Register(rpcRegistration);
 
-                // register with the envelope bus
-                _envBus.Register(rpcRegistration);
+                    // now that we're setup to receive the response, send the request
+                    _envBus.Send(context.Envelope);
 
-                // now that we're setup to receive the response, send the request
-                _envBus.Send(env);
+                    // get the envelope from the registraton
+                    response = rpcRegistration.GetResponse(timeout);
 
-                // get the envelope from the registraton
-                response = rpcRegistration.GetResponse(timeout);
-
-                // unregister from the bus
-                _envBus.Unregister(rpcRegistration);
+                    // unregister from the bus
+                    _envBus.Unregister(rpcRegistration);
+                });
             }
             catch (Exception ex)
             {
@@ -101,8 +105,12 @@ namespace cmf.eventing.berico
                 Envelope env = new Envelope();
                 env.SetCorrelationId(headers.GetMessageId());
 
-                this.ProcessOutbound(response, env);
-                _envBus.Send(env);
+                EventContext context = new EventContext(EventContext.Directions.Out, env, response);
+
+                this.ProcessEvent(context, this.OutboundChain.Sort(), () =>
+                {
+                    _envBus.Send(env);
+                });
             }
             catch (Exception ex)
             {
@@ -111,6 +119,21 @@ namespace cmf.eventing.berico
             }
 
             _log.Debug("Leave RespondTo");
+        }
+
+
+        protected virtual object ProcessInbound(Envelope env)
+        {
+            object ev = null;
+            EventContext context = new EventContext(EventContext.Directions.In, env);
+
+            this.ProcessEvent(context, this.InboundChain.Sort(), () =>
+            {
+                _log.Info("Completed inbound processing - returning event");
+                ev = context.Event;
+            });
+
+            return ev;
         }
     }
 }

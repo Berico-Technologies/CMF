@@ -59,9 +59,9 @@
     <Compile Include="DefaultEventBus.cs" />
     <Compile Include="DefaultRpcBus.cs" />
     <Compile Include="DigitalSignatureProcessor.cs" />
+    <Compile Include="EventContext.cs" />
     <Compile Include="EventRegistration.cs" />
-    <Compile Include="IInboundEventProcessor.cs" />
-    <Compile Include="IOutboundEventProcessor.cs" />
+    <Compile Include="IEventProcessor.cs" />
     <Compile Include="OutboundHeadersProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RpcFilter.cs" />

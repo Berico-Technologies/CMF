@@ -17,8 +17,8 @@ namespace cmf.eventing.berico
         protected ILog _log;
 
 
-        public IDictionary<int, IInboundEventProcessor> InboundChain { get; set; }
-        public IDictionary<int, IOutboundEventProcessor> OutboundChain { get; set; }
+        public IDictionary<int, IEventProcessor> InboundChain { get; set; }
+        public IDictionary<int, IEventProcessor> OutboundChain { get; set; }
 
 
         public DefaultEventBus(DefaultEnvelopeBus envBus)
@@ -36,12 +36,17 @@ namespace cmf.eventing.berico
 
             try
             {
+                // create an envelope and set its pattern to pub/sub
                 Envelope env = new Envelope();
                 env.SetMessagePattern(EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB);
 
-                this.ProcessOutbound(ev, env);
+                // create a processing context
+                EventContext ctx = new EventContext(EventContext.Directions.Out, env, ev);
 
-                _envBus.Send(env);
+                this.ProcessEvent(ctx, this.OutboundChain.Sort(), () =>
+                {
+                    _envBus.Send(ctx.Envelope);
+                });
             }
             catch (Exception ex)
             {
@@ -56,7 +61,7 @@ namespace cmf.eventing.berico
         {
             _log.Debug("Enter Subscribe");
 
-            EventRegistration registration = new EventRegistration(handler, this.InboundChain.Sort());
+            EventRegistration registration = new EventRegistration(handler, this.InterceptEvent);
             _envBus.Register(registration);
 
             _log.Debug("Leave Subscribe");
@@ -67,6 +72,33 @@ namespace cmf.eventing.berico
             this.Subscribe(new TypedEventHandler<TEvent>(handler));
         }
 
+        public virtual object InterceptEvent(IEventHandler handler, Envelope env)
+        {
+            _log.Debug("Enter InterceptEvent");
+
+            object result = null;
+            EventContext context = new EventContext(EventContext.Directions.In, env);
+
+            this.ProcessEvent(context, this.InboundChain.Sort(), () =>
+            {
+                _log.Info("Completed inbound processing - invoking IEventHandler");
+
+                try
+                {
+                    result = handler.Handle(context.Event, env.Headers);
+                    _log.Debug("IEventHandler returned without exception");
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn("Exception invoking IEventHandler", ex);
+                    result = handler.HandleFailed(env, ex);
+                }
+            });
+
+            _log.Debug("Leave InterceptEvent");
+            return result;
+        }
+
         public virtual void Dispose()
         {
             _log.Info("The event bus client will now be disposed");
@@ -74,14 +106,29 @@ namespace cmf.eventing.berico
         }
 
 
-        protected virtual void ProcessOutbound(object ev, Envelope env)
+        // recursive function that processes envelopes
+        protected virtual void ProcessEvent(
+            EventContext context,
+            IEnumerable<IEventProcessor> processorChain,
+            Action processingComplete)
         {
-            IDictionary<string, object> processorContext = new Dictionary<string, object>();
-
-            foreach (IOutboundEventProcessor processor in this.OutboundChain.Sort())
+            // if the chain is null or empty, complete processing
+            if ((null == processorChain) || (0 == processorChain.Count()))
             {
-                processor.ProcessOutbound(ref ev, ref env, processorContext);
+                processingComplete();
+                return;
             }
+
+            // grab the next procesor
+            IEventProcessor nextProcessor = processorChain.First();
+
+            // let it process the envelope and pass its "next" processor: a
+            // method that recursively calls this function with the current
+            // processor removed
+            nextProcessor.ProcessEvent(context, () =>
+            {
+                this.ProcessEvent(context, processorChain.Skip(1), processingComplete);
+            });
         }
     }
 
@@ -90,29 +137,15 @@ namespace cmf.eventing.berico
 
     public static class ChainExtensions
     {
-        public static IEnumerable<IOutboundEventProcessor> Sort(this IDictionary<int, IOutboundEventProcessor> chain)
+        public static IEnumerable<IEventProcessor> Sort(this IDictionary<int, IEventProcessor> chain)
         {
-            IEnumerable<IOutboundEventProcessor> sortedChain = new List<IOutboundEventProcessor>();
+            IEnumerable<IEventProcessor> sortedChain = new List<IEventProcessor>();
 
             if (null != chain)
             {
                 sortedChain = chain
                     .OrderBy(kvp => kvp.Key)
-                    .Select<KeyValuePair<int, IOutboundEventProcessor>, IOutboundEventProcessor>(kvp => kvp.Value);
-            }
-
-            return sortedChain;
-        }
-
-        public static IEnumerable<IInboundEventProcessor> Sort(this IDictionary<int, IInboundEventProcessor> chain)
-        {
-            IEnumerable<IInboundEventProcessor> sortedChain = new List<IInboundEventProcessor>();
-
-            if (null != chain)
-            {
-                sortedChain = chain
-                    .OrderBy(kvp => kvp.Key)
-                    .Select<KeyValuePair<int, IInboundEventProcessor>, IInboundEventProcessor>(kvp => kvp.Value);
+                    .Select<KeyValuePair<int, IEventProcessor>, IEventProcessor>(kvp => kvp.Value);
             }
 
             return sortedChain;

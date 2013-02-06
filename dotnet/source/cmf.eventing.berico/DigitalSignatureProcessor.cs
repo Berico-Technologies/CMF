@@ -13,7 +13,7 @@ using cmf.security;
 
 namespace cmf.eventing.berico
 {
-    public class DigitalSignatureProcessor : IInboundEventProcessor, IOutboundEventProcessor
+    public class DigitalSignatureProcessor : IEventProcessor
     {
         protected ICertificateProvider _certProvider;
         protected X509Certificate2 _cert;
@@ -35,9 +35,22 @@ namespace cmf.eventing.berico
         }
 
 
-        public bool ProcessInbound(ref object ev, ref Envelope env, ref IDictionary<string, object> context)
+        public void ProcessEvent(EventContext context, Action continueProcessing)
+        {
+            if (EventContext.Directions.In == context.Direction)
+            {
+                this.ProcessInbound(context, continueProcessing);
+            }
+            if (EventContext.Directions.Out == context.Direction)
+            {
+                this.ProcessOutbound(context, continueProcessing);
+            }
+        }
+
+        public void ProcessInbound(EventContext context, Action continueProcessing)
         {
             bool signatureVerified = false;
+            Envelope env = context.Envelope;
 
             // start by getting the purported sender's identity
             string sender = env.GetSenderIdentity();
@@ -71,19 +84,22 @@ namespace cmf.eventing.berico
                 }
             }
 
-            return signatureVerified;
+            if (signatureVerified) { continueProcessing(); }
         }
 
-        public void ProcessOutbound(ref object ev, ref Envelope env, IDictionary<string, object> context)
+        public void ProcessOutbound(EventContext context, Action continueProcessing)
         {
             if (null == _cert) { return; }
 
+            Envelope env = context.Envelope;
             env.SetSenderIdentity(_cert.Subject);
 
             try
             {
                 RSACryptoServiceProvider rsaProvider = _cert.PrivateKey as RSACryptoServiceProvider;
                 env.SetDigitalSignature(rsaProvider.SignData(env.Payload, new SHA1CryptoServiceProvider()));
+
+                continueProcessing();
             }
             catch (Exception ex)
             {

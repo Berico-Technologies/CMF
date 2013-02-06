@@ -13,7 +13,7 @@ using cmf.bus.berico;
 
 namespace cmf.eventing.berico.serializers
 {
-    public class JsonEventSerializer : IInboundEventProcessor, IOutboundEventProcessor
+    public class JsonEventSerializer : IEventProcessor
     {
         /// <summary>
         /// We need to resolve properties to lowercase in order to be interoperable
@@ -45,9 +45,22 @@ namespace cmf.eventing.berico.serializers
         }
 
 
-        public virtual bool ProcessInbound(ref object ev, ref Envelope env, ref IDictionary<string, object> context)
+        public virtual void ProcessEvent(EventContext context, Action continueProcessing)
+        {
+            if (EventContext.Directions.In == context.Direction)
+            {
+                this.ProcessInbound(context, continueProcessing);
+            }
+            if (EventContext.Directions.Out == context.Direction)
+            {
+                this.ProcessOutbound(context, continueProcessing);
+            }
+        }
+
+        public virtual void ProcessInbound(EventContext context, Action continueProcessing)
         {
             bool success = false;
+            Envelope env = context.Envelope;
 
             try
             {
@@ -91,7 +104,7 @@ namespace cmf.eventing.berico.serializers
 
                     string jsonString = new UTF8Encoding().GetString(env.Payload); //Encoding.UTF8.GetString(env.Payload);
                     _log.Debug("Will attempt to deserialize: " + jsonString);
-                    ev = JsonConvert.DeserializeObject(jsonString, type, _settings);
+                    context.Event = JsonConvert.DeserializeObject(jsonString, type, _settings);
 
                     success = true;
                 }
@@ -105,11 +118,13 @@ namespace cmf.eventing.berico.serializers
                 _log.Error("Failed to deserialize an event", ex);
             }
 
-            return success;
+            if (success) { continueProcessing(); }
         }
 
-        public virtual void ProcessOutbound(ref object ev, ref Envelope env, IDictionary<string, object> context)
+        public virtual void ProcessOutbound(EventContext context, Action continueProcessing)
         {
+            object ev = context.Event;
+
             try
             {
                 // first, serialize the event (make it pretty!)
@@ -118,12 +133,15 @@ namespace cmf.eventing.berico.serializers
                 _log.Debug("Serialized event: " + json);
 
                 // next, convert the string into bytes using UTF-8
-                env.Payload = new UTF8Encoding().GetBytes(json);
+                context.Envelope.Payload = new UTF8Encoding().GetBytes(json);
             }
             catch (Exception ex)
             {
                 _log.Error("Failed to serialize an event", ex);
+                throw;
             }
+
+            continueProcessing();
         }
     }
 }

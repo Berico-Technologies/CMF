@@ -41,18 +41,26 @@ namespace cmf.tests
         [Test]
         public void Should_Dispatch_Envelopes_Even_When_InboundChain_Is_Null()
         {
+            // create a mostly empty envelope
             Envelope env = new Envelope() { Payload = Encoding.UTF8.GetBytes("Test") };
+            
+            // create the mock dispatcher and transport provider
+            Mock<IEnvelopeDispatcher> dispatcherMock = _mocker.Create<IEnvelopeDispatcher>();
+            Mock<ITransportProvider> txMock = _mocker.Create<ITransportProvider>();
 
-            DefaultEnvelopeBus bus = new DefaultEnvelopeBus(_mocker.Create<ITransportProvider>().Object);
+            // setup the dispatcher to return the envelope when the getter is called
+            dispatcherMock.Setup(d => d.Envelope).Returns(env);
+
+            // create the unit under test with the mock transport and null processing chains
+            DefaultEnvelopeBus bus = new DefaultEnvelopeBus(txMock.Object);
             bus.InboundChain = null;
             bus.OutboundChain = null;
 
-            // return the envelope when the getter is called
-            Mock<IEnvelopeDispatcher> dispatcherMock = _mocker.Create<IEnvelopeDispatcher>();
-            dispatcherMock.Setup(d => d.Envelope).Returns(env);
+            // have the transport mock raise its envelope event
+            txMock.Raise(tx => tx.OnEnvelopeReceived += null, dispatcherMock.Object);
 
-            bus.Handle_Dispatcher(dispatcherMock.Object);
-
+            // verify that the dispatcher's dispatch method was called
+            // (this implies successful inbound chain processing)
             dispatcherMock.Verify(d => d.Dispatch(env), Times.Once());
         }
 
@@ -75,27 +83,42 @@ namespace cmf.tests
         [Test]
         public void Should_Send_Outgoing_Envelopes_Through_the_Chain()
         {
+            // create an envelope
             Envelope env = new Envelope() { Payload = Encoding.UTF8.GetBytes("Test") };
 
+            // mock a transport provider and envelope processor
             Mock<ITransportProvider> txMock = _mocker.Create<ITransportProvider>();
             Mock<IEnvelopeProcessor> procMock = _mocker.Create<IEnvelopeProcessor>();
 
+            // setup the processor to call its continuation
+            procMock
+                .Setup(
+                    proc => proc.ProcessEnvelope(It.IsAny<EnvelopeContext>(), It.IsAny<Action>()))
+                .Callback<EnvelopeContext, Action>(
+                    (newCtx, continuation) => continuation());
+
+            // create the unit under test and give it the transport provider and processor chain
             DefaultEnvelopeBus bus = new DefaultEnvelopeBus(txMock.Object);
-            bus.InboundChain = null;
             bus.OutboundChain = new Dictionary<int, IEnvelopeProcessor>();
             bus.OutboundChain.Add(0, procMock.Object);
-
+            
+            // send the envelope
             bus.Send(env);
 
-            procMock.Verify(proc => proc.ProcessEnvelope(It.IsAny<EnvelopeContext>(), It.IsAny<Action<EnvelopeContext>>()));
+            // verify the expected calls
+            procMock.Verify(
+                proc => proc.ProcessEnvelope(It.IsAny<EnvelopeContext>(), It.IsAny<Action>()), Times.Once());
+            txMock.Verify(tx => tx.Send(env), Times.Once());
         }
 
         [Test]
         public void Should_Send_Incoming_Envelopes_Through_the_Chain()
         {
+            // create an envelope and context
             Envelope env = new Envelope() { Payload = Encoding.UTF8.GetBytes("Test") };
             EnvelopeContext ctx = new EnvelopeContext(env);
 
+            // mock a transport provider and envelope processor
             Mock<ITransportProvider> txMock = _mocker.Create<ITransportProvider>();
             Mock<IEnvelopeProcessor> procMock = _mocker.Create<IEnvelopeProcessor>();
             Mock<IEnvelopeDispatcher> dispatcherMock = _mocker.Create<IEnvelopeDispatcher>();
@@ -109,31 +132,38 @@ namespace cmf.tests
 
             txMock.Raise(tx => tx.OnEnvelopeReceived += null, dispatcherMock.Object);
 
-            procMock.Verify(proc => proc.ProcessEnvelope(It.IsAny<EnvelopeContext>(), It.IsAny<Action<EnvelopeContext>>()));
-            _mocker.VerifyAll();
+            procMock.Verify(
+                proc => proc.ProcessEnvelope(It.IsAny<EnvelopeContext>(), It.IsAny<Action>()), Times.Once());
         }
 
         [Test]
         public void Should_Not_Continue_Processing_If_Processor_Does_Not_Call_Continuation()
         {
+            // create an envelope and context
             Envelope env = new Envelope() { Payload = Encoding.UTF8.GetBytes("Test") };
             EnvelopeContext ctx = new EnvelopeContext(env);
 
+            // mock a transport provider and envelope processor
             Mock<ITransportProvider> txMock = _mocker.Create<ITransportProvider>();
             Mock<IEnvelopeProcessor> procMock = _mocker.Create<IEnvelopeProcessor>();
-            Mock<IEnvelopeDispatcher> dispatcherMock = _mocker.Create<IEnvelopeDispatcher>();
 
-            dispatcherMock.SetupGet<Envelope>(disp => disp.Envelope).Returns(env);
-            
-            DefaultEnvelopeBus bus = new DefaultEnvelopeBus(txMock.Object);
-            bus.OutboundChain = null;
-            bus.InboundChain = new Dictionary<int, IEnvelopeProcessor>();
-            bus.InboundChain.Add(0, procMock.Object);
+            // create a processor chain and add the mock processor to it
+            List<IEnvelopeProcessor> processorChain = new List<IEnvelopeProcessor>();
+            processorChain.Add(procMock.Object);
 
-            txMock.Raise(tx => tx.OnEnvelopeReceived += null, dispatcherMock.Object);
+            // the continuation that, if called, fails the test
+            Action continuation = new Action( () =>
+                Assert.Fail("The continuation action should not have been called"));
 
-            procMock.Verify(proc => proc.ProcessEnvelope(It.IsAny<EnvelopeContext>(), It.IsAny<Action<EnvelopeContext>>()));
-            _mocker.VerifyAll();
+            // this is what we're testing (extended class gives public access to protected method)
+            ExtendedDefaultEnvelopeBus bus = new ExtendedDefaultEnvelopeBus(txMock.Object);
+            bus.PublicProcessEnvelope(ctx, processorChain, continuation);
+
+            // make sure that the processor was called once
+            procMock.Verify(proc => proc.ProcessEnvelope(ctx, It.IsAny<Action>()), Times.Once());
+
+            // and that since it did nothing, the transport provider didn't get the envelope
+            txMock.Verify(tx => tx.Send(env), Times.Never());
         }
     }
 
@@ -143,14 +173,15 @@ namespace cmf.tests
 
     public class ExtendedDefaultEnvelopeBus : DefaultEnvelopeBus
     {
-        public void PublicProcessEnvelope(EnvelopeContext context, IEnumerable<IEnvelopeProcessor> processorChain, Action<EnvelopeContext> processingComplete)
+        public ExtendedDefaultEnvelopeBus(ITransportProvider transportProvider)
+            : base(transportProvider)
         {
-            this.ProcessEnvelope(context, processorChain, processingComplete);
         }
 
-        protected override void ProcessEnvelope(EnvelopeContext context, IEnumerable<IEnvelopeProcessor> processorChain, Action<EnvelopeContext> processingComplete)
+
+        public void PublicProcessEnvelope(EnvelopeContext context, IEnumerable<IEnvelopeProcessor> processorChain, Action processingComplete)
         {
-            base.ProcessEnvelope(context, processorChain, processingComplete);
+            this.ProcessEnvelope(context, processorChain, processingComplete);
         }
     }
 }

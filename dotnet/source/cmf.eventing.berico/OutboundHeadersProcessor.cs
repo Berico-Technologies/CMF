@@ -9,12 +9,17 @@ using Common.Logging;
 
 namespace cmf.eventing.berico
 {
-    public class OutboundHeadersProcessor : IOutboundEventProcessor
+    public class OutboundHeadersProcessor : IEventProcessor
     {
         protected ILog _log = LogManager.GetLogger(typeof(OutboundHeadersProcessor));
 
-        public virtual void ProcessOutbound(ref object ev, ref bus.Envelope env, IDictionary<string, object> context)
+        public virtual void ProcessEvent(EventContext context, Action continueProcessing)
         {
+            // only process outbound events
+            if (context.Direction != EventContext.Directions.Out) { continueProcessing(); }
+
+            Envelope env = context.Envelope;
+
             Guid messageId = env.GetMessageId();
             messageId = Guid.Equals(Guid.Empty, messageId) ? Guid.NewGuid() : messageId;
             env.SetMessageId(messageId.ToString());
@@ -22,11 +27,11 @@ namespace cmf.eventing.berico
             Guid correlationId = env.GetCorrelationId();
 
             string messageType = env.GetMessageType();
-            messageType = string.IsNullOrEmpty(messageType) ? this.GetMessageType(ev) : messageType;
+            messageType = string.IsNullOrEmpty(messageType) ? this.GetMessageType(context.Event) : messageType;
             env.SetMessageType(messageType);
 
             string messageTopic = env.GetMessageTopic();
-            messageTopic = string.IsNullOrEmpty(messageTopic) ? this.GetMessageTopic(ev) : messageTopic;
+            messageTopic = string.IsNullOrEmpty(messageTopic) ? this.GetMessageTopic(context.Event) : messageTopic;
             if (Guid.Empty != correlationId)
             {
                 messageTopic = messageTopic + "#" + correlationId.ToString();
@@ -36,6 +41,8 @@ namespace cmf.eventing.berico
             string senderIdentity = env.GetSenderIdentity();
             senderIdentity = string.IsNullOrEmpty(senderIdentity) ? UserPrincipal.Current.DistinguishedName.Replace(",", ", ") : senderIdentity;
             env.SetSenderIdentity(senderIdentity);
+
+            continueProcessing();
         }
 
         public string GetMessageTopic(object ev)

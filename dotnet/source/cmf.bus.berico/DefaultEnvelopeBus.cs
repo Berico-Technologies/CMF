@@ -32,11 +32,15 @@ namespace cmf.bus.berico
         public virtual void Send(Envelope env)
         {
             _log.Debug("Enter Send");
+
             // guard clause
             if (null == env) { throw new ArgumentNullException("Cannot send a null envelope"); }
             
+            // create a context
+            EnvelopeContext context = new EnvelopeContext(env);
+
             // send the envelope through the outbound chain
-            this.ProcessEnvelope(new EnvelopeContext(env), this.OutboundChain.Sort(), context =>
+            this.ProcessEnvelope(context, this.OutboundChain.Sort(), () =>
             {
                 // send the envelope to the transport provider
                 _txProvider.Send(context.Envelope);
@@ -75,12 +79,12 @@ namespace cmf.bus.berico
 
             try
             {
-                Envelope env = dispatcher.Envelope;
+                EnvelopeContext context = new EnvelopeContext(dispatcher.Envelope);
 
                 // send the envelope through the inbound processing chain
-                this.ProcessEnvelope(new EnvelopeContext(env), this.InboundChain.Sort(), context =>
+                this.ProcessEnvelope(context, this.InboundChain.Sort(), () =>
                 {
-                    dispatcher.Dispatch(env);
+                    dispatcher.Dispatch(context.Envelope);
                     _log.Debug("Dispatched envelope");
                 });
             }
@@ -105,12 +109,12 @@ namespace cmf.bus.berico
         protected virtual void ProcessEnvelope(
             EnvelopeContext context, 
             IEnumerable<IEnvelopeProcessor> processorChain, 
-            Action<EnvelopeContext> processingComplete)
+            Action processingComplete)
         {
             // if the chain is null or empty, complete processing
             if ((null == processorChain) || (0 == processorChain.Count()))
             {
-                processingComplete(context);
+                processingComplete();
                 return;
             }
 
@@ -120,9 +124,9 @@ namespace cmf.bus.berico
             // let it process the envelope and pass its "next" processor: a
             // method that recursively calls this function with the current
             // processor removed
-            nextProcessor.ProcessEnvelope(context, newContext =>
+            nextProcessor.ProcessEnvelope(context, () =>
             {
-                this.ProcessEnvelope(newContext, processorChain.Skip(1), processingComplete);
+                this.ProcessEnvelope(context, processorChain.Skip(1), processingComplete);
             });
         }
     }

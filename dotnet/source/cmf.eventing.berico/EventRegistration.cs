@@ -12,9 +12,8 @@ namespace cmf.eventing.berico
 {
     public class EventRegistration : IRegistration
     {
-        protected IEventHandler _handler;
+        protected Func<IEventHandler, Envelope, object> _interceptor;
         protected IDictionary<string, string> _registrationInfo;
-        protected IEnumerable<IInboundEventProcessor> _inboundChain;
         protected ILog _log;
 
 
@@ -28,11 +27,17 @@ namespace cmf.eventing.berico
             get { return _registrationInfo; }
         }
 
+        public virtual IEventHandler Handler { get; protected set; }
+        
+        public virtual Envelope Envelope { get; protected set; }
 
-        public EventRegistration(IEventHandler handler, IEnumerable<IInboundEventProcessor> inboundChain)
+
+        public EventRegistration(
+            IEventHandler handler, 
+            Func<IEventHandler, Envelope, object> interceptor)
         {
-            _handler = handler;
-            _inboundChain = inboundChain;
+            this.Handler = handler;
+            _interceptor = interceptor;
 
             _registrationInfo = new Dictionary<string, string>();
             _registrationInfo.SetMessageTopic(handler.Topic);
@@ -43,71 +48,26 @@ namespace cmf.eventing.berico
 
         public virtual object Handle(Envelope env)
         {
-            _log.Debug("Enter Handle");
+            _log.Debug("Inside RegistrationInterceptor.Handle(Envelope env)");
 
-            object ev = null;
-            object result = null;
-
-            if (this.ProcessInbound(ref ev, ref env))
-            {
-                try
-                {
-
-                    result = _handler.Handle(ev, env.Headers);
-                }
-                catch (Exception ex)
-                {
-                    _log.Warn("Caught an exception while handling an event", ex);
-                    result = this.HandleFailed(env, ex);
-                }
-            }
-
-            _log.Debug("Leave Handle");
-            return result;
+            return _interceptor(this.Handler, env);
         }
 
         public virtual object HandleFailed(Envelope env, Exception ex)
         {
             _log.Debug("Enter HandleFailed");
 
-            // either log & return or log & throw
+            // either succeed & return the result or fail & return null
             try
             {
                 _log.Debug("Leave HandleFailed");
-                return _handler.HandleFailed(env, ex);
+                return this.Handler.HandleFailed(env, ex);
             }
             catch (Exception failedToFail)
             {
                 _log.Error("Caught an exception attempting to raise the Failed event", failedToFail);
-                throw;
+                return null;
             }
-        }
-
-
-        protected virtual bool ProcessInbound(ref object ev, ref Envelope env)
-        {
-            bool processed = true;
-            IDictionary<string, object> processorContext = new Dictionary<string, object>();
-
-            try
-            {
-                foreach (IInboundEventProcessor processor in _inboundChain)
-                {
-                    if (!processor.ProcessInbound(ref ev, ref env, ref processorContext))
-                    {
-                        processed = false;
-                        _log.Info(string.Format("A processor of type {0} halted the inbound processing chain", processor.GetType().FullName));
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Error("Caught an exception while sending an inbound event through the processing chain", ex);
-                processed = false;
-            }
-
-            return processed;
         }
     }
 }

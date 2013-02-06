@@ -13,8 +13,8 @@ namespace cmf.eventing.berico
 {
     public class RpcRegistration : IRegistration
     {
-        protected IEnumerable<IInboundEventProcessor> _inboundChain;
         protected Predicate<Envelope> _responseFilter;
+        protected Func<Envelope, object> _openEnvelope;
         protected AutoResetEvent _responseEvent;
         protected ILog _log;
         protected Envelope _responseEnvelope;
@@ -28,9 +28,9 @@ namespace cmf.eventing.berico
         public IDictionary<string, string> Info { get; protected set; }
         
         
-        public RpcRegistration(Guid requestId, string expectedTopic, IEnumerable<IInboundEventProcessor> chain)
+        public RpcRegistration(Guid requestId, string expectedTopic, Func<Envelope, object> openEnvelope)
         {
-            _inboundChain = chain;
+            _openEnvelope = openEnvelope;
 
             _responseEvent = new AutoResetEvent(false);
             _responseFilter = env => Guid.Equals(env.GetCorrelationId(), requestId);
@@ -63,29 +63,12 @@ namespace cmf.eventing.berico
 
             if (_responseEvent.WaitOne(timeout))
             {
-                try
-                {
-                    this.ProcessInbound(ref response, ref _responseEnvelope);
-                }
-                catch (Exception ex)
-                {
-                    this.HandleFailed(_responseEnvelope, ex);
-                }
+                response = _openEnvelope(_responseEnvelope);
             }
 
             return response;
         }
 
-
-        protected virtual void ProcessInbound(ref object ev, ref Envelope env)
-        {
-            IDictionary<string, object> processorContext = new Dictionary<string, object>();
-
-            foreach (IInboundEventProcessor processor in _inboundChain)
-            {
-                processor.ProcessInbound(ref ev, ref env, ref processorContext);
-            }
-        }
 
         protected virtual string BuildRpcTopic(string expectedTopic, Guid requestId)
         {

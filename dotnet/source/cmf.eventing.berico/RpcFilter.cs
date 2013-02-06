@@ -16,7 +16,7 @@ namespace cmf.eventing.berico
     /// desirable to not receive your own requests.  This processor filters out
     /// requests that you have sent so that you do not receive them yourself.
     /// </summary>
-    public class RpcFilter : IInboundEventProcessor, IOutboundEventProcessor
+    public class RpcFilter : IEventProcessor
     {
         protected IList<Guid> _sentRequests;
         protected object _listLock = new object();
@@ -31,9 +31,22 @@ namespace cmf.eventing.berico
         }
 
 
-        public bool ProcessInbound(ref object ev, ref Envelope env, ref IDictionary<string, object> context)
+        public void ProcessEvent(EventContext context, Action continueProcessing)
+        {
+            if (EventContext.Directions.In == context.Direction)
+            {
+                this.ProcessInbound(context, continueProcessing);
+            }
+            if (EventContext.Directions.Out == context.Direction)
+            {
+                this.ProcessOutbound(context, continueProcessing);
+            }
+        }
+
+        public void ProcessInbound(EventContext context, Action continueProcessing)
         {
             bool ourOwnRequest = false;
+            Envelope env = context.Envelope;
 
             try
             {
@@ -56,11 +69,13 @@ namespace cmf.eventing.berico
                 _log.Error("Failed to inspect an incoming event for potential filtering", ex);
             }
 
-            return !ourOwnRequest;
+            if (!ourOwnRequest) { continueProcessing(); }
         }
 
-        public void ProcessOutbound(ref object ev, ref Envelope env, IDictionary<string, object> context)
+        public void ProcessOutbound(EventContext context, Action continueProcessing)
         {
+            Envelope env = context.Envelope;
+
             if (env.IsRequest())
             {
                 Guid requestId = env.GetMessageId();
@@ -83,6 +98,8 @@ namespace cmf.eventing.berico
                         requestId.ToString()));
                 }
             }
+
+            continueProcessing();
         }
 
         public void RequestTimeout_GarbageCollect(object requestGuid)

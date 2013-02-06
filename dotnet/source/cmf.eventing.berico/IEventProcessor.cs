@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace cmf.bus.berico
+namespace cmf.eventing.berico
 {
     /// <summary>
-    /// Defines the interface of a component that can process envelopes on 
+    /// Defines the interface of a component that can process events on 
     /// their way to and from the client.
     /// <remarks>
     /// If processing should continue, call the provided continuation method.  
@@ -18,8 +18,8 @@ namespace cmf.bus.berico
     /// exception and it will bubble up to the caller.
     /// </remarks>
     /// </summary>
-    public interface IEnvelopeProcessor
+    public interface IEventProcessor
     {
-        void ProcessEnvelope(EnvelopeContext context, Action continueProcessing);
+        void ProcessEvent(EventContext context, Action continueProcessing);
     }
 }
