@@ -60,6 +60,7 @@
     <Compile Include="DefaultRpcBus.cs" />
     <Compile Include="DigitalSignatureProcessor.cs" />
     <Compile Include="EventContext.cs" />
+    <Compile Include="EventException.cs" />
     <Compile Include="EventRegistration.cs" />
     <Compile Include="IEventProcessor.cs" />
     <Compile Include="OutboundHeadersProcessor.cs" />

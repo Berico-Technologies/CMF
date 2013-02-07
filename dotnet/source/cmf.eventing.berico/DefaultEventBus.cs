@@ -13,7 +13,7 @@ namespace cmf.eventing.berico
 {
     public class DefaultEventBus : IEventBus
     {
-        protected DefaultEnvelopeBus _envBus;
+        protected IEnvelopeBus _envBus;
         protected ILog _log;
 
 
@@ -21,7 +21,7 @@ namespace cmf.eventing.berico
         public IDictionary<int, IEventProcessor> OutboundChain { get; set; }
 
 
-        public DefaultEventBus(DefaultEnvelopeBus envBus)
+        public DefaultEventBus(IEnvelopeBus envBus)
         {
             _envBus = envBus;
             _log = LogManager.GetLogger(this.GetType());
@@ -32,19 +32,22 @@ namespace cmf.eventing.berico
         {
             _log.Debug("Enter Publish");
 
-            if (null == ev) { throw new ArgumentNullException("Cannot publish a null event"); }
+            if (null == ev) { throw new ArgumentNullException("ev", "Cannot publish a null event"); }
 
             try
             {
                 // create an envelope and set its pattern to pub/sub
-                Envelope env = new Envelope();
+                var env = new Envelope();
                 env.SetMessagePattern(EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB);
 
                 // create a processing context
-                EventContext ctx = new EventContext(EventContext.Directions.Out, env, ev);
+                var ctx = new EventContext(EventContext.Directions.Out, env, ev);
 
                 this.ProcessEvent(ctx, this.OutboundChain.Sort(), () =>
                 {
+                    // don't send empty envelopes!
+                    if (null == ctx.Envelope.Payload) { throw new EventException("The event resulted in an empty payload!"); }
+
                     _envBus.Send(ctx.Envelope);
                 });
             }
@@ -77,7 +80,7 @@ namespace cmf.eventing.berico
             _log.Debug("Enter InterceptEvent");
 
             object result = null;
-            EventContext context = new EventContext(EventContext.Directions.In, env);
+            var context = new EventContext(EventContext.Directions.In, env);
 
             this.ProcessEvent(context, this.InboundChain.Sort(), () =>
             {
@@ -113,7 +116,7 @@ namespace cmf.eventing.berico
             Action processingComplete)
         {
             // if the chain is null or empty, complete processing
-            if ((null == processorChain) || (0 == processorChain.Count()))
+            if ((null == processorChain) || (!processorChain.Any()))
             {
                 processingComplete();
                 return;

@@ -46,7 +46,7 @@ namespace cmf.eventing.berico
         public EventContext(Directions direction, Envelope envelope)
             : this(direction)
         {
-            this.Envelope = Envelope;
+            this.Envelope = envelope;
         }
 
         public EventContext(Directions direction, Envelope envelope, object ev)

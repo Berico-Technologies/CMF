@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultEnvelopeBusTests.cs" />
+    <Compile Include="DefaultEventBusTests.cs" />
     <Compile Include="InMemoryEnvBusTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

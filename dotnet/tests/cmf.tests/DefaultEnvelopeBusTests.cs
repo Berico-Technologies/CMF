@@ -165,6 +165,29 @@ namespace cmf.tests
             // and that since it did nothing, the transport provider didn't get the envelope
             txMock.Verify(tx => tx.Send(env), Times.Never());
         }
+
+        [Test]
+        public void Should_Sort_Processor_Chains_Even_When_Added_Out_Of_Order()
+        {
+            var unsortedChain = new Dictionary<int, IEnvelopeProcessor>();
+
+
+            // mock a few processors
+            var procMock1 = new Mock<IEnvelopeProcessor>();
+            var procMock2 = new Mock<IEnvelopeProcessor>();
+            var procMock3 = new Mock<IEnvelopeProcessor>();
+
+            // add them out of order
+            unsortedChain.Add(2, procMock2.Object);
+            unsortedChain.Add(3, procMock3.Object);
+            unsortedChain.Add(1, procMock1.Object);
+
+            IEnumerable<IEnvelopeProcessor> sortedChain = unsortedChain.Sort();
+
+            Assert.AreSame(procMock1.Object, sortedChain.ElementAt(0));
+            Assert.AreSame(procMock2.Object, sortedChain.ElementAt(1));
+            Assert.AreSame(procMock3.Object, sortedChain.ElementAt(2));
+        }
     }
 
 
