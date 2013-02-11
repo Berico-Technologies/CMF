@@ -25,8 +25,31 @@ public class GsonSerializer implements ISerializer {
         }
         
     }
+
+    private class GsonIgnoreExclusionStrategy implements ExclusionStrategy {
+        private final Class<?> typeToSkip;
+
+        private GsonIgnoreExclusionStrategy(Class<?> typeToSkip) {
+            this.typeToSkip = typeToSkip;
+        }
+
+        @Override
+        public boolean shouldSkipField(FieldAttributes f) {
+            return f.getAnnotation(GsonIgnore.class) != null;
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> clazz) {
+            return (clazz == typeToSkip);
+        }
+    }
     
-    protected Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setExclusionStrategies(new DotNetTypeExclusionStrategy()).create();
+    protected Gson gson = new GsonBuilder()
+            .enableComplexMapKeySerialization()
+            .setExclusionStrategies(
+                    new DotNetTypeExclusionStrategy(),
+                    new GsonIgnoreExclusionStrategy(GsonIgnore.class)
+            ).create();
 
     @Override
     public <TYPE> TYPE byteDeserialize(byte[] serialized, Class<TYPE> type) {
