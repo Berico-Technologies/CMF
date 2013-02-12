@@ -1,6 +1,7 @@
 package cmf.bus.eventing.berico;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import cmf.eventing.berico.GsonIgnore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -73,6 +75,8 @@ public class GsonSerializerTest {
                         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_)(*&^%$#@!`~{}|\\][:\"';/.,<>?";
         private char[] stringCharArray = string.toCharArray();
         private UUID uuid = UUID.randomUUID();
+        @GsonIgnore
+        private String ignoredField = "I love this plan! I'm excited to be a part of it!";
 
         public TestType1() {
             map.put("1", "one");
@@ -307,6 +311,19 @@ public class GsonSerializerTest {
             throw new Exception(description + " failed to string deserialze.", e);
         }
         assertTrue(description, objectToSerialize.equals(deserialized));
+    }
+
+    @Test
+    public void ignoreFieldDuringSerializationTest() throws Exception {
+        TestType1 objectWithIgnoredField = new TestType1();
+        String serializedObject;
+        try {
+            serializedObject = serializer.stringSerialize(objectWithIgnoredField);
+        } catch (Exception e) {
+            throw new Exception(description + " failed to string serialize.", e);
+        }
+
+        assertFalse(serializedObject.contains("ignoredField"));
     }
 
 }
