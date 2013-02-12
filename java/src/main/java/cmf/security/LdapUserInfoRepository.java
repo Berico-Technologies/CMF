@@ -105,7 +105,7 @@ public class LdapUserInfoRepository implements IUserInfoRepository {
 				    ctx.close();
 				}
 				catch(Exception ex) {
-					log.error("Failed to lookup DN of user: {}", accountName);
+					log.error("Failed to lookup DN of user: " + accountName, ex);
 				}
 				
 				return dn;
