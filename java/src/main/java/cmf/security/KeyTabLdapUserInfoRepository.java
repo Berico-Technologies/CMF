@@ -82,7 +82,7 @@ public class KeyTabLdapUserInfoRepository implements IUserInfoRepository {
 				    ctx.close();
 				}
 				catch(Exception ex) {
-					log.error("Failed to lookup DN of user: {}", accountName);
+					log.error("Failed to lookup DN of user: {}" + accountName, ex);
 				}
 				
 				return dn;
