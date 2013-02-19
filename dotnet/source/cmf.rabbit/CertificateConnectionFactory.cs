@@ -94,7 +94,15 @@ namespace cmf.rabbit
             cf.Ssl.Enabled = true;
 
             // we either now create an SSL connection or a default "guest/guest" connection
-            conn = cf.CreateConnection();
+            try
+            {
+                conn = cf.CreateConnection();
+            }
+            catch (Exception e) 
+            {
+                _log.Error("Unable to establish connection with RabbitMQ.", e);
+                throw e;
+            }
 
             _log.Debug("Leave CreateConnection");
             return conn;
