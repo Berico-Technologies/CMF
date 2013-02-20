@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-import cmf.bus.berico.EnvelopeHeaderConstants;
+import cmf.bus.EnvelopeHeaderConstants;
 
 public class SimpleTopologyService implements ITopologyService {
 

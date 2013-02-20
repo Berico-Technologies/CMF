@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Common.Logging;
-
-using cmf.bus;
 
 
 namespace cmf.bus.berico
@@ -37,7 +34,7 @@ namespace cmf.bus.berico
             if (null == env) { throw new ArgumentNullException("Cannot send a null envelope"); }
             
             // create a context
-            EnvelopeContext context = new EnvelopeContext(env);
+            EnvelopeContext context = new EnvelopeContext(EnvelopeContext.Directions.Out, env);
 
             // send the envelope through the outbound chain
             this.ProcessEnvelope(context, this.OutboundChain.Sort(), () =>
@@ -47,9 +44,9 @@ namespace cmf.bus.berico
 
                 // log the headers of the outgoing envelope
                 _log.Debug(string.Format("Outgoing headers: {0}", context.Envelope.Headers.Flatten()));
-
-                _log.Debug("Leave Send");
             });
+
+            _log.Debug("Leave Send");
         }
 
         public virtual void Register(IRegistration registration)
@@ -79,7 +76,7 @@ namespace cmf.bus.berico
 
             try
             {
-                EnvelopeContext context = new EnvelopeContext(dispatcher.Envelope);
+                EnvelopeContext context = new EnvelopeContext(EnvelopeContext.Directions.In, dispatcher.Envelope);
 
                 // send the envelope through the inbound processing chain
                 this.ProcessEnvelope(context, this.InboundChain.Sort(), () =>
@@ -112,7 +109,7 @@ namespace cmf.bus.berico
             Action processingComplete)
         {
             // if the chain is null or empty, complete processing
-            if ((null == processorChain) || (0 == processorChain.Count()))
+            if ((null == processorChain) || (!processorChain.Any()))
             {
                 processingComplete();
                 return;

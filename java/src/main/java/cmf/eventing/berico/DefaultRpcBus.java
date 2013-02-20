@@ -8,8 +8,8 @@ import java.util.UUID;
 import org.joda.time.Duration;
 
 import cmf.bus.Envelope;
+import cmf.bus.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeBus;
-import cmf.bus.berico.EnvelopeHeaderConstants;
 import cmf.bus.berico.EnvelopeHelper;
 import cmf.eventing.patterns.rpc.IRpcEventBus;
 

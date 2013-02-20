@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import cmf.bus.Envelope;
+import cmf.bus.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;
-import cmf.bus.berico.EnvelopeHeaderConstants;
 import cmf.eventing.IEventHandler;
 
 public class EventRegistration implements IRegistration {

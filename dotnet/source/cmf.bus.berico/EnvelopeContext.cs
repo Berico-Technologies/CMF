@@ -7,8 +7,12 @@ namespace cmf.bus.berico
 {
     public class EnvelopeContext
     {
+        public enum Directions { In, Out }
+        
+
         public Envelope Envelope { get; set; }
         public IDictionary<string, object> Properties { get; set; }
+        public Directions Direction { get; set; }
 
 
         public object this[string key]
@@ -31,13 +35,15 @@ namespace cmf.bus.berico
         }
 
 
-        public EnvelopeContext()
+        public EnvelopeContext(Directions direction)
         {
             this.Properties = new Dictionary<string, object>();
+
+            this.Direction = direction;
         }
 
-        public EnvelopeContext(Envelope envelope)
-            : this()
+        public EnvelopeContext(Directions direction, Envelope envelope)
+            : this(direction)
         {
             this.Envelope = envelope;
         }

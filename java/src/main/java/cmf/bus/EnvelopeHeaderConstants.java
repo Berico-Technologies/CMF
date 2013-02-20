@@ -1,4 +1,4 @@
-package cmf.bus.berico;
+package cmf.bus;
 
 public class EnvelopeHeaderConstants {
 

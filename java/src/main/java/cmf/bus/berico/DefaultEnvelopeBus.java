@@ -1,9 +1,7 @@
 package cmf.bus.berico;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,42 +9,57 @@ import org.slf4j.LoggerFactory;
 import cmf.bus.Envelope;
 import cmf.bus.IEnvelopeBus;
 import cmf.bus.IRegistration;
+import cmf.bus.berico.EnvelopeContext.Directions;
 
-public class DefaultEnvelopeBus implements IEnvelopeBus {
+public class DefaultEnvelopeBus implements IEnvelopeBus, IEnvelopeReceivedCallback {
 
 	protected final Logger log = LoggerFactory.getLogger(this.getClass().getCanonicalName());
 	
-    protected List<IInboundEnvelopeProcessor> inboundProcessors = new LinkedList<IInboundEnvelopeProcessor>();
-    protected List<IOutboundEnvelopeProcessor> outboundProcessors = new LinkedList<IOutboundEnvelopeProcessor>();
-    protected ITransportProvider transportProvider;
+    protected List<IEnvelopeProcessor> _inboundProcessors = new LinkedList<IEnvelopeProcessor>();
+    protected List<IEnvelopeProcessor> _outboundProcessors = new LinkedList<IEnvelopeProcessor>();
+    protected ITransportProvider _transportProvider;
 
+    
+    public void setInboundProcessors(List<IEnvelopeProcessor> inboundChain) {
+    	_inboundProcessors = inboundChain;
+    }
+    
+    public void setOutboundProcessors(List<IEnvelopeProcessor> outboundChain) {
+    	_outboundProcessors = outboundChain;
+    }
+    
+    
     public DefaultEnvelopeBus(ITransportProvider transportProvider) {
-        this.transportProvider = transportProvider;
+        _transportProvider = transportProvider;
 
         initialize();
     }
 
-    public DefaultEnvelopeBus(ITransportProvider transportProvider, List<IInboundEnvelopeProcessor> inboundProcessors,
-                    List<IOutboundEnvelopeProcessor> outboundProcessors) {
-        this.transportProvider = transportProvider;
-        this.inboundProcessors = inboundProcessors;
-        this.outboundProcessors = outboundProcessors;
+    public DefaultEnvelopeBus(
+		ITransportProvider transportProvider, 
+		List<IEnvelopeProcessor> inboundChain,
+        List<IEnvelopeProcessor> outboundChain)
+    {
+        this._transportProvider = transportProvider;
+        this._inboundProcessors = inboundChain;
+        this._outboundProcessors = outboundChain;
 
         initialize();
     }
 
+    
     @Override
     public void dispose() {
-        transportProvider.dispose();
+        _transportProvider.dispose();
 
-        for (IInboundEnvelopeProcessor p : inboundProcessors) {
+        for (IEnvelopeProcessor p : _inboundProcessors) {
             try {
                 p.dispose();
             } catch (Exception ex) {
             }
         }
 
-        for (IOutboundEnvelopeProcessor p : outboundProcessors) {
+        for (IEnvelopeProcessor p : _outboundProcessors) {
             try {
                 p.dispose();
             } catch (Exception ex) {
@@ -54,54 +67,37 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
         }
     }
 
-    void initialize() {
+    public void processEnvelope(
+    		final EnvelopeContext context, 
+    		final List<IEnvelopeProcessor> processingChain, 
+    		final IContinuationCallback onComplete) throws Exception
+    {
+    	log.debug("Enter processEnvelope");
+    	
+    	// if the chain is null or empty, complete processing
+    	if ( (null == processingChain) || (0 == processingChain.size()) ) {
+    		log.debug("envelope processing complete");
+    		onComplete.continueProcessing();
+    		return;
+    	}
+    	
+    	// remove the first processor
+    	IEnvelopeProcessor processor = processingChain.remove(0);
+    	
+    	// let it process the envelope and pass its "next" processor: a method that
+    	// recursively calls this function with the current processor removed
+    	processor.processEnvelope(context, new IContinuationCallback() {
 
-        // add a handler to the transport provider's envelope received event
-        transportProvider.onEnvelopeReceived(
-        		new InboundEnvelopeProcessorCallback(this));
-
-        log.debug("Initialized");
+			@Override
+			public void continueProcessing() throws Exception {
+				processEnvelope(context, processingChain, onComplete);
+			}
+    		
+    	});
+    	
+    	log.debug("Leave processEnvelope");
     }
-
-    boolean processInbound(Envelope envelope) {
-        log.debug("Enter processInbound");
-
-        // the inbound process can be cancelled if one of the processors returns false
-        boolean noOneCancelled = true;
-
-        Map<String, Object> context = new HashMap<String, Object>();
-        for (IInboundEnvelopeProcessor inboundEnvelopeProcessor : inboundProcessors) {
-
-        		log.trace("Processor {} is handling envelope.", inboundEnvelopeProcessor.getClass().getCanonicalName());
-        	
-            if (inboundEnvelopeProcessor.processInbound(envelope, context)) {
-            	
-                continue;
-                
-            } else {
-            	log.info("Inbound envelope cancelled by processor of type {}", 
-        				inboundEnvelopeProcessor.getClass().getCanonicalName());
-
-                noOneCancelled = false;
-                break;
-            }
-        }
-
-        log.debug("Leave processInbound(noOneCancelled={})", noOneCancelled);
-        return noOneCancelled;
-    }
-
-    void processOutbound(Envelope envelope) {
-        log.debug("Enter processOutbound");
-
-        Map<String, Object> context = new HashMap<String, Object>();
-        for (IOutboundEnvelopeProcessor outboundEnvelopeProcessor : outboundProcessors) {
-            outboundEnvelopeProcessor.processOutbound(envelope, context);
-        }
-
-        log.debug("Leave processOutbound");
-    }
-
+    
     @Override
     public void register(final IRegistration registration) throws Exception {
         log.debug("Enter register");
@@ -109,30 +105,35 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
             throw new IllegalArgumentException("Cannot register with a null registration");
         }
 
-        transportProvider.register(registration);
+        _transportProvider.register(registration);
         log.debug("Leave register");
     }
 
     @Override
-    public void send(Envelope envelope) throws Exception {
+    public void send(final Envelope envelope) throws Exception {
+    	
         log.debug("Enter send");
+        
+        // check for null envelopes
         if (envelope == null) {
             throw new IllegalArgumentException("Cannot send a null envelope");
         }
 
-        processOutbound(envelope);
-        transportProvider.send(envelope);
+        // create an envelope context that will be passed among the processors
+        final EnvelopeContext context = new EnvelopeContext(Directions.Out, envelope);
+        
+        // send the envelope through the outbound processing chain
+        this.processEnvelope(context, _outboundProcessors, new IContinuationCallback() {
 
-        log.debug("Outgoing headers: {}", new EnvelopeHelper(envelope).flatten());
+			@Override
+			public void continueProcessing() throws Exception {
+				_transportProvider.send(context.getEnvelope());
+				log.debug("Outgoing headers: {}", new EnvelopeHelper(context.getEnvelope()).flatten());
+			}
+        	
+        });
+        
         log.debug("Leave send");
-    }
-
-    public void setInboundProcessors(List<IInboundEnvelopeProcessor> inboundProcessors) {
-        this.inboundProcessors = inboundProcessors;
-    }
-
-    public void setOutboundProcessorCollection(List<IOutboundEnvelopeProcessor> outboundProcessors) {
-        this.outboundProcessors = outboundProcessors;
     }
 
     @Override
@@ -142,8 +143,38 @@ public class DefaultEnvelopeBus implements IEnvelopeBus {
         if (registration == null) {
             throw new IllegalArgumentException("Cannot unregister with a null registration");
         }
-        transportProvider.unregister(registration);
+        _transportProvider.unregister(registration);
 
         log.debug("Leave unregister");
+    }
+
+    @Override
+	public void handleReceive(IEnvelopeDispatcher dispatcher) {
+    	
+    	log.debug("Got an envelope dispatcher from the transport provider");
+    	EnvelopeContext context = new EnvelopeContext(Directions.In, dispatcher.getEnvelope());
+
+        try {
+            // send the envelope through the inbound processing chain
+            if (this.envelopeBus.processInbound(env)) {
+                // the dispatcher encapsulates the logic of giving the envelope to handlers
+                dispatcher.dispatch(env);
+
+                log.debug("Dispatched envelope");
+            }
+        } catch (Exception ex) {
+        	
+            log.warn("Failed to dispatch envelope; raising EnvelopeFailed event: {}", ex);
+            dispatcher.dispatchFailed(env, ex);
+        }
+	}
+
+    
+    void initialize() {
+
+    	// add a handler to the transport provider's envelope received event
+        _transportProvider.onEnvelopeReceived(this);
+
+        log.debug("Initialized");
     }
 }

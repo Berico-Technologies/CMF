@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 import cmf.bus.Envelope;
+import cmf.bus.EnvelopeHeaderConstants;
 
 public class EnvelopeHelper {
 
