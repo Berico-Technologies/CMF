@@ -17,6 +17,7 @@ import cmf.bus.IRegistration;
 
 public class DefaultEnvelopeBusTest {
 	
+    
 	@Test
 	public void intialize_registers_callback_with_transport_provider() {
 		
@@ -28,6 +29,7 @@ public class DefaultEnvelopeBusTest {
 			any(IEnvelopeReceivedCallback.class));
 	}
 
+	
 	@Test
 	public void processor_order_is_preserved_by_processInbound() {
 		
@@ -36,37 +38,68 @@ public class DefaultEnvelopeBusTest {
 		IEnvelopeProcessor iep2 = mock(IEnvelopeProcessor.class);
 		IEnvelopeProcessor iep3 = mock(IEnvelopeProcessor.class);
 		
-		iep1.processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
-		iep2.processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
-		iep3.processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
-		
-		
-		
+		// add them to a list
+		List<IEnvelopeProcessor> processorChain = new LinkedList<IEnvelopeProcessor>();
+        processorChain.add(iep1);
+        processorChain.add(iep2);
+        processorChain.add(iep3);
+        
+        // setup the mocks to call their continuation method
+        doAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocation) throws Exception {
+                Object[] args = invocation.getArguments();
+                IContinuationCallback continuation = (IContinuationCallback)args[1];
+                continuation.continueProcessing();
+                return null;
+            }})
+            .when(iep1).processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
+            
+        doAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocation) throws Exception {
+                Object[] args = invocation.getArguments();
+                IContinuationCallback continuation = (IContinuationCallback)args[1];
+                continuation.continueProcessing();
+                return null;
+            }})
+            .when(iep2).processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
+        
+        doAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocation) throws Exception {
+                Object[] args = invocation.getArguments();
+                IContinuationCallback continuation = (IContinuationCallback)args[1];
+                continuation.continueProcessing();
+                return null;
+            }})
+            .when(iep3).processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
+        
+        
+        // mock up a transport provider
 		ITransportProvider transportProvider = mock(ITransportProvider.class);
 		
+		// and create the default envelope bus
 		DefaultEnvelopeBus bus = new DefaultEnvelopeBus(transportProvider);
-			new DefaultEnvelopeBus(transportProvider, 
-				Arrays.asList(
-					new IEnvelopeProcessor[]{ iep1, iep2, iep3 }),
-				Arrays.asList(
-					new IEnvelopeProcessor[0]));
 		
-		InOrder inorder = inOrder(iep1, iep2, iep3);
-			
+		
 		try {
+		    // send the processors through the chain
 			bus.processEnvelope(
 					mock(EnvelopeContext.class), 
-					Arrays.asList(new IEnvelopeProcessor[]{ iep1, iep2, iep3 }),
+					processorChain,
 					mock(IContinuationCallback.class));
 		} catch (Exception e) {
 			Assert.fail("ProcessEnvelope threw an exception: " + e.toString());
 		}
+		
+		
+		// verify that they were called in order
+		InOrder inorder = inOrder(iep1, iep2, iep3);
 		
 		inorder.verify(iep1).processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
 		inorder.verify(iep2).processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
 		inorder.verify(iep3).processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
 	}
 
+	
 	@Test
 	public void inbound_processor_stops_processing_envelope_if_a_processor_fails(){
 		
@@ -89,26 +122,28 @@ public class DefaultEnvelopeBusTest {
 			}})
 			.when(iep1).processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
 		
-		// setup the second mock to NOT call its continuation method
-		doAnswer(new Answer() {
-			public Object answer(InvocationOnMock invocation) {
-				return null;
-			}})
-			.when(iep1).processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
+		// note that no other mocks are setup to call their continuation methods
 		
 		
+		// mock up a transport provider
 		ITransportProvider transportProvider = mock(ITransportProvider.class);
 		
+		// and create the default envelope bus
 		DefaultEnvelopeBus bus = new DefaultEnvelopeBus(transportProvider);
 
 		try {
+		    
+		    // send a mocked envelope through the processing chain
 			bus.processEnvelope(
-					any(EnvelopeContext.class), 
+					mock(EnvelopeContext.class), 
 					processorChain,
 					new IContinuationCallback() {
 
 						@Override
 						public void continueProcessing() throws Exception {
+						    // this should NOT be called since the processors
+						    // are configured not to call their continuation
+						    // callbacks
 							Assert.fail("The EnvelopeBus's processEnvelope method should not have called the continuation callback");
 						}
 						
@@ -117,6 +152,9 @@ public class DefaultEnvelopeBusTest {
 			Assert.fail("The EnvelopeBus threw an exception: " + e.toString());
 		}
 		
+		// the first processor should have been called and it does call its continuation
+		// so the second should also be called... but it will NOT call its continuation
+		// meaning that the third processor should have NO interaction whatsoever
 		verify(iep1).processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
 		verify(iep2).processEnvelope(any(EnvelopeContext.class), any(IContinuationCallback.class));
 		verifyZeroInteractions(iep3);
@@ -133,6 +171,7 @@ public class DefaultEnvelopeBusTest {
 		bus.register(null);
 	}
 	
+	
 	@Test
 	public void register_passes_registration_object_to_transport_provider() throws Exception{
 		
@@ -147,6 +186,7 @@ public class DefaultEnvelopeBusTest {
 		verify(transportProvider).register(registration);
 	}
 
+	
 	@Test(expected=IllegalArgumentException.class)
 	public void send_throws_exception_if_envelope_is_null() throws Exception {
 	
@@ -157,6 +197,7 @@ public class DefaultEnvelopeBusTest {
 		bus.send(null);
 	}
 
+	
 	@Test
 	public void send_passes_envelope_to_processEnvelope_and_then_transport_provider() throws Exception{
 		
@@ -174,6 +215,7 @@ public class DefaultEnvelopeBusTest {
 		inorder.verify(transportProvider).send(envelope);
 	}
 
+	
 	@Test(expected=IllegalArgumentException.class)
 	public void unregister_throws_exception_if_registration_is_null() throws Exception {
 		
@@ -184,6 +226,7 @@ public class DefaultEnvelopeBusTest {
 		bus.unregister(null);
 	}
 
+	
 	@Test
 	public void unregister_passes_registration_to_transport_provider() throws Exception {
 		
@@ -197,6 +240,7 @@ public class DefaultEnvelopeBusTest {
 		
 		verify(transportProvider).unregister(registration);
 	}
+	
 	
 	@Test
 	public void tranport_provider_and_processors_are_disposed_when_bus_dispose_method_is_called(){

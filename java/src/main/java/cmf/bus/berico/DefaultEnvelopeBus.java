@@ -81,8 +81,11 @@ public class DefaultEnvelopeBus implements IEnvelopeBus, IEnvelopeReceivedCallba
     		return;
     	}
     	
-    	// remove the first processor
-    	IEnvelopeProcessor processor = processingChain.remove(0);
+    	// get the first processor
+    	IEnvelopeProcessor processor = processingChain.get(0);
+    	
+    	// create a processing chain that no longer contains this processor
+    	final List<IEnvelopeProcessor> newChain = processingChain.subList(1, processingChain.size());
     	
     	// let it process the envelope and pass its "next" processor: a method that
     	// recursively calls this function with the current processor removed
@@ -90,7 +93,7 @@ public class DefaultEnvelopeBus implements IEnvelopeBus, IEnvelopeReceivedCallba
 
 			@Override
 			public void continueProcessing() throws Exception {
-				processEnvelope(context, processingChain, onComplete);
+				processEnvelope(context, newChain, onComplete);
 			}
     		
     	});
