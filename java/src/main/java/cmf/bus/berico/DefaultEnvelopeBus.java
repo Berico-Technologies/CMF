@@ -149,23 +149,27 @@ public class DefaultEnvelopeBus implements IEnvelopeBus, IEnvelopeReceivedCallba
     }
 
     @Override
-	public void handleReceive(IEnvelopeDispatcher dispatcher) {
+	public void handleReceive(final IEnvelopeDispatcher dispatcher) {
     	
     	log.debug("Got an envelope dispatcher from the transport provider");
-    	EnvelopeContext context = new EnvelopeContext(Directions.In, dispatcher.getEnvelope());
+    	final EnvelopeContext context = new EnvelopeContext(Directions.In, dispatcher.getEnvelope());
 
         try {
             // send the envelope through the inbound processing chain
-            if (this.envelopeBus.processInbound(env)) {
-                // the dispatcher encapsulates the logic of giving the envelope to handlers
-                dispatcher.dispatch(env);
+            this.processEnvelope(context, _inboundProcessors, new IContinuationCallback() {
 
-                log.debug("Dispatched envelope");
-            }
+                @Override
+                public void continueProcessing() throws Exception {
+                    // the dispatcher encapsulates the logic of giving the envelope to handlers
+                    dispatcher.dispatch(context.getEnvelope());
+
+                    log.debug("Dispatched envelope");
+                }  
+            });
         } catch (Exception ex) {
         	
             log.warn("Failed to dispatch envelope; raising EnvelopeFailed event: {}", ex);
-            dispatcher.dispatchFailed(env, ex);
+            dispatcher.dispatchFailed(context.getEnvelope(), ex);
         }
 	}
 

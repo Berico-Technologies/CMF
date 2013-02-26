@@ -30,9 +30,10 @@ public class DefaultEnvelopeBusTest {
 	@SuppressWarnings("unchecked")
 	public void processor_order_is_preserved_by_processInbound() {
 		
-		IInboundEnvelopeProcessor iep1 = mock(IInboundEnvelopeProcessor.class);
-		IInboundEnvelopeProcessor iep2 = mock(IInboundEnvelopeProcessor.class);
-		IInboundEnvelopeProcessor iep3 = mock(IInboundEnvelopeProcessor.class);
+		IEnvelopeProcessor iep1 = mock(IEnvelopeProcessor.class);
+		IEnvelopeProcessor iep2 = mock(IEnvelopeProcessor.class);
+		IEnvelopeProcessor iep3 = mock(IEnvelopeProcessor.class);
+		
 		
 		when(iep1.processInbound(any(Envelope.class), any(Map.class)))
 			.thenReturn(true);
