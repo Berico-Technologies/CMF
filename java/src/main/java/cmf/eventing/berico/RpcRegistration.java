@@ -1,6 +1,6 @@
 package cmf.eventing.berico;
 
-import java.util.Collection;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,18 +16,22 @@ import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;
 import cmf.bus.berico.EnvelopeHelper;
 
+
 public class RpcRegistration implements IRegistration {
 
     protected static final Logger log = LoggerFactory.getLogger(RpcRegistration.class);
 
-    protected Collection<IInboundEventProcessor> inboundChain;
+    
+    protected IInboundProcessorCallback envelopeOpener;
     protected Map<String, String> registrationInfo;
     protected Envelope responseEnvelope;
     protected Object responseEvent;
     protected IEnvelopeFilterPredicate responseFilter;
 
-    public RpcRegistration(final UUID requestId, String expectedTopic, Collection<IInboundEventProcessor> chain) {
-        inboundChain = chain;
+    
+    public RpcRegistration(final UUID requestId, String expectedTopic, IInboundProcessorCallback envelopeOpener) {
+    	
+        this.envelopeOpener = envelopeOpener;
 
         responseFilter = new IEnvelopeFilterPredicate() {
 
@@ -43,10 +47,7 @@ public class RpcRegistration implements IRegistration {
         new EnvelopeHelper(tmpInfoEnvelope).setMessageTopic(buildRpcTopic(expectedTopic, requestId));
     }
 
-    protected String buildRpcTopic(String expectedTopic, UUID requestId) {
-        return String.format("%s#%s", expectedTopic, requestId.toString());
-    }
-
+    
     @Override
     public IEnvelopeFilterPredicate getFilterPredicate() {
         return responseFilter;
@@ -69,11 +70,6 @@ public class RpcRegistration implements IRegistration {
         }
         watch.stop();
 
-        // TODO - should we throw a timeout exception or just return null?
-        // if (responseEvent == null) {
-        // throw new TimeoutException();
-        // }
-
         Object response = responseEvent;
         responseEvent = null;
 
@@ -82,14 +78,15 @@ public class RpcRegistration implements IRegistration {
 
     @Override
     public Object handle(Envelope envelope) throws Exception {
-        Object event = null;
-
-        ProcessingContext processorContext = new ProcessingContext(envelope, event);
-        if (processInbound(processorContext)) {
-            responseEvent = processorContext.getEvent();
-        }
-
-        return null;
+        
+    	log.debug("enter handle");
+    	
+    	this.responseEnvelope = envelope;
+    	this.responseEvent = this.envelopeOpener.ProcessInbound(envelope);
+    	log.info("inbound envelope successfully opened");
+    	
+    	// we have no custom response to give
+    	return null;
     }
 
     @Override
@@ -99,24 +96,12 @@ public class RpcRegistration implements IRegistration {
         return null;
     }
 
-    protected boolean processInbound(ProcessingContext processorContext) {
-        boolean processed = true;
-
-        try {
-            for (IInboundEventProcessor processor : inboundChain) {
-                if (!processor.processInbound(processorContext)) {
-                    processed = false;
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            processed = false;
-        }
-
-        return processed;
-    }
-
+    
     protected void setRegistrationInfo(Map<String, String> registrationInfo) {
         this.registrationInfo = registrationInfo;
+    }
+
+    protected String buildRpcTopic(String expectedTopic, UUID requestId) {
+        return String.format("%s#%s", expectedTopic, requestId.toString());
     }
 }

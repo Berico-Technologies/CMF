@@ -11,18 +11,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cmf.bus.berico.EnvelopeHelper;
+import cmf.eventing.berico.EventContext.Directions;
 
-public class RpcFilter implements IInboundEventProcessor, IOutboundEventProcessor {
+public class RpcFilter implements IEventProcessor {
 
     protected static final Logger log = LoggerFactory.getLogger(RpcFilter.class);
     protected List<UUID> sentRequests;
 
+    
     public RpcFilter() {
         sentRequests = new ArrayList<UUID>();
     }
 
+    
     @Override
-    public boolean processInbound(ProcessingContext context) {
+    public void processEvent(EventContext context, IContinuationCallback continuation) throws Exception {
+    	
+    	if (Directions.In == context.getDirection()) {
+    		this.processInbound(context, continuation);
+    	}
+    	else if (Directions.Out == context.getDirection()) {
+    		this.processOutbound(context, continuation);
+    	}
+    }
+    
+    
+    public void processInbound(EventContext context, IContinuationCallback continuation) throws Exception {
 
         boolean ourOwnRequest = false;
         cmf.bus.berico.EnvelopeHelper env = new cmf.bus.berico.EnvelopeHelper(context.getEnvelope());
@@ -42,11 +56,10 @@ public class RpcFilter implements IInboundEventProcessor, IOutboundEventProcesso
             log.error("Failed to inspect an incoming event for potential filtering", ex);
         }
 
-        return !ourOwnRequest;
+        if (!ourOwnRequest) { continuation.continueProcessing(); }
     }
 
-    @Override
-    public void processOutbound(ProcessingContext context) {
+    public void processOutbound(EventContext context, IContinuationCallback continuation) throws Exception {
 
         EnvelopeHelper env = new EnvelopeHelper(context.getEnvelope());
 
@@ -75,6 +88,8 @@ public class RpcFilter implements IInboundEventProcessor, IOutboundEventProcesso
                                 requestId.toString()));
             }
         }
+        
+        continuation.continueProcessing();
     }
 
     public void requestTimeout_GarbageCollect(UUID requestId) {

@@ -7,11 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cmf.bus.berico.EnvelopeHelper;
+import cmf.eventing.berico.EventContext.Directions;
 import cmf.security.CredentialHolder;
 import cmf.security.ICertificateProvider;
 import cmf.security.IUserInfoRepository;
 
-public class DigitalSignatureProcessor implements IInboundEventProcessor, IOutboundEventProcessor {
+public class DigitalSignatureProcessor implements IEventProcessor {
 
 	protected ICertificateProvider certProvider;
 	protected IUserInfoRepository userInfoRepo;
@@ -37,7 +38,17 @@ public class DigitalSignatureProcessor implements IInboundEventProcessor, IOutbo
 	
 	
 	@Override
-	public void processOutbound(ProcessingContext context) throws Exception {
+	public void processEvent(EventContext context, IContinuationCallback continuation) throws Exception {
+		
+		if (Directions.In == context.getDirection()) {
+			this.processInbound(context, continuation);
+		}
+		else if (Directions.Out == context.getDirection()) {
+			this.processOutbound(context, continuation);
+		}
+	}
+	
+	public void processOutbound(EventContext context, IContinuationCallback continuation) throws Exception {
 		
 		try {
 			EnvelopeHelper env = new EnvelopeHelper(context.getEnvelope());
@@ -53,6 +64,7 @@ public class DigitalSignatureProcessor implements IInboundEventProcessor, IOutbo
 			sender = sender.replaceAll(",", ", ");
 			
 			env.setSenderIdentity(sender);
+			continuation.continueProcessing();
 		}
 		catch(Exception ex) {
 			log.error("Exception while signing outbound event", ex);
@@ -60,8 +72,7 @@ public class DigitalSignatureProcessor implements IInboundEventProcessor, IOutbo
 		}
 	}
 
-	@Override
-	public boolean processInbound(ProcessingContext context) throws Exception {
+	public void processInbound(EventContext context, IContinuationCallback continuation) throws Exception {
 
 		boolean verified = false;
 		
@@ -89,6 +100,6 @@ public class DigitalSignatureProcessor implements IInboundEventProcessor, IOutbo
 			throw ex;
 		}
 		
-		return verified;
+		if (verified) { continuation.continueProcessing(); }
 	}
 }

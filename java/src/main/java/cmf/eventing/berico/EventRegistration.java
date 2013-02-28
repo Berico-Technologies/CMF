@@ -14,22 +14,10 @@ public class EventRegistration implements IRegistration {
 
     @SuppressWarnings("rawtypes")
 	protected IEventHandler eventHandler;
-    
     protected IEnvelopeFilterPredicate filterPredicate;
-    
-    protected List<IInboundEventProcessor> inboundChain;
-    
+    protected IInboundProcessorCallback processorCallback;
     protected Map<String, String> registrationInfo;
 
-    @SuppressWarnings({ "rawtypes" })
-    public EventRegistration(IEventHandler eventHandler, List<IInboundEventProcessor> inboundChain) {
-
-        this.eventHandler = eventHandler;
-        this.inboundChain = inboundChain;
-
-        registrationInfo = new HashMap<String, String>();
-        registrationInfo.put(EnvelopeHeaderConstants.MESSAGE_TOPIC, eventHandler.getEventType().getCanonicalName());
-    }
 
     @Override
     public IEnvelopeFilterPredicate getFilterPredicate() {
@@ -41,20 +29,32 @@ public class EventRegistration implements IRegistration {
         return registrationInfo;
     }
     
+    
+    @SuppressWarnings({ "rawtypes" })
+    public EventRegistration(IEventHandler eventHandler, IInboundProcessorCallback processorCallback) {
+
+        this.eventHandler = eventHandler;
+        this.processorCallback = processorCallback;
+
+        registrationInfo = new HashMap<String, String>();
+        registrationInfo.put(EnvelopeHeaderConstants.MESSAGE_TOPIC, eventHandler.getEventType().getCanonicalName());
+    }
+    
+    
 	@Override
 	@SuppressWarnings("unchecked")
 	public Object handle(Envelope env) throws Exception {
-        Object ev = null;
-        Object result = null;
-
-        ProcessingContext processorContext = new ProcessingContext(env, ev);
-        if (processInbound(processorContext)) {
+		
+		Object event = this.processorCallback.ProcessInbound(env);
+		Object result = null;
+		
+		if (null != event) {
             try {
-                result = eventHandler.handle(processorContext.getEvent(), processorContext.getEnvelope().getHeaders());
+                result = eventHandler.handle(event, env.getHeaders());
             } catch (Exception ex) {
                 result = handleFailed(env, ex);
             }
-        }
+		}
 
         return result;
     }
@@ -66,23 +66,6 @@ public class EventRegistration implements IRegistration {
         } catch (Exception failedToFail) {
             throw failedToFail;
         }
-    }
-
-    protected boolean processInbound(ProcessingContext processorContext) {
-        boolean processed = true;
-
-        try {
-            for (IInboundEventProcessor processor : inboundChain) {
-                if (!processor.processInbound(processorContext)) {
-                    processed = false;
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            processed = false;
-        }
-
-        return processed;
     }
 
     public void setFilterPredicate(IEnvelopeFilterPredicate filterPredicate) {

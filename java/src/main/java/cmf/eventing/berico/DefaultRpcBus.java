@@ -11,19 +11,22 @@ import cmf.bus.Envelope;
 import cmf.bus.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeBus;
 import cmf.bus.berico.EnvelopeHelper;
+import cmf.eventing.berico.EventContext.Directions;
 import cmf.eventing.patterns.rpc.IRpcEventBus;
 
-public class DefaultRpcBus extends DefaultEventBus implements IRpcEventBus {
+public class DefaultRpcBus extends DefaultEventBus implements IRpcEventBus, IInboundProcessorCallback {
 
+	
     public DefaultRpcBus(IEnvelopeBus envelopeBus) {
         super(envelopeBus);
     }
 
-    public DefaultRpcBus(IEnvelopeBus envelopeBus, List<IInboundEventProcessor> inboundProcessors,
-                    List<IOutboundEventProcessor> outboundProcessors) {
+    public DefaultRpcBus(IEnvelopeBus envelopeBus, List<IEventProcessor> inboundProcessors,
+                    List<IEventProcessor> outboundProcessors) {
         super(envelopeBus, inboundProcessors, outboundProcessors);
     }
 
+    
     @Override
     public <TResponse> Collection<TResponse> gatherResponsesTo(Object request, Duration timeout) {
         throw new UnsupportedOperationException();
@@ -44,53 +47,67 @@ public class DefaultRpcBus extends DefaultEventBus implements IRpcEventBus {
     }
 
     @Override
-    public Object getResponseTo(Object request, Duration timeout, String expectedTopic) {
+    public Object getResponseTo(Object request, final Duration timeout, final String expectedTopic) {
         log.debug("Enter GetResponseTo");
 
+        // guard clause
         if (null == request) {
             throw new IllegalArgumentException("Cannot get response to a null request");
         }
 
-        // the response we're going to get
-        Object response = null;
+        // the container for the response we're going to get since you
+        // can't assign the value of this within the continuation callback
+        final EventContext responseContext = new EventContext(Directions.In);
+        
 
         try {
-            Envelope env = new Envelope();
-            EnvelopeHelper envelopeHelper = new EnvelopeHelper(env);
+        	// create the ID for the request
+        	final UUID requestId = UUID.randomUUID();
+        	
+        	// Get an appropriately setup envelope
+        	Envelope env = this.buildRequestEnvelope(requestId, timeout);
 
-            // create the ID for the request and set it on the envelope
-            UUID requestId = UUID.randomUUID();
+            // create an event context for processing
+            final EventContext context = new EventContext(Directions.Out, env, request);
+            
+            // need a final-scoped handle to an IInboundProcessorCallback
+            final IInboundProcessorCallback envelopeOpener = this;
+            
+            // process the event
+            this.processEvent(
+        		context, 
+        		outboundProcessors, 
+            	new IContinuationCallback() {
 
-            envelopeHelper.setMessageId(requestId);
+					@Override
+					public void continueProcessing() throws Exception {
+					
+						log.debug("successfully processed outgoing request");
+						
+						// create an RPC registration
+			            RpcRegistration rpcRegistration = new RpcRegistration(requestId, expectedTopic, envelopeOpener);
 
-            // add pattern & timeout information to the headers
-            envelopeHelper.setMessagePattern(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC);
-            envelopeHelper.setRpcTimeout(timeout);
+			            // register with the envelope bus
+			            envelopeBus.register(rpcRegistration);
 
-            // let the outbound processor do its thing
-            processOutbound(request, env);
+			            // now that we're setup to receive the response, send the request
+			            envelopeBus.send(context.getEnvelope());
 
-            // create an RPC registration
-            RpcRegistration rpcRegistration = new RpcRegistration(requestId, expectedTopic, inboundProcessors);
+			            // get the envelope from the registraton
+			            responseContext.setEvent(rpcRegistration.getResponse(timeout));
 
-            // register with the envelope bus
-            envelopeBus.register(rpcRegistration);
-
-            // now that we're setup to receive the response, send the request
-            envelopeBus.send(env);
-
-            // get the envelope from the registraton
-            response = rpcRegistration.getResponse(timeout);
-
-            // unregister from the bus
-            envelopeBus.unregister(rpcRegistration);
+			            // unregister from the bus
+			            envelopeBus.unregister(rpcRegistration);
+					} // end of final continuation
+					
+            }); // end of outbound processing
         } catch (Exception ex) {
             log.error("Exception publishing an event", ex);
             throw new RuntimeException("Exception publishing an event", ex);
         }
 
         log.debug("Leave GetResponseTo");
-        return response;
+        return responseContext.getEvent();
     }
 
     @Override
@@ -116,13 +133,39 @@ public class DefaultRpcBus extends DefaultEventBus implements IRpcEventBus {
             Envelope env = new Envelope();
             new EnvelopeHelper(env).setCorrelationId(originalHeadersHelper.getMessageId());
 
-            processOutbound(response, env);
-            envelopeBus.send(env);
+            final EventContext context = new EventContext(Directions.Out, env, response);
+
+            this.processEvent(context, this.inboundProcessors, new IContinuationCallback() {
+            
+            	@Override
+            	public void continueProcessing() throws Exception {
+            		envelopeBus.send(context.getEnvelope());
+            	}
+            });
+
+            
         } catch (Exception ex) {
             log.error("Exception responding to an event", ex);
             throw new RuntimeException("Exception responding to an event", ex);
         }
 
         log.debug("Leave RespondTo");
+    }
+
+
+    protected Envelope buildRequestEnvelope(UUID requestId, Duration timeout) {
+    	
+    	// create a new envelope
+        Envelope env = new Envelope();
+        EnvelopeHelper envelopeHelper = new EnvelopeHelper(env);
+
+        // set the requestId on the envelope
+        envelopeHelper.setMessageId(requestId);
+
+        // add pattern & timeout information to the headers
+        envelopeHelper.setMessagePattern(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC);
+        envelopeHelper.setRpcTimeout(timeout);
+        
+        return env;
     }
 }

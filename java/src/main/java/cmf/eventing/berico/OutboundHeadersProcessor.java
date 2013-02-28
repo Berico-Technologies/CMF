@@ -5,10 +5,11 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 
 import cmf.bus.berico.EnvelopeHelper;
+import cmf.eventing.berico.EventContext.Directions;
 import cmf.eventing.Event;
 import cmf.security.IUserInfoRepository;
 
-public class OutboundHeadersProcessor implements IOutboundEventProcessor {
+public class OutboundHeadersProcessor implements IEventProcessor {
 
 	protected IUserInfoRepository userInfoRepo;
 	
@@ -19,7 +20,13 @@ public class OutboundHeadersProcessor implements IOutboundEventProcessor {
 	
 	
 	@Override
-	public void processOutbound(ProcessingContext context) throws Exception {
+	public void processEvent(EventContext context, IContinuationCallback continuation) throws Exception {
+		if (Directions.Out == context.getDirection()) {
+			processOutbound(context, continuation);
+		}
+	}
+	
+	public void processOutbound(EventContext context, IContinuationCallback continuation) throws Exception {
 		
 		EnvelopeHelper env = new EnvelopeHelper(context.getEnvelope());
 		
@@ -44,6 +51,8 @@ public class OutboundHeadersProcessor implements IOutboundEventProcessor {
         String senderIdentity = env.getSenderIdentity();
         senderIdentity = StringUtils.isBlank(senderIdentity) ? userInfoRepo.getDistinguishedName(System.getProperty("user.name")).replaceAll(",", ", ") : senderIdentity;
         env.setSenderIdentity(senderIdentity);
+        
+        continuation.continueProcessing();
 	}
 	
 	
