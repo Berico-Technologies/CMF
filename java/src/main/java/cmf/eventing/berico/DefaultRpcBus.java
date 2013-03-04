@@ -135,7 +135,7 @@ public class DefaultRpcBus extends DefaultEventBus implements IRpcEventBus, IInb
 
             final EventContext context = new EventContext(Directions.Out, env, response);
 
-            this.processEvent(context, this.inboundProcessors, new IContinuationCallback() {
+            this.processEvent(context, this.outboundProcessors, new IContinuationCallback() {
             
             	@Override
             	public void continueProcessing() throws Exception {
