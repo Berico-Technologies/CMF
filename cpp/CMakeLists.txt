@@ -1,0 +1,9 @@
+#Specify the version of CMAKE >=
+cmake_minimum_required(VERSION 2.8)
+#Name your project here
+project(CMF)
+
+SET(CMF_LIB_SRCS
+	src/hello.cpp
+)
+ADD_EXECUTABLE(CMF ${CMF_LIB_SRCS})
