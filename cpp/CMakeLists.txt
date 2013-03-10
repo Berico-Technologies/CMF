@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 #Name your project here
 project(CMF)
 
+FIND_LIBRARY(AMPQCLIENT_H_PATH SimpleAmqpClient)
+
 SET(CMF_LIB_SRCS
 	src/hello.cpp
 )
