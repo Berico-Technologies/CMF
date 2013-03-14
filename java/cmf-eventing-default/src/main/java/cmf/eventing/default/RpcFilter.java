@@ -10,8 +10,8 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cmf.bus.berico.EnvelopeHelper;
-import cmf.eventing.berico.EventContext.Directions;
+import cmf.eventing.default.EnvelopeHelper;
+import cmf.eventing.default.EventContext.Directions;
 
 public class RpcFilter implements IEventProcessor {
 

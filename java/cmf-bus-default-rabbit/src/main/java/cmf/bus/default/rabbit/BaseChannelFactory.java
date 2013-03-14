@@ -1,4 +1,4 @@
-package cmf.rabbit;
+package cmf.bus.default.rabbit;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cmf.bus.IDisposable;
-import cmf.rabbit.topology.Exchange;
+import cmf.bus.default.rabbit.topology.Exchange;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;

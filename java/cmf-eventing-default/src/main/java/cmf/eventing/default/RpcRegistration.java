@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import cmf.bus.Envelope;
 import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;
-import cmf.bus.berico.EnvelopeHelper;
+import cmf.eventing.default.EnvelopeHelper;
 
 
 public class RpcRegistration implements IRegistration {

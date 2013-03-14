@@ -1,14 +1,16 @@
 package cmf.eventing.default.serializers;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cmf.bus.berico.EnvelopeHelper;
-import cmf.eventing.berico.EventContext;
-import cmf.eventing.berico.EventContext.Directions;
-import cmf.eventing.berico.IContinuationCallback;
-import cmf.eventing.berico.IEventProcessor;
-import cmf.eventing.berico.ISerializer;
+import cmf.eventing.default.EnvelopeHelper;
+import cmf.eventing.default.EventContext;
+import cmf.eventing.default.EventContext.Directions;
+import cmf.eventing.default.IContinuationCallback;
+import cmf.eventing.default.IEventProcessor;
+import cmf.eventing.default.ISerializer;
+
 
 public class JsonEventSerializer implements IEventProcessor {
 

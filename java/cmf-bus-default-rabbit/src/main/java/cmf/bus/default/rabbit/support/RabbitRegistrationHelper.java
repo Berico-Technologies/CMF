@@ -1,4 +1,4 @@
-package cmf.rabbit.support;
+package cmf.bus.default.rabbit.support;
 
 import cmf.bus.IRegistration;
 

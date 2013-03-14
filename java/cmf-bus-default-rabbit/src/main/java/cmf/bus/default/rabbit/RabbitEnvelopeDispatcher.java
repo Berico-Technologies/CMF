@@ -1,4 +1,4 @@
-package cmf.rabbit;
+package cmf.bus.default.rabbit;
 
 import java.io.IOException;
 

@@ -1,17 +1,17 @@
 package cmf.bus;
 
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 
 public class Envelope {
 
     protected Map<String, String> headers = new HashMap<String, String>();
 
     protected byte[] payload = {};
+
 
     @Override
     public boolean equals(Object obj) {
@@ -63,6 +63,27 @@ public class Envelope {
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+
+        boolean first = true;
+
+        for (Map.Entry<String, String> header : this.headers.entrySet()) {
+            if (!first) {
+                sb.append(", ");
+            }
+            else {
+                first = false;
+            }
+
+            sb.append("\"");
+            sb.append(header.getKey());
+            sb.append("\" : \"");
+            sb.append(header.getValue());
+            sb.append("\"");
+        }
+
+        sb.append("}");
+        return sb.toString();
     }
 }

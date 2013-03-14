@@ -1,4 +1,4 @@
-package cmf.rabbit;
+package cmf.bus.default.rabbit;
 
 import java.io.FileInputStream;
 import java.security.KeyStore;
@@ -7,7 +7,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
-import cmf.rabbit.topology.Exchange;
+import cmf.bus.default.rabbit.topology.Exchange;
 
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;

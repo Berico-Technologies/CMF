@@ -1,4 +1,4 @@
-package cmf.rabbit;
+package cmf.bus.default.rabbit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

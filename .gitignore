@@ -12,6 +12,10 @@ target/
 .metadata/
 Servers/
 
+# Ignore IntelliJ Idea files
+*.iml
+.idea/
+
 *.tar
 *.tgz
 *.tar.gz

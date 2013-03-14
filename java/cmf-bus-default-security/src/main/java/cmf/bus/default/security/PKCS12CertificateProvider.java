@@ -1,4 +1,4 @@
-package cmf.security;
+package cmf.bus.default.security;
 
 import java.io.FileInputStream;
 import java.security.Key;

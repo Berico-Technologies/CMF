@@ -1,4 +1,4 @@
-package cmf.bus.berico;
+package cmf.eventing.default;
 
 import java.util.Map.Entry;
 import java.util.UUID;

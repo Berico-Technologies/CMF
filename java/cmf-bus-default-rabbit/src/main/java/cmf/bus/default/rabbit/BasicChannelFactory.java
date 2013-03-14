@@ -1,8 +1,8 @@
-package cmf.rabbit;
+package cmf.bus.default.rabbit;
 
 import java.io.IOException;
 
-import cmf.rabbit.topology.Exchange;
+import cmf.bus.default.rabbit.topology.Exchange;
 
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;

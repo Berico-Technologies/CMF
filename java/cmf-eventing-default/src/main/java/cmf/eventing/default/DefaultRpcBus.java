@@ -10,8 +10,8 @@ import org.joda.time.Duration;
 import cmf.bus.Envelope;
 import cmf.bus.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeBus;
-import cmf.bus.berico.EnvelopeHelper;
-import cmf.eventing.berico.EventContext.Directions;
+import cmf.eventing.default.EnvelopeHelper;
+import cmf.eventing.default.EventContext.Directions;
 import cmf.eventing.patterns.rpc.IRpcEventBus;
 
 public class DefaultRpcBus extends DefaultEventBus implements IRpcEventBus, IInboundProcessorCallback {

@@ -12,6 +12,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JTextArea;
+import javax.swing.JLabel;
 
 import cmf.bus.Envelope;
 import cmf.eventing.IEventBus;
@@ -22,7 +23,6 @@ import cmf.examples.gui.messages.EventTypeB;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
-import javax.swing.JLabel;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import com.jgoodies.forms.factories.FormFactory;
 

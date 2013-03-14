@@ -1,7 +1,7 @@
-package cmf.rabbit;
+package cmf.bus.default.rabbit;
 
 import cmf.bus.IDisposable;
-import cmf.rabbit.topology.Exchange;
+import cmf.bus.default.rabbit.topology.Exchange;
 
 import com.rabbitmq.client.Channel;
 

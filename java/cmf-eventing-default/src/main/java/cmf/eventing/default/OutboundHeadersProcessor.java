@@ -4,10 +4,10 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
-import cmf.bus.berico.EnvelopeHelper;
-import cmf.eventing.berico.EventContext.Directions;
+import cmf.eventing.default.EnvelopeHelper;
+import cmf.eventing.default.EventContext.Directions;
 import cmf.eventing.Event;
-import cmf.security.IUserInfoRepository;
+import cmf.eventing.default.security.IUserInfoRepository;
 
 public class OutboundHeadersProcessor implements IEventProcessor {
 

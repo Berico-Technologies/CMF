@@ -1,4 +1,4 @@
-package cmf.rabbit.topology;
+package cmf.bus.default.rabbit.topology;
 
 public class RoutingInfo {
 

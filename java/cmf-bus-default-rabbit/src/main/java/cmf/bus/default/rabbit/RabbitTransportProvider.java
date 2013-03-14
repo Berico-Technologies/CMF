@@ -1,4 +1,4 @@
-package cmf.rabbit;
+package cmf.bus.default.rabbit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory;
 
 import cmf.bus.Envelope;
 import cmf.bus.IRegistration;
-import cmf.bus.berico.IEnvelopeDispatcher;
-import cmf.bus.berico.IEnvelopeReceivedCallback;
-import cmf.bus.berico.ITransportProvider;
-import cmf.rabbit.topology.Exchange;
-import cmf.rabbit.topology.ITopologyService;
-import cmf.rabbit.topology.RouteInfo;
-import cmf.rabbit.topology.RoutingInfo;
+import cmf.bus.default.IEnvelopeDispatcher;
+import cmf.bus.default.IEnvelopeReceivedCallback;
+import cmf.bus.default.ITransportProvider;
+import cmf.bus.default.rabbit.topology.Exchange;
+import cmf.bus.default.rabbit.topology.ITopologyService;
+import cmf.bus.default.rabbit.topology.RouteInfo;
+import cmf.bus.default.rabbit.topology.RoutingInfo;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;

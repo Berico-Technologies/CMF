@@ -1,4 +1,4 @@
-package cmf.rabbit;
+package cmf.bus.default.rabbit;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,9 +13,9 @@ import cmf.bus.Envelope;
 import cmf.bus.IDisposable;
 import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;
-import cmf.bus.berico.EnvelopeHelper;
-import cmf.bus.berico.IEnvelopeReceivedCallback;
-import cmf.rabbit.topology.Exchange;
+import cmf.bus.default.EnvelopeHelper;
+import cmf.bus.default.IEnvelopeReceivedCallback;
+import cmf.bus.default.rabbit.topology.Exchange;
 
 import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;

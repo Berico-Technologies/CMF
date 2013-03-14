@@ -1,4 +1,4 @@
-package cmf.security;
+package cmf.bus.default.security;
 
 import java.security.KeyStore;
 import java.security.PrivateKey;

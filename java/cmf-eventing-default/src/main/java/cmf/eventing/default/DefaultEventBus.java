@@ -1,4 +1,4 @@
-package cmf.eventing.berico;
+package cmf.eventing.default;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -12,7 +12,7 @@ import cmf.bus.IEnvelopeBus;
 import cmf.eventing.IEventBus;
 import cmf.eventing.IEventFilterPredicate;
 import cmf.eventing.IEventHandler;
-import cmf.eventing.berico.EventContext.Directions;
+import cmf.eventing.default.EventContext.Directions;
 
 public class DefaultEventBus implements IEventBus, IInboundProcessorCallback {
 
