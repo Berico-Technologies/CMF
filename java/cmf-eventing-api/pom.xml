@@ -26,6 +26,11 @@
             <artifactId>cmf.bus</artifactId>
             <version>${parent.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
     </dependencies>
 
 
