@@ -7,7 +7,10 @@ project(CMF)
 
 
 FIND_LIBRARY(AMPQCLIENT_H_PATH SimpleAmqpClient)
+FIND_PACKAGE(Boost)
+
 SET(CMF_LIB_SRCS
-	src/hello.cpp
+	src/Example.cpp
 )
 ADD_EXECUTABLE(CMF ${CMF_LIB_SRCS})
+target_link_libraries(CMF ${AMPQCLIENT_H_PATH})
