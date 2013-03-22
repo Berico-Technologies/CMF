@@ -12,6 +12,10 @@ target/
 .metadata/
 Servers/
 
+# Ignore IntelliJ Idea files
+*.iml
+.idea/
+
 *.tar
 *.tgz
 *.tar.gz
@@ -78,6 +82,9 @@ Servers/
 *.pdb*
 *.opensdf
 *.unsuccessfulbuild
+!/dotnet/binaries/
+/dotnet/binaries/*
+!/dotnet/binaries/libraries/
 ipch/
 [Oo]bj/
 [Bb]in
@@ -91,3 +98,8 @@ packages/
 
 #gradle
 .gradle/
+
+java/examples/lib/jgoodies-src/
+java/examples/lib/net/miginfocom/
+java/cmf.bus.iml
+java/examples/cmf.examples.iml

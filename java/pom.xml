@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <!-- Information about this project -->
+    <groupId>cmf</groupId>
+    <artifactId>cmf</artifactId>
+    <version>3.1.1-SNAPSHOT</version>
+    <name>Common Messaging Framework</name>
+    <packaging>pom</packaging>
+
+
+    <!-- Shared properties -->
+    <properties>
+        <bundle.vendor>Berico Technologies</bundle.vendor>
+        <slf4j.version>1.6.4</slf4j.version>
+        <joda-time.version>2.1</joda-time.version>
+        <commons-codec.version>1.6</commons-codec.version>
+        <commons-lang.version>2.6</commons-lang.version>
+        <junit.version>4.11</junit.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+
+    <!-- Child modules -->
+    <modules>
+        <module>cmf-bus-api</module>
+        <module>cmf-eventing-api</module>
+    </modules>
+
+
+    <!-- Shared dependencies -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda-time.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <!-- Managing Organization -->
+    <organization>
+        <name>Berico Technologies</name>
+        <url>http://www.bericotechnologies.com</url>
+    </organization>
+
+
+    <!-- Points of Contact, also list of people to blame :) -->
+    <developers>
+        <developer>
+            <name>Richard Clayton</name>
+            <organization>Berico Technologies</organization>
+            <email>rclayton@bericotechnologies.com</email>
+            <roles>
+                <role>Lead Developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <name>John Ruiz</name>
+            <organization>Berico Technologies</organization>
+            <email>jruiz@bericotechnologies.com</email>
+            <roles>
+                <role>Lead Developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <name>Asa Martin</name>
+            <organization>Palantir</organization>
+            <email>amartin@palantir.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <name>Travis Camechis</name>
+            <organization>Berico Technologies</organization>
+            <email>tcamechis@bericotechnologies.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+    </developers>
+
+
+    <!-- Where we publish our binaries -->
+    <distributionManagement>
+        <repository>
+            <id>nexus.bericotechnologies.com</id>
+            <url>http://nexus.bericotechnologies.com/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus.bericotechnologies.com</id>
+            <url>http://nexus.bericotechnologies.com/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+
+    <!-- Extra maven repositories needed -->
+    <repositories>
+        <repository>
+            <id>nexus.bericotechnologies.com</id>
+            <name>Berico Technologies Nexus</name>
+            <url>http://nexus.bericotechnologies.com/content/groups/public</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+    </repositories>
+
+
+    <!-- Special plugin configuration because this pom isn't in the root folder -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <goals>
+                            <goal>perform</goal>
+                        </goals>
+                        <configuration>
+                            <pomFileName>java/pom.xml</pomFileName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <!-- Where we keep our source -->
+    <scm>
+        <connection>scm:git:git@github.com:Berico-Technologies/CMF.git</connection>
+        <developerConnection>scm:git:git@github.com:Berico-Technologies/CMF.git</developerConnection>
+        <url>https://github.com/Berico-Technologies/CMF/tree/develop</url>
+    </scm>
+
+
+    <!-- Where to complain -->
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/Berico-Technologies/CMF/issues</url>
+    </issueManagement>
+
+
+    <!-- no public-facing CI at the moment, sorry!
+    <ciManagement>
+        <system>TeamCity</system>
+        <url>http://user:password@ci.bericotechnologies.com/</url>
+    </ciManagement>
+     -->
+
+    <url>https://github.com/Berico-Technologies/CMF</url>
+
+
+</project>

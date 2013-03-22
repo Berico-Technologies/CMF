@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <parent>
+        <groupId>cmf</groupId>
+        <artifactId>cmf</artifactId>
+        <relativePath>../pom.xml</relativePath>
+        <version>3.1.1-SNAPSHOT</version>
+    </parent>
+
+
+    <groupId>${parent.groupId}</groupId>
+    <artifactId>cmf.eventing</artifactId>
+    <version>3.1.1-SNAPSHOT</version>
+    <name>CMF Event Bus API</name>
+    <packaging>jar</packaging>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>cmf.bus</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+    </dependencies>
+
+
+</project>

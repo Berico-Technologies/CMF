@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.bus", "source\cmf.bus\cmf.bus.csproj", "{5386254B-6A77-4244-9364-1013899A2B11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cmf.eventing", "source\cmf.eventing\cmf.eventing.csproj", "{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{215E5470-4B08-4282-9564-93EACD8F38E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{FB5A9321-0ECC-431E-A880-2CA57DC9EA26}"
+	ProjectSection(SolutionItems) = preProject
+		source\GlobalAssemblyInfo.cs = source\GlobalAssemblyInfo.cs
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5386254B-6A77-4244-9364-1013899A2B11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5386254B-6A77-4244-9364-1013899A2B11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5386254B-6A77-4244-9364-1013899A2B11}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5386254B-6A77-4244-9364-1013899A2B11}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5386254B-6A77-4244-9364-1013899A2B11}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5386254B-6A77-4244-9364-1013899A2B11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5386254B-6A77-4244-9364-1013899A2B11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5386254B-6A77-4244-9364-1013899A2B11}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5386254B-6A77-4244-9364-1013899A2B11}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5386254B-6A77-4244-9364-1013899A2B11}.Release|x86.ActiveCfg = Release|Any CPU
+		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5386254B-6A77-4244-9364-1013899A2B11} = {FB5A9321-0ECC-431E-A880-2CA57DC9EA26}
+		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8} = {FB5A9321-0ECC-431E-A880-2CA57DC9EA26}
+	EndGlobalSection
+EndGlobal
