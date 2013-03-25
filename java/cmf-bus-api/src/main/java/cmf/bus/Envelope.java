@@ -5,14 +5,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Represents a descreete message sent across the bus.
+ */
 public class Envelope {
 
     protected Map<String, String> headers = new HashMap<String, String>();
 
     protected byte[] payload = {};
 
-
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -34,26 +38,56 @@ public class Envelope {
         return true;
     }
 
+    /**
+     * Get the header value for the key specified.
+     * @param key  The header key of the header value to return.
+     * @return The value of the specified header.
+     */
     public String getHeader(String key) {
         return headers.get(key);
     }
 
-    public Map<String, String> getHeaders() {
+    /**
+     * Get the envelope headers as a key-value map.  Caution: modifying the returned map
+     * will modify the envelopes headers. 
+     * @return A key/value map of headers.
+     */
+   public Map<String, String> getHeaders() {
         return headers;
     }
 
+    /**
+     * Get the payload (i.e. the actual content) of the envelope.
+     * @return The conetent of the envelope as a byte array.
+     */
     public byte[] getPayload() {
         return payload;
     }
 
+    /**
+     * Sets a header value for the specified key.
+     * @param key The key of the header to be set.
+     * @param value The value to set the header to.
+     */
     public void setHeader(String key, String value) {
         headers.put(key, value);
     }
 
+    /**
+     * Sets all headers based on the provided map.  Calling this method will delete
+     * any pre-existing headers.
+     * 
+     * @param headers A key/value map of headers for the envelop.
+     */
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
 
+    /**
+     * Sets the payload of the envelope.
+     * 
+     * @param payload A byte array containing the payload of the envelope.
+     */
     public void setPayload(byte[] payload) {
         if (payload == null) {
             throw new IllegalArgumentException("Envelope payload cannot be set to null");
@@ -61,6 +95,10 @@ public class Envelope {
         this.payload = payload;
     }
 
+    /**
+     * Returns a string representation of the envelope that lists the key/value pairs 
+     * contained in the envelope's headers.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
