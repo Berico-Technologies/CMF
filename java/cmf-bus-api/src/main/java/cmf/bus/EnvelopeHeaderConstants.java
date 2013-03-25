@@ -30,7 +30,7 @@ public class EnvelopeHeaderConstants {
     public static final String MESSAGE_ID = "cmf.bus.message.id";
     
     /**
-     * Indicates the particular messaging pattern being used to delive the message.  Valid values
+     * Indicates the particular messaging pattern being used to deliver the message.  Valid values
      * are {@link Envelope#MESSAGE_PATTERN_PUBSUB} and {@link Envelope#MESSAGE_PATTERN_RPC}
      */
     public static final String MESSAGE_PATTERN = "cmf.bus.message.pattern";
@@ -48,16 +48,16 @@ public class EnvelopeHeaderConstants {
     public static final String MESSAGE_PATTERN_RPC = "cmf.bus.message.pattern#rpc";
     
     /**
-     * For messages participatign in an RPC message pattern, this header indicates the length
+     * For messages participating in an RPC message pattern, this header indicates the length
      * of time for which the original request is valid and within which replies must be received.
      * 
-     * This header must be set to a value parasble as a long integer representing the timeout 
+     * This header must be set to a value parsasble as a long integer representing the timeout 
      * length in milliseconds.
      */
     public static final String MESSAGE_PATTERN_RPC_TIMEOUT = "cmf.bus.message.pattern#rpc.timeout";
     
     /**
-     * The identity of the pesrson or service sending the message.  May be used by receipients to 
+     * The identity of the person or service sending the message.  May be used by recipients to 
      * authorize activities requested by command or query messages.
      */
     public static final String MESSAGE_SENDER_IDENTITY = "cmf.bus.message.sender_identity";
@@ -74,7 +74,7 @@ public class EnvelopeHeaderConstants {
     public static final String MESSAGE_TOPIC = "cmf.bus.message.topic";
     
     /**
-     * The type of the message.  Typically this is the fuly qualified name of the 
+     * The type of the message.  Typically this is the fully qualified name of the 
      * data structure of which the payload is a serialized instance.
      */
     public static final String MESSAGE_TYPE = "cmf.bus.message.type";

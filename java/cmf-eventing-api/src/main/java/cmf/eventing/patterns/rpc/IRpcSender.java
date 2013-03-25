@@ -3,7 +3,7 @@ package cmf.eventing.patterns.rpc;
 import java.util.Map;
 
 /**
- * An interface defining the methods by which an client responde to RPC calls.
+ * An interface defining the methods by which a client responds to RPC calls.
  */
 public interface IRpcSender {
 

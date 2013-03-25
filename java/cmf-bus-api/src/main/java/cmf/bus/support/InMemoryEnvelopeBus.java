@@ -23,8 +23,8 @@ public class InMemoryEnvelopeBus implements IEnvelopeBus {
     }
 
     /**
-     * Dispatches an envelope to a list of registration using a seprate thread.  
-     * This method underlies the Send method and may be overriden to provide custom dispatching.
+     * Dispatches an envelope to a list of registration using a separate thread.  
+     * This method underlies the Send method and may be overridden to provide custom dispatching.
      * 
      * @param envelope The envelope to dispatch
      * @param registrationList The list of registrations to dispatch the envelope to.

@@ -5,7 +5,7 @@ import java.util.Map;
 import cmf.bus.Envelope;
 
 /**
- * Defines an inteface to be implemented by types that which to process received events. 
+ * Defines an interface to be implemented by types that which to process received events. 
  */
 public interface IEventHandler<TEVENT> {
 
@@ -24,7 +24,7 @@ public interface IEventHandler<TEVENT> {
      * 
      * @param event The event to be processed.
      * @param headers The {@link cmf.bus.Envelope} headers of the envelope in which
-     * the event arived. 
+     * the event arrived. 
      * 
      * @return An object indicating the outcome of handling the event.
      */
@@ -35,7 +35,7 @@ public interface IEventHandler<TEVENT> {
      * envelope that meets the registration and filter criteria.
      * 
      * @param env The envelope in which the event was received.
-     * @param ex The execption that occured.
+     * @param ex The exception that occurred.
      * 
      * @return An object indicating the outcome of handling the envelope.
      */

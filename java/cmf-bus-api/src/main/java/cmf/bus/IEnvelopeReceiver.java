@@ -1,7 +1,7 @@
 package cmf.bus;
 
 /**
- * An interface to define the methods by which an client may register to recieve
+ * An interface to define the methods by which an client may register to receive
  * envelopes and unregister for the same.
  */
 public interface IEnvelopeReceiver extends IDisposable {
@@ -17,7 +17,7 @@ public interface IEnvelopeReceiver extends IDisposable {
     void register(IRegistration registration) throws Exception;
 
     /**
-     * Unregisteres a handler previously registered.
+     * Unregisters a handler previously registered.
      * 
      * @param registration The {@link IRegistration} instance previously used to register handler.
      * 

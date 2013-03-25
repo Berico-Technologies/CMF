@@ -1,7 +1,7 @@
 package cmf.eventing;
 
 /**
- * An interface defining the methods by which an client may public events.
+ * An interface defining the methods by which an client may publish events.
  */
 public interface IEventProducer {
 

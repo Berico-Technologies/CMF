@@ -36,7 +36,7 @@ public interface IRpcReceiver {
     Collection gatherResponsesTo(Object request, Duration timeout, String... expectedTopics);
 
     /**
-     * Sends an RPC message and returns the first response recieved of an expected type.
+     * Sends an RPC message and returns the first response received of an expected type.
      * 
 	 * @param request The RPC message to be sent.
 	 * @param timeout The duration of time to wait for messages before returning.

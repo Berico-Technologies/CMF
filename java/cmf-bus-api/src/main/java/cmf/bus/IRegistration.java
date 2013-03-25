@@ -15,7 +15,7 @@ import java.util.Map;
     IEnvelopeFilterPredicate getFilterPredicate();
 
     /**
-     * A key/value set of properties that describe the evenlopes to be recieved.
+     * A key/value set of properties that describe the envelopes to be received.
      * @return
      */
     Map<String, String> getRegistrationInfo();
@@ -37,7 +37,7 @@ import java.util.Map;
      * envelope that meets the registration and filter criteria.
      * 
      * @param env The envelope that was received.
-     * @param ex The execption that occured.
+     * @param ex The exception that occurred.
      * 
      * @return An object indicating the outcome of handling the envelope.
      * 

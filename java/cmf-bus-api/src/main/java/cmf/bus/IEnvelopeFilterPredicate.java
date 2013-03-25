@@ -9,7 +9,7 @@ public interface IEnvelopeFilterPredicate {
     /**
      * Offers an opportunity to filter out the envelope before it gets processed.
      * 
-     * @param envelope The envelope that has been receieved.
+     * @param envelope The envelope that has been received.
      * @return True if the envelope should be processed by the handler,
      * otherwise false.
      */

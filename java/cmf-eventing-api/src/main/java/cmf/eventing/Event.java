@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to anontate types that may be send at Events.
+ * Used to annotate types that may be send at Events.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

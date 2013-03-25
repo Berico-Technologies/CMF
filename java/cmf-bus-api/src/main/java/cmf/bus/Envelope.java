@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents a descreete message sent across the bus.
+ * Represents a discreet message sent across the bus.
  */
 public class Envelope {
 
@@ -58,7 +58,7 @@ public class Envelope {
 
     /**
      * Get the payload (i.e. the actual content) of the envelope.
-     * @return The conetent of the envelope as a byte array.
+     * @return The content of the envelope as a byte array.
      */
     public byte[] getPayload() {
         return payload;

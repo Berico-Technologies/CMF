@@ -1,7 +1,7 @@
 package cmf.eventing;
 
 /**
- * An interface to define the methods by which an client may register to recieve
+ * An interface to define the methods by which an client may register to receive
  * messages of a particular type.
  */
 public interface IEventConsumer {
