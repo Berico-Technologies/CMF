@@ -7,14 +7,28 @@ import cmf.bus.Envelope;
 import cmf.bus.IEnvelopeBus;
 import cmf.bus.IRegistration;
 
+/**
+ * An in-memory implementation of an envelope bus, suitable for use in
+ * test harnesses and integration testing.
+ */
 public class InMemoryEnvelopeBus implements IEnvelopeBus {
 
     protected List<IRegistration> registrationList;
 
+    /**
+     * Creates a new InMemoryEnvelopeBus.
+     */
     public InMemoryEnvelopeBus() {
         registrationList = new LinkedList<IRegistration>();
     }
 
+    /**
+     * Dispatches an envelope to a list of registration using a seprate thread.  
+     * This method underlies the Send method and may be overriden to provide custom dispatching.
+     * 
+     * @param envelope The envelope to dispatch
+     * @param registrationList The list of registrations to dispatch the envelope to.
+     */
     protected void dispatch(final Envelope envelope, final List<IRegistration> registrationList) {
         new Thread() {
 
