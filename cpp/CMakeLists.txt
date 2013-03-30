@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 #Name your project here
 SET(CMAKE_C_COMPILER "/usr/bin/clang")
 SET(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+SET(CMAKE_CXX_FLAGS "-std=c++11")
 project(CMF)
 
 
