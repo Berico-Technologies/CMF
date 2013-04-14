@@ -1,6 +1,11 @@
+#ifndef ENEVLOPE_H
+#define ENEVLOPE_H
+
 #include <map>
 #include <vector>
 #include <string>
+
+
 class Envelope
 {
 	public:
@@ -8,9 +13,9 @@ class Envelope
 		
 		~Envelope();
 		
-		std::map<std::string, std::string> getHeaders() { return headers; };
+        std::map<std::string, std::string> getHeaders() { return headers; }
 		
-		std::vector<unsigned char> getPayload() { return payload; };
+        std::vector<unsigned char> getPayload() { return payload; }
 		
 		std::string getHeader(const std::string key);
 		
@@ -27,3 +32,6 @@ class Envelope
 		std::vector<unsigned char> payload;
 	/* data */
 };
+
+
+#endif
