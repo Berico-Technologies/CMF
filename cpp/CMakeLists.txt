@@ -7,8 +7,19 @@ SET(CMAKE_CXX_FLAGS "-std=c++11")
 project(CMF)
 
 
-FIND_LIBRARY(AMPQCLIENT_H_PATH SimpleAmqpClient)
-FIND_PACKAGE(Boost)
+#FIND_LIBRARY(AMPQCLIENT_H_PATH SimpleAmqpClient)
+FIND_PACKAGE(Boost COMPONENTS chrono system REQUIRED)
+INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIRS})
+
+SET(INCLUDES ${PROJECT_SOURCE_DIR}/include/CMF)
+
+include_directories(${INCLUDES})
+
+if( ENABLE_TESTING)
+    add_subdirectory(third-party/gtest-1.6.0)
+    add_subdirectory(src_test)
+    enable_testing()
+endif( ENABLE_TESTING)
 
 SET(CMF_LIB_SRCS
         include/CMF/EnvelopeReceiver.h
@@ -18,5 +29,5 @@ SET(CMF_LIB_SRCS
         src/CMF/Envelope.cpp
         src/CMF/Example.cpp
 )
-ADD_EXECUTABLE(CMF ${CMF_LIB_SRCS})
-target_link_libraries(CMF ${AMPQCLIENT_H_PATH})
+add_library(CMF ${CMF_LIB_SRCS})
+target_link_libraries(CMF ${Boost_LIBRARIES})
