@@ -3,9 +3,10 @@ package cmf.eventing;
 import java.util.Iterator;
 
 /**
- * Adds behavior to the {@link cmf.eventing.IEventBus} enabling it to publish events to a stream.
+ * Adds behavior to the {@link cmf.eventing.IEventBus} enabling it to publish events as a stream of messages
+ * over the network before the entire result has been processed.
  * This can be particularly useful when you have a large amount of data in a response
- * and would prefer it to be streamed to the recipient in smaller "byte-sized" chunks.
+ * and would prefer it to be streamed to the recipient in smaller chunks to lower initial latency in response times.
  *
  * User: jholmberg
  * Date: 6/1/13
@@ -20,7 +21,7 @@ public interface IStreamingEventBus extends IEventBus {
      *         <li>sequenceId : A UUID that ties this event to a particular sequence. This is the unique identifier that
      *         indicates the message is part of a larger data set</li>
      *         <li>position : An integer that indicates what position in the sequence this is.</li>
-     *         <li>end : A boolean indicating if this event is the last message in the sequence</li>
+     *         <li>isLast : A boolean indicating if this event is the last message in the sequence</li>
      *     </ol>
      * </p>
      * @param eventStream
@@ -28,7 +29,7 @@ public interface IStreamingEventBus extends IEventBus {
      * @param <TEVENT>
      * @throws Exception
      */
-    public <TEVENT> void publishToStream(Iterator<Object> eventStream, IStreamingMapperCallback<TEVENT> objectMapper) throws Exception;
+    public <TEVENT> void publishStream(Iterator<Object> eventStream, IStreamingMapperCallback<TEVENT> objectMapper) throws Exception;
 
     /**
      * Publishes messages on the {@link IStreamingEventBus} after the numberOfEvents limit has been met.
