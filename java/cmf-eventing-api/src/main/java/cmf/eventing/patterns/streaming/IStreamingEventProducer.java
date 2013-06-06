@@ -1,17 +1,28 @@
-package cmf.eventing;
+package cmf.eventing.patterns.streaming;
+
+import cmf.eventing.IEventProducer;
 
 import java.util.Iterator;
 
 /**
- * Adds behavior to the {@link cmf.eventing.IEventBus} enabling it to publish events as a stream of messages
- * over the network before the entire result has been processed.
- * This can be particularly useful when you have a large amount of data in a response
- * and would prefer it to be streamed to the recipient in smaller chunks to lower initial latency in response times.
- *
+ * Adds behavior to the {@link cmf.eventing.IEventProducer} with the ability
+ * to publish events to a stream.
+ * <p>
+ *     This can be useful in scenarios where data is being processed as a response
+ *     to a request event but the end of that response is not yet known.
+ *     By publishing a response to a stream, the consumer can start to
+ *     handle the results as opposed to potentially waiting a long time
+ *     before anything comes back.
+ * </p>
+ * <p>
+ *     Generally, this pattern is useful for larger responses that could
+ *     include some latency in getting everything packaged up in 1 single
+ *     response.
+ * </p>
  * User: jholmberg
- * Date: 6/1/13
+ * Date: 6/5/13
  */
-public interface IStreamingEventBus extends IEventBus {
+public interface IStreamingEventProducer extends IEventProducer {
     /**
      * Iterates on the eventStream and calls the object mapper to convert the object to the desired format before
      * publishing the event to the bus.

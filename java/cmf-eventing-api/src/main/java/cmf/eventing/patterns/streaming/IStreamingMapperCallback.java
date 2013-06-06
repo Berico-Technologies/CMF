@@ -1,4 +1,4 @@
-package cmf.eventing;
+package cmf.eventing.patterns.streaming;
 
 /**
  * Applies a mapping function to an element within an {@link java.util.Iterator} to allow the caller
