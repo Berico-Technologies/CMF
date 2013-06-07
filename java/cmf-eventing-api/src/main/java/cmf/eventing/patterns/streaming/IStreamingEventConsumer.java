@@ -37,7 +37,7 @@ public interface IStreamingEventConsumer extends IEventConsumer {
      * @param <TEVENT>
      * @throws Exception
      */
-    <TEVENT> void subscribeToIterator(IStreamingIteratorHandler<TEVENT> handler) throws Exception;
+    <TEVENT> void subscribeToIterator(IStreamingIterableHandler<TEVENT> handler) throws Exception;
 
 
 }

@@ -11,7 +11,7 @@ import java.util.Map;
  * User: jholmberg
  * Date: 6/5/13
  */
-public interface IStreamingIteratorHandler<TEVENT> extends IEventHandler {
+public interface IStreamingIterableHandler<TEVENT> extends IEventHandler {
     /**
      * Streams all events of type TEVENT as they are received from the bus. and places them into an
      * {@link java.util.Iterator} that can be returned immediately to the caller.
@@ -22,9 +22,9 @@ public interface IStreamingIteratorHandler<TEVENT> extends IEventHandler {
      *     This implementation reduces the latency that the collection based option has but requires
      *     a little more complex code to handle the results as they are received.
      * </p>
-     * @param event
+     * @param eventStream
      * @param headers
      * @return
      */
-    Iterator<TEVENT> handle(TEVENT event, Map<String, String> headers);
+    Object handle(Iterable<TEVENT> eventStream, Map<String, String> headers);
 }
