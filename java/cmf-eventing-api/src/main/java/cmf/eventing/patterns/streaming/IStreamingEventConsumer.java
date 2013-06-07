@@ -14,7 +14,7 @@ public interface IStreamingEventConsumer extends IEventConsumer {
 
     /**
      * Subscribe to a stream of events that will get handled to a {@link java.util.Collection}.
-     * <p>See {@link cmf.eventing.patterns.streaming.IStreamingCollectionHandler#numEventsHandled()} as a way to
+     * <p>See {@link IStreamingCollectionHandler#getProgressNotifier()} as a way to
      * get a progress check on how many events have been processed.
      * </p>
      * <p>
@@ -28,16 +28,16 @@ public interface IStreamingEventConsumer extends IEventConsumer {
     <TEVENT> void subscribeToCollection(IStreamingCollectionHandler<TEVENT> handler) throws Exception;
 
     /**
-     * Subscribe to a stream of events that will get handled to a {@link java.util.Iterator}.
+     * Subscribe to a stream of events that will get handled by a {@link IStreamingNotifierHandler}.
      * <p>
-     *     This offers the subscriber lower latency API to immediately pull events from a
+     *     This offers the subscriber a lower latency API to immediately pull events from a
      *     stream as they arrive.
      * </p>
      * @param handler
      * @param <TEVENT>
      * @throws Exception
      */
-    <TEVENT> void subscribeToIterator(IStreamingIteratorHandler<TEVENT> handler) throws Exception;
+    <TEVENT> void subscribeToNotifier(IStreamingNotifierHandler<TEVENT> handler) throws Exception;
 
 
 }
