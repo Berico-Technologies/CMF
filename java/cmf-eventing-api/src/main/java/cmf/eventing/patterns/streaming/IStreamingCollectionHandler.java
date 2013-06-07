@@ -24,16 +24,19 @@ public interface IStreamingCollectionHandler<TEVENT> extends IEventHandler {
      *     have been received, it introduces a higher degree of latency into the process.
      *     This can be especially apparent the larger the sequence becomes.
      * </p>
-     * @param event
+     * @param events The collections of events that all belong to the same sequence
      * @param headers
      * @return
      */
-    Collection<TEVENT> handle(TEVENT event, Map<String, String> headers);
+    Object handle(Collection<TEVENT> events, Map<String, String> headers);
 
     /**
      * Enables subscribers with the ability to know how many events have
      * been processed to date.
      * @return
      */
-    int numEventsHandled();
+    IStreamingProgressNotifier getProgressNotifier();
+
+    void setStreamingProgressUpdater(IStreamingProgressNotifier progressNotifier);
+
 }
