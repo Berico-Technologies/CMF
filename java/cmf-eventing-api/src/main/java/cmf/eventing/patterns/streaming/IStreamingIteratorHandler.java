@@ -11,7 +11,7 @@ import java.util.Map;
  * User: jholmberg
  * Date: 6/5/13
  */
-public interface IStreamingIterableHandler<TEVENT> extends IEventHandler {
+public interface IStreamingIteratorHandler<TEVENT> extends IEventHandler {
     /**
      * Streams all events of type TEVENT as they are received from the bus. and places them into an
      * {@link java.util.Iterator} that can be returned immediately to the caller.
@@ -26,5 +26,5 @@ public interface IStreamingIterableHandler<TEVENT> extends IEventHandler {
      * @param headers
      * @return
      */
-    Object handle(Iterable<TEVENT> eventStream, Map<String, String> headers);
+    Object handleStream(Iterator<IStreamingEventItem<TEVENT>> eventStream, Map<String, String> headers);
 }

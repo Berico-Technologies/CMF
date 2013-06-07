@@ -28,7 +28,7 @@ public interface IStreamingCollectionHandler<TEVENT> extends IEventHandler {
      * @param headers
      * @return
      */
-    Object handle(Collection<TEVENT> events, Map<String, String> headers);
+    Object handleCollection(Collection<IStreamingEventItem<TEVENT>> events, Map<String, String> headers);
 
     /**
      * Enables subscribers with the ability to know how many events have
