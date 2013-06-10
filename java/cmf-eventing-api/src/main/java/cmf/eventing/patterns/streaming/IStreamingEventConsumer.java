@@ -28,7 +28,7 @@ public interface IStreamingEventConsumer extends IEventConsumer {
     <TEVENT> void subscribeToCollection(IStreamingCollectionHandler<TEVENT> handler) throws Exception;
 
     /**
-     * Subscribe to a stream of events that will get handled by a {@link IStreamingNotifierHandler}.
+     * Subscribe to a stream of events that will get handled by a {@link IStreamingReaderHandler}.
      * <p>
      *     This offers the subscriber a lower latency API to immediately pull events from a
      *     stream as they arrive.
@@ -37,7 +37,7 @@ public interface IStreamingEventConsumer extends IEventConsumer {
      * @param <TEVENT>
      * @throws Exception
      */
-    <TEVENT> void subscribeToNotifier(IStreamingNotifierHandler<TEVENT> handler) throws Exception;
+    <TEVENT> void subscribeToNotifier(IStreamingReaderHandler<TEVENT> handler) throws Exception;
 
 
 }

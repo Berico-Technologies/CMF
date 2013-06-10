@@ -11,7 +11,7 @@ import java.util.Map;
  * User: jholmberg
  * Date: 6/4/13
  */
-public interface IStreamingCollectionHandler<TEVENT> extends IEventHandler {
+public interface IStreamingCollectionHandler<TEVENT> extends IEventHandler<TEVENT> {
     /**
      * Aggregates all events of type TEVENT and stores them into a {@link java.util.Collection}
      * when the last event was received with the message header "isLast" set to true.
