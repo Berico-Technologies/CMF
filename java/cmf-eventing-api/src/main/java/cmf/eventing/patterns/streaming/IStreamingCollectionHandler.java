@@ -35,8 +35,8 @@ public interface IStreamingCollectionHandler<TEVENT> extends IEventHandler<TEVEN
      * been processed to date.
      * @return
      */
-    IStreamingProgressNotifier getProgressNotifier();
+    IStreamingProgressUpdater getProgress();
 
-    void setStreamingProgressUpdater(IStreamingProgressNotifier progressNotifier);
+    void setStreamingProgressUpdater(IStreamingProgressUpdater updater);
 
 }

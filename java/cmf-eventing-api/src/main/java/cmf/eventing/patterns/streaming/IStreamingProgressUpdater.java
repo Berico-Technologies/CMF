@@ -11,6 +11,6 @@ package cmf.eventing.patterns.streaming;
  * User: jholmberg
  * Date: 6/6/13
  */
-public interface IStreamingProgressNotifier {
+public interface IStreamingProgressUpdater {
     void updateProgress(String sequenceId, int numEventsProcessed);
 }
