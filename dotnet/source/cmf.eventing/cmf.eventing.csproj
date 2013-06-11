@@ -57,6 +57,13 @@
     <Compile Include="patterns\rpc\IRpcEventBus.cs" />
     <Compile Include="patterns\rpc\IRpcRequestor.cs" />
     <Compile Include="patterns\rpc\IRpcResponder.cs" />
+    <Compile Include="patterns\streaming\IStreamingCollectionHandler.cs" />
+    <Compile Include="patterns\streaming\IStreamingEventBus.cs" />
+    <Compile Include="patterns\streaming\IStreamingEventConsumer.cs" />
+    <Compile Include="patterns\streaming\IStreamingEventItem.cs" />
+    <Compile Include="patterns\streaming\IStreamingEventProducer.cs" />
+    <Compile Include="patterns\streaming\IStreamingProgressUpdater.cs" />
+    <Compile Include="patterns\streaming\IStreamingReaderHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +75,7 @@
   <ItemGroup>
     <None Include="cmf.eventing.snk" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF NOT EXIST $(SolutionDir)binaries MKDIR $(SolutionDir)binaries
