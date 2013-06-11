@@ -4,8 +4,8 @@ import cmf.eventing.IEventConsumer;
 
 /**
  * Adds behavior to the {@link cmf.eventing.IEventConsumer} that enables subscribers of
- * events to receive a stream of events and store them a collection or
- * to an iterator.
+ * events to receive a stream of events and store them in a collection or
+ * to stream reader.
  *
  * User: jholmberg
  * Date: 6/5/13
@@ -37,7 +37,7 @@ public interface IStreamingEventConsumer extends IEventConsumer {
      * @param <TEVENT>
      * @throws Exception
      */
-    <TEVENT> void subscribeToNotifier(IStreamingReaderHandler<TEVENT> handler) throws Exception;
+    <TEVENT> void subscribetoReader(IStreamingReaderHandler<TEVENT> handler) throws Exception;
 
 
 }

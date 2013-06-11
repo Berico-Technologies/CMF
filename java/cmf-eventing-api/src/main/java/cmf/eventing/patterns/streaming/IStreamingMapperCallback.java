@@ -6,6 +6,6 @@ package cmf.eventing.patterns.streaming;
  * User: jholmberg
  * Date: 6/1/13
  */
-public interface IStreamingMapperCallback<T> {
-    public T map(Object element);
+public interface IStreamingMapperCallback<TEVENT> {
+    public TEVENT map(Object element);
 }
