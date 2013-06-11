@@ -12,5 +12,11 @@ package cmf.eventing.patterns.streaming;
  * Date: 6/6/13
  */
 public interface IStreamingProgressUpdater {
+    /**
+     * Called by the {@link IStreamingCollectionHandler} as each event is received and
+     * placed into the collection.
+     * @param sequenceId
+     * @param numEventsProcessed
+     */
     void updateProgress(String sequenceId, int numEventsProcessed);
 }

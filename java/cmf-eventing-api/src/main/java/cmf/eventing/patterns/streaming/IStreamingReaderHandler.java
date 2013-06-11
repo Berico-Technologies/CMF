@@ -10,7 +10,7 @@ import cmf.eventing.IEventHandler;
  */
 public interface IStreamingReaderHandler<TEVENT> extends IEventHandler<TEVENT> {
     /**
-     * Streams all events of type TEVENT as they are received from the bus. and places into into an
+     * Streams all events of type TEVENT as they are received from the bus and places them into an
      * {@link IStreamingEventItem} that can be returned immediately to the caller.
      * <p>
      *     This method will continue to be called until the second to last message in the

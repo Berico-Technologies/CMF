@@ -37,7 +37,7 @@ public interface IStreamingEventConsumer extends IEventConsumer {
      * @param <TEVENT>
      * @throws Exception
      */
-    <TEVENT> void subscribeToNotifier(IStreamingReaderHandler<TEVENT> handler) throws Exception;
+    <TEVENT> void subscribetoReader(IStreamingReaderHandler<TEVENT> handler) throws Exception;
 
 
 }
