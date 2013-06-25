@@ -1,5 +1,6 @@
 package cmf.eventing.patterns.streaming;
 
+import cmf.bus.IDisposable;
 import cmf.eventing.IEventHandler;
 
 /**
@@ -8,28 +9,22 @@ import cmf.eventing.IEventHandler;
  * User: jholmberg
  * Date: 6/5/13
  */
-public interface IStreamingReaderHandler<TEVENT> extends IEventHandler<TEVENT> {
+public interface IStreamingReaderHandler<TEVENT> extends IEventHandler<TEVENT>, IDisposable {
     /**
      * Streams all events of type TEVENT as they are received from the bus and places them into an
      * {@link IStreamingEventItem} that can be returned immediately to the caller.
      * <p>
-     *     This method will continue to be called until the second to last message in the
-     *     sequence is received. The last message in the sequence will be passed through
-     *     the {@link IStreamingReaderHandler#onSequenceFinished(IStreamingEventItem)} method.
+     *     This method will continue to be called until the last message is handled at which point
+     *     the {@link cmf.eventing.patterns.streaming.IStreamingReaderHandler#dispose()} is called to
+     *     clean up any resources associated with the stream.
      * </p>
      * <p>
      *     This implementation reduces the latency that the collection based option has but requires
-     *     a little more complex code to handle the results as they are received.
+     *     a little more code complexity to handle the results as they are received.
      * </p>
      * @param eventItem
      * @return
      */
-    Object onSequenceEventRead(IStreamingEventItem<TEVENT> eventItem);
+    Object onEventRead(IStreamingEventItem<TEVENT> eventItem);
 
-    /**
-     * Called when the last event in a sequence is received.
-     * @param eventItem
-     * @return
-     */
-    Object onSequenceFinished(IStreamingEventItem<TEVENT> eventItem);
 }
