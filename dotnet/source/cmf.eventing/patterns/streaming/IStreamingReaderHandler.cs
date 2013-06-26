@@ -12,7 +12,7 @@ namespace cmf.eventing.patterns.streaming
     /// a stream of events sent via the <see cref="IStreamingEventBus"/>
     /// </summary>
     /// <typeparam name="TEvent"></typeparam>
-    public interface IStreamingReaderHandler<TEvent> : IEventHandler<TEvent>
+    public interface IStreamingReaderHandler<TEvent> : IEventHandler, IDisposable
     {
         /// <summary>
         /// Streams all events of type TEvent as they are received from the bus and places them into an 
@@ -31,11 +31,5 @@ namespace cmf.eventing.patterns.streaming
         /// <returns></returns>
         object OnSequenceEventRead(IStreamingEventItem<TEvent> eventItem);
 
-        /// <summary>
-        /// Called when the last event in a sequence is received.
-        /// </summary>
-        /// <param name="eventItem"></param>
-        /// <returns></returns>
-        object OnSequenceFinished(IStreamingEventItem<TEvent> eventItem);
     }
 }

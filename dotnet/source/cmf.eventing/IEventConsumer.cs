@@ -9,7 +9,7 @@ namespace cmf.eventing
 {
     public interface IEventConsumer : IDisposable
     {
-        void Subscribe<TEvent>(IEventHandler<TEvent> handler);
+        void Subscribe(IEventHandler handler);
 
         /// <summary>
         /// Registers a handler via an Action that listens for a strongly typed event (TEvent) from the Bus.

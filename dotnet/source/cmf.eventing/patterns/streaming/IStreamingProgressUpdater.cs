@@ -17,7 +17,7 @@ namespace cmf.eventing.patterns.streaming
     public interface IStreamingProgressUpdater
     {
         /// <summary>
-        /// Called by the <seealso cref="IStreamingCollectionHandler"/> as each event is received and 
+        /// Called by the <see cref="IStreamingCollectionHandler"/> as each event is received and 
         /// placed into the collection.
         /// </summary>
         /// <param name="sequenceId"></param>

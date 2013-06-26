@@ -8,12 +8,12 @@ using cmf.bus;
 
 namespace cmf.eventing
 {
-    public interface IEventHandler<TEvent>
+    public interface IEventHandler
     {
         string Topic { get; }
 
 
-        object Handle(TEvent ev, IDictionary<string, string> headers);
+        object Handle(object ev, IDictionary<string, string> headers);
 
         object HandleFailed(Envelope env, Exception ex);
     }

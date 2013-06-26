@@ -21,8 +21,15 @@ namespace cmf.eventing.patterns.streaming
     public interface IStreamingEventProducer : IEventProducer
     {
         /// <summary>
-        /// Enumerates on the eventStream and calls the object mapper to convert the object to a desired format before 
-        /// publishing the event to teh bus.
+        /// Generate an evnt stream that can be used to publish to the <see cref="IStreamingEventBus"/>
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <returns></returns>
+        IEventStream CreateStream(string topic);
+
+        /// <summary>
+        /// Enumerates on the dataSet and calls the object mapper to convert the object to a desired format before 
+        /// publishing the event to the bus.
         /// <para>
         /// In addition 3 new headers will be added to each event that is published:
         /// <list type="number">
@@ -44,12 +51,12 @@ namespace cmf.eventing.patterns.streaming
         /// </para>
         /// </summary>
         /// <typeparam name="TEvent"></typeparam>
-        /// <param name="eventStream"></param>
+        /// <param name="dataSet"></param>
         /// <param name="objectMapper">Mapping function that takes an object from the eventStream and returns a TEvent that can be serialized.</param>
-        void PublishStream<TEvent>(IEnumerator<object> eventStream, Func<object, TEvent> objectMapper);
+        void PublishChunkedSequence<TEvent>(IEnumerator<object> dataSet, Func<object, TEvent> objectMapper);
 
         /// <summary>
-        /// Publishes messages on the <seealso cref="IStreamingEventBus"/> after the numberOfEvents limit has been met.
+        /// Publishes messages on the <seealso cref="IStreamingEventBus"/> after the batch limit has been met.
         /// </summary>
         int BatchLimit { set; }
     }

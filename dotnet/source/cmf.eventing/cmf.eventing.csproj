@@ -57,6 +57,7 @@
     <Compile Include="patterns\rpc\IRpcEventBus.cs" />
     <Compile Include="patterns\rpc\IRpcRequestor.cs" />
     <Compile Include="patterns\rpc\IRpcResponder.cs" />
+    <Compile Include="patterns\streaming\IEventStream.cs" />
     <Compile Include="patterns\streaming\IStreamingCollectionHandler.cs" />
     <Compile Include="patterns\streaming\IStreamingEventBus.cs" />
     <Compile Include="patterns\streaming\IStreamingEventConsumer.cs" />

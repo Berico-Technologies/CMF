@@ -13,7 +13,7 @@ namespace cmf.eventing.patterns.streaming
     /// User: jholmberg
     /// Date: 6/10/13
     /// </summary>
-    public interface IStreamingCollectionHandler<TEvent> : IEventHandler<TEvent>
+    public interface IStreamingCollectionHandler<TEvent> : IEventHandler
     {
         /// <summary>
         /// Aggregates all events of type TEvent and stores them into a <see cref="System.Collections.Generic.IEnumerable"/>
