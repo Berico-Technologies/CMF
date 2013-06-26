@@ -15,4 +15,10 @@ public interface IEventStream extends IDisposable {
       * @param event
      */
     void publish(Object event) throws Exception;
+
+    /**
+     * Indicates what message topic to which all events on this stream will be published
+     * @return
+     */
+    String getTopic();
 }
