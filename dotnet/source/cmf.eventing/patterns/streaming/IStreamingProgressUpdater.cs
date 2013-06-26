@@ -22,6 +22,6 @@ namespace cmf.eventing.patterns.streaming
         /// </summary>
         /// <param name="sequenceId"></param>
         /// <param name="numEventsProcessed"></param>
-        void updateProgress(string sequenceId, int numEventsProcessed);
+        void UpdateProgress(string sequenceId, int numEventsProcessed);
     }
 }

@@ -35,7 +35,7 @@ namespace cmf.eventing.patterns.streaming
         /// <summary>
         /// Helper method that returns whether this event is the last in the sequence
         /// </summary>
-        bool isLast { get; }
+        bool IsLast { get; }
 
         /// <summary>
         /// Returns all headers associated with the event
