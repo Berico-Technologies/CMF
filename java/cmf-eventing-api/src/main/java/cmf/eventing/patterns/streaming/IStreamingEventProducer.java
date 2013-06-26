@@ -23,8 +23,17 @@ import java.util.Iterator;
  * Date: 6/5/13
  */
 public interface IStreamingEventProducer extends IEventProducer {
+
     /**
-     * Iterates on the eventStream and calls the object mapper to convert the object to the desired format before
+     * Generate an event stream that can be used to publish to the {@link IStreamingEventBus}
+     * @param topic
+     * @param <TEVENT>
+     * @return
+     */
+    IEventStream createStream(String topic);
+
+    /**
+     * Iterates on the dataSet and calls the object mapper to convert the object to the desired format before
      * publishing the event to the bus.
      * <p>
      *     In addition 3 new headers will be added to each event that is published:<br />
@@ -35,12 +44,12 @@ public interface IStreamingEventProducer extends IEventProducer {
      *         <li>isLast : A boolean indicating if this event is the last message in the sequence</li>
      *     </ol>
      * </p>
-     * @param eventStream
+     * @param dataSet
      * @param objectMapper
      * @param <TEVENT>
      * @throws Exception
      */
-    public <TEVENT> void publishStream(Iterator<Object> eventStream, IStreamingMapperCallback<TEVENT> objectMapper) throws Exception;
+    public <TEVENT> void publishChunkedSequence(Iterator<Object> dataSet, IStreamingMapperCallback<TEVENT> objectMapper) throws Exception;
 
     /**
      * Publishes messages on the {@link IStreamingEventBus} after the numberOfEvents limit has been met.
