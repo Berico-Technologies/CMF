@@ -38,6 +38,6 @@ namespace cmf.eventing.patterns.streaming
         /// </summary>
         /// <typeparam name="TEvent"></typeparam>
         /// <param name="handler"></param>
-        void SubscribeToReader<TEvent>(IStreamingReaderHandler<TEvent> handler);
+        void SubscribeToReader<TEvent>(IStreamingReaderHandler<TEvent> handler) where TEvent : IStreamingEventItem<TEvent>;
     }
 }

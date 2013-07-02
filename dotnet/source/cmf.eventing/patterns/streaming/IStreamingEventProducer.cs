@@ -53,7 +53,7 @@ namespace cmf.eventing.patterns.streaming
         /// <typeparam name="TEvent"></typeparam>
         /// <param name="dataSet"></param>
         /// <param name="objectMapper">Mapping function that takes an object from the eventStream and returns a TEvent that can be serialized.</param>
-        void PublishChunkedSequence<TEvent>(IEnumerator<object> dataSet, Func<object, TEvent> objectMapper);
+        void PublishChunkedSequence<TEvent>(IEnumerable<object> dataSet, Func<object, TEvent> objectMapper);
 
         /// <summary>
         /// Publishes messages on the <seealso cref="IStreamingEventBus"/> after the batch limit has been met.
