@@ -19,7 +19,7 @@ namespace cmf.eventing.patterns.streaming
     /// </para>
     /// </remarks>
     /// <typeparam name="TEvent"></typeparam>
-    public interface IStreamingReaderHandler<TEvent> : IEventHandler, IDisposable, IObserver<TEvent> where TEvent : IStreamingEventItem<TEvent>
+    public interface IStreamingReaderHandler<TEvent> : IEventHandler, IDisposable, IObserver<IStreamingEventItem<TEvent>>
     {
 
     }

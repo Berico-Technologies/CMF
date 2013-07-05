@@ -37,7 +37,8 @@ namespace cmf.eventing.patterns.streaming
         /// Enables subscribers with the ability to know how many events have 
         /// been processed to date.
         /// </summary>
-        /// <returns></returns>
-        IStreamingProgressUpdater Progress { get; set; }
+        /// <typeparam name="string">This is the string sequenceId of the collection of messages being processed.</typeparam>
+        /// <typeparam name="int">This is the number of events that have been processed so far.</typeparam>
+        Action<string, int> Progress { get; set; }
     }
 }

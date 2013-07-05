@@ -63,7 +63,6 @@
     <Compile Include="patterns\streaming\IStreamingEventConsumer.cs" />
     <Compile Include="patterns\streaming\IStreamingEventItem.cs" />
     <Compile Include="patterns\streaming\IStreamingEventProducer.cs" />
-    <Compile Include="patterns\streaming\IStreamingProgressUpdater.cs" />
     <Compile Include="patterns\streaming\IStreamingReaderHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
