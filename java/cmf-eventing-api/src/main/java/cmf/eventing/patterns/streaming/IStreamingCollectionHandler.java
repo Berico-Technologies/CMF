@@ -39,4 +39,7 @@ public interface IStreamingCollectionHandler<TEVENT> {
      * @return
      */
     void onIncrement(int count);
+
+
+    Class<TEVENT> getEventType();
 }

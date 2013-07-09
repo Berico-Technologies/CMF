@@ -24,4 +24,6 @@ public interface IStreamingReaderHandler<TEVENT> extends IDisposable {
      * @param eventItem
      */
     void onEventRead(StreamingEventItem<TEVENT> eventItem);
+
+    Class<TEVENT> getEventType();
 }
