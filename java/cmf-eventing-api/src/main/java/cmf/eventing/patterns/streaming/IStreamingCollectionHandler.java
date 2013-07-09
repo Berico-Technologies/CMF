@@ -11,7 +11,7 @@ import java.util.Map;
  * User: jholmberg
  * Date: 6/4/13
  */
-public interface IStreamingCollectionHandler<TEVENT> extends IEventHandler<TEVENT> {
+public interface IStreamingCollectionHandler<TEVENT> {
     /**
      * Aggregates all events of type TEVENT and stores them into a {@link java.util.Collection}
      * when the last event was received with the message header "isLast" set to true.
@@ -25,18 +25,14 @@ public interface IStreamingCollectionHandler<TEVENT> extends IEventHandler<TEVEN
      *     This can be especially apparent the larger the sequence becomes.
      * </p>
      * @param events The collections of events that all belong to the same sequence
-     * @param headers
      * @return
      */
-    Object handleCollection(Collection<IStreamingEventItem<TEVENT>> events, Map<String, String> headers);
+    void handleCollection(Collection<StreamingEventItem<TEVENT>> events);
 
     /**
      * Enables subscribers with the ability to know how many events have
      * been processed to date.
      * @return
      */
-    IStreamingProgressUpdater getProgress();
-
-    void setStreamingProgressUpdater(IStreamingProgressUpdater updater);
-
+    void onIncrement(int count);
 }

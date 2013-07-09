@@ -27,10 +27,10 @@ public interface IStreamingEventProducer extends IEventProducer {
     /**
      * Generate an event stream that can be used to publish to the {@link IStreamingEventBus}
      * @param topic
-     * @param <TEVENT>
      * @return
      */
     IEventStream createStream(String topic);
+
 
     /**
      * Iterates on the dataSet and calls the object mapper to convert the object to the desired format before
@@ -45,15 +45,8 @@ public interface IStreamingEventProducer extends IEventProducer {
      *     </ol>
      * </p>
      * @param dataSet
-     * @param objectMapper
-     * @param <TEVENT>
      * @throws Exception
      */
-    public <TEVENT> void publishChunkedSequence(Iterator<Object> dataSet, IStreamingMapperCallback<TEVENT> objectMapper) throws Exception;
+    public <TEVENT> void publishChunkedSequence(Iterator<TEVENT> dataSet) throws Exception;
 
-    /**
-     * Publishes messages on the {@link IStreamingEventBus} after the numberOfEvents limit has been met.
-     * @param numberOfEvents
-     */
-    public void setBatchLimit(int numberOfEvents);
 }

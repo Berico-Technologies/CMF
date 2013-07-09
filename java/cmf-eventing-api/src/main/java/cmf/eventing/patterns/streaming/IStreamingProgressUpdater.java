@@ -15,8 +15,7 @@ public interface IStreamingProgressUpdater {
     /**
      * Called by the {@link IStreamingCollectionHandler} as each event is received and
      * placed into the collection.
-     * @param sequenceId
-     * @param numEventsProcessed
+     * @param numEventCollected
      */
-    void updateProgress(String sequenceId, int numEventsProcessed);
+    void updateProgress(int numEventCollected);
 }

@@ -1,7 +1,6 @@
 package cmf.eventing.patterns.streaming;
 
 import cmf.bus.IDisposable;
-import cmf.eventing.IEventHandler;
 
 /**
  * Adds behavior to the {@link cmf.eventing.IEventHandler} allowing it to process
@@ -9,10 +8,10 @@ import cmf.eventing.IEventHandler;
  * User: jholmberg
  * Date: 6/5/13
  */
-public interface IStreamingReaderHandler<TEVENT> extends IEventHandler<TEVENT>, IDisposable {
+public interface IStreamingReaderHandler<TEVENT> extends IDisposable {
     /**
      * Streams all events of type TEVENT as they are received from the bus and places them into an
-     * {@link IStreamingEventItem} that can be returned immediately to the caller.
+     * {@link StreamingEventItem} that can be returned immediately to the caller.
      * <p>
      *     This method will continue to be called until the last message is handled at which point
      *     the {@link cmf.eventing.patterns.streaming.IStreamingReaderHandler#dispose()} is called to
@@ -25,6 +24,5 @@ public interface IStreamingReaderHandler<TEVENT> extends IEventHandler<TEVENT>, 
      * @param eventItem
      * @return
      */
-    Object onEventRead(IStreamingEventItem<TEVENT> eventItem);
-
+    void onEventRead(StreamingEventItem<TEVENT> eventItem);
 }
