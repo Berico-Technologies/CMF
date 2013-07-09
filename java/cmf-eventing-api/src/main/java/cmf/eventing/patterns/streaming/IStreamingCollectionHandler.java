@@ -6,8 +6,12 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Adds behavior to the {@link cmf.eventing.IEventHandler} allowing it to process
- * a stream of events sent via the {@link IStreamingEventBus}
+ * Allows the streaming API gather events received into one collection to be handled by user code.
+ * <p>
+ *     The generic {@link java.util.Collection} is of type {@link StreamingEventItem} comes sorted based
+ *     on the position flag set in each event header. The position along with each event's own headers
+ *     can be obtained through the {@link StreamingEventItem}
+ * </p>
  * User: jholmberg
  * Date: 6/4/13
  */

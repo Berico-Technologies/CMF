@@ -22,7 +22,6 @@ public interface IStreamingReaderHandler<TEVENT> extends IDisposable {
      *     a little more code complexity to handle the results as they are received.
      * </p>
      * @param eventItem
-     * @return
      */
     void onEventRead(StreamingEventItem<TEVENT> eventItem);
 }
