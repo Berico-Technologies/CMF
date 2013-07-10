@@ -21,4 +21,10 @@ public interface IEventStream extends IDisposable {
      * @return
      */
     String getTopic();
+
+    /**
+     * Indicates the unique sequence identifier that all messages will be linked to in this stream.
+     * @return
+     */
+    String getSequenceId();
 }

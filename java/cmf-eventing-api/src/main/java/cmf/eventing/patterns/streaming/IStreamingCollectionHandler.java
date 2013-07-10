@@ -6,12 +6,16 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Adds behavior to the {@link cmf.eventing.IEventHandler} allowing it to process
- * a stream of events sent via the {@link IStreamingEventBus}
+ * Allows the streaming API gather events received into one collection to be handled by user code.
+ * <p>
+ *     The generic {@link java.util.Collection} is of type {@link StreamingEventItem} comes sorted based
+ *     on the position flag set in each event header. The position along with each event's own headers
+ *     can be obtained through the {@link StreamingEventItem}
+ * </p>
  * User: jholmberg
  * Date: 6/4/13
  */
-public interface IStreamingCollectionHandler<TEVENT> extends IEventHandler<TEVENT> {
+public interface IStreamingCollectionHandler<TEVENT> {
     /**
      * Aggregates all events of type TEVENT and stores them into a {@link java.util.Collection}
      * when the last event was received with the message header "isLast" set to true.
@@ -25,18 +29,18 @@ public interface IStreamingCollectionHandler<TEVENT> extends IEventHandler<TEVEN
      *     This can be especially apparent the larger the sequence becomes.
      * </p>
      * @param events The collections of events that all belong to the same sequence
-     * @param headers
      * @return
      */
-    Object handleCollection(Collection<IStreamingEventItem<TEVENT>> events, Map<String, String> headers);
+    void handleCollection(Collection<StreamingEventItem<TEVENT>> events);
 
     /**
      * Enables subscribers with the ability to know how many events have
      * been processed to date.
+     * @param percent Percent of events processed so far.
      * @return
      */
-    IStreamingProgressUpdater getProgress();
+    void onPercentCollectionReceived(double percent);
 
-    void setStreamingProgressUpdater(IStreamingProgressUpdater updater);
 
+    Class<TEVENT> getEventType();
 }
