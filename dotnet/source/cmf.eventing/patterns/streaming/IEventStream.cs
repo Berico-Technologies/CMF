@@ -22,5 +22,10 @@ namespace cmf.eventing.patterns.streaming
         /// Indicates what message topic to which all events on this stream will be published.
         /// </summary>
         string Topic { get; }
+
+        /// <summary>
+        /// Indicates the unique sequence identifier that all messages will be linked to in this stream.
+        /// </summary>
+        string SequenceId { get; }
     }
 }

@@ -13,7 +13,7 @@ namespace cmf.eventing.patterns.streaming
     /// User: jholmberg
     /// Date: 6/10/13
     /// </summary>
-    public interface IStreamingCollectionHandler<TEvent> : IEventHandler
+    public interface IStreamingCollectionHandler<TEvent>
     {
         /// <summary>
         /// Aggregates all events of type TEvent and stores them into a <see cref="System.Collections.Generic.IEnumerable"/>
@@ -29,16 +29,15 @@ namespace cmf.eventing.patterns.streaming
         /// </para>
         /// </summary>
         /// <param name="events">The collection of events that all belong to the same sequence</param>
-        /// <param name="headers"></param>
         /// <returns></returns>
-        object HandleCollection(IEnumerable<IStreamingEventItem<TEvent>> events, IDictionary<string, string> headers);
+        void HandleCollection(IEnumerable<StreamingEventItem<TEvent>> events);
 
         /// <summary>
-        /// Enables subscribers with the ability to know how many events have 
-        /// been processed to date.
+        /// Enables subscribers with the ability to know how many events have been processed to date.
         /// </summary>
-        /// <typeparam name="string">This is the string sequenceId of the collection of messages being processed.</typeparam>
-        /// <typeparam name="int">This is the number of events that have been processed so far.</typeparam>
-        Action<string, int> Progress { get; set; }
+        /// <param name="percent">Percent of events processed so far.</param>
+        void OnPercentCollectionReceived(double percent);
+
+        Type EventType { get; }
     }
 }

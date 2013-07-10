@@ -61,9 +61,10 @@
     <Compile Include="patterns\streaming\IStreamingCollectionHandler.cs" />
     <Compile Include="patterns\streaming\IStreamingEventBus.cs" />
     <Compile Include="patterns\streaming\IStreamingEventConsumer.cs" />
-    <Compile Include="patterns\streaming\IStreamingEventItem.cs" />
+    <Compile Include="patterns\streaming\StreamingEventItem.cs" />
     <Compile Include="patterns\streaming\IStreamingEventProducer.cs" />
     <Compile Include="patterns\streaming\IStreamingReaderHandler.cs" />
+    <Compile Include="patterns\streaming\StreamingEnvelopeConstants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

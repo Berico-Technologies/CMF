@@ -17,7 +17,7 @@ namespace cmf.eventing.patterns.streaming
         /// <summary>
         /// Subscribe to a stream of events that will get handled to a <see cref="System.Collections.Generic.IEnumerable"/>
         /// <para>
-        /// See <see cref="IStreamingCollectionHandler.Progress"/> as a way to 
+        /// See <see cref="IStreamingCollectionHandler.OnPercentCollectionReceived"/> as a way to 
         /// get a progress check on how many events have been processed.
         /// </para>
         /// <para>
