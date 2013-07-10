@@ -2,6 +2,7 @@ package cmf.eventing.patterns.streaming;
 
 import cmf.eventing.IEventProducer;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -33,20 +34,18 @@ public interface IStreamingEventProducer extends IEventProducer {
 
 
     /**
-     * Iterates on the dataSet and calls the object mapper to convert the object to the desired format before
-     * publishing the event to the bus.
+     * Iterates on the dataSet and publishes the elements to the bus.
      * <p>
-     *     In addition 3 new headers will be added to each event that is published:<br />
+     *     In addition 2 new headers will be added to each event that is published:<br />
      *     <ol>
-     *         <li>sequenceId : A UUID that ties this event to a particular sequence. This is the unique identifier that
+     *         <li>cmf.bus.message.pattern#streaming.sequenceId : A UUID that ties this event to a particular sequence. This is the unique identifier that
      *         indicates the message is part of a larger data set</li>
-     *         <li>position : An integer that indicates what position in the sequence this is.</li>
-     *         <li>isLast : A boolean indicating if this event is the last message in the sequence</li>
+     *         <li>cmf.bus.message.pattern#streaming.position : An integer that indicates what position in the sequence this is.</li>
      *     </ol>
      * </p>
      * @param dataSet
      * @throws Exception
      */
-    public <TEVENT> void publishChunkedSequence(Iterator<TEVENT> dataSet) throws Exception;
+    public <TEVENT> void publishChunkedSequence(Collection<TEVENT> dataSet) throws Exception;
 
 }

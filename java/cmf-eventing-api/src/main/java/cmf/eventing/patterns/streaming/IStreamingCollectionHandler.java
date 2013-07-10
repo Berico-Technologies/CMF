@@ -38,7 +38,7 @@ public interface IStreamingCollectionHandler<TEVENT> {
      * been processed to date.
      * @return
      */
-    void onIncrement(int count);
+    void onPercentCollectionReceived(double percent);
 
 
     Class<TEVENT> getEventType();
