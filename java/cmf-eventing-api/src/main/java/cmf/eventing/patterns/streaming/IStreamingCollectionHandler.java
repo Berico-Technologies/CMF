@@ -36,6 +36,7 @@ public interface IStreamingCollectionHandler<TEVENT> {
     /**
      * Enables subscribers with the ability to know how many events have
      * been processed to date.
+     * @param percent Percent of events processed so far.
      * @return
      */
     void onPercentCollectionReceived(double percent);
