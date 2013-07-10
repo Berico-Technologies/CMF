@@ -14,7 +14,7 @@ public interface IStreamingEventConsumer extends IEventConsumer {
 
     /**
      * Subscribe to a stream of events that will get handled to a {@link java.util.Collection}.
-     * <p>See {@link IStreamingCollectionHandler#onIncrement(int)} as a way to
+     * <p>See {@link IStreamingCollectionHandler#onPercentCollectionReceived(double)} as a way to
      * get a progress check on how many events have been processed.
      * </p>
      * <p>
