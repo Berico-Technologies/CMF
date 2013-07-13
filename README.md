@@ -1,14 +1,11 @@
 CMF - The Common Messaging Framework
 ====================================
 
-CMF is two things:
-  - A set of interfaces that describe how software components can publish and subscribe to events
-  - An implementation of those interfaces that is extensible, scalable, and secure
+CMF is a set of interfaces that describe how software components can publish and subscribe to events
 
 CMF takes the opinion that:
-  - The client API should be exceedingly simple
-  - The client implementation should be extensible and designed with scale and fault tolerance in mind
-  - Messaging should be fundamentally asynchronous (it can 'act' synchronous if you want it to)
+  - The client API should be *exceedingly* simple
+  - One bus does not fit all.  CMF defines a simple envelope bus and builds focused buses on top of it.
   - The sender and receiver should [conceptually] be unaware of each other (Publish-Subscribe Pattern)
 
 
@@ -107,8 +104,7 @@ class MyEventConsumer
 ```
 
 Honestly?  The only other thing you need to know in order to start producing and consuming events is how to 
-configure your IoC container in order to wire up the implementation that comes with CMF.  But even without 
-that knowledge, you could begin writing (and unit testing!) software components written against the interfaces!
+configure your IoC container in order to wire up an implementation.  But even without that knowledge, you could begin writing (and unit testing!) software components written against the interfaces!
 
 Common Questions
 ----------------
@@ -141,12 +137,18 @@ you have more sophisticated requirements, write your own "User Notification Bus"
 
 ### If I'm writing my own "bus" anyway, why use CMF at all?
 
-Ah, now we come to one of the really beautiful value propositions that CMF has to offer.  The envelope bus knows 
-how to route envelopes, and envelopes are just a map/dictionary of headers and a byte array of content.  By using 
-our event bus - or by writing your own bus on our envelope bus - you reap a number of valuable rewards:
+Ah, now we come to one of the really beautiful value propositions that CMF has to offer.  Since CMF is merely an abstraction, you're free to find and use the best implementation for your needs.  It's likely that a bus has already been written for you.  Already, we know of command buses, streaming buses, batched event buses, web-socket buses, etcetera that implement CMF.
 
+For example, check out the implementation that we've written: [Open AMPere](http://github.com/Berico-Technologies/AMP).
+
+Here's just a few of the feature of our implementation:
+ - Multi-lingual Clients
+   - Java Client
+   - .NET Client
+   - Client-Side JavaScript Client
+   - Coming Soon: Python and C++!!
  - Routing is flexible and dynamic. 
-   - Send to - or listen on - multiple queues/exchanges for a given message type
+   - Send to - or listen on - multiple clusters of queues/exchanges for a given message type
    - Change routing at runtime without stopping anything
    - Redirect message traffic (at runtime) in the event of performance bottlenecks
    - Configure secondary brokers in the event of a crash by the primary brokers
