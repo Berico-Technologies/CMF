@@ -7,7 +7,7 @@
     <!-- Information about this project -->
     <groupId>cmf</groupId>
     <artifactId>cmf</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.3.0-SNAPSHOT</version>
     <name>Common Messaging Framework</name>
     <packaging>pom</packaging>
 
@@ -146,7 +146,8 @@
         <connection>scm:git:git@github.com:Berico-Technologies/CMF.git</connection>
         <developerConnection>scm:git:git@github.com:Berico-Technologies/CMF.git</developerConnection>
         <url>https://github.com/Berico-Technologies/CMF/tree/develop</url>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
 
 
     <!-- Where to complain -->
