@@ -1,5 +1,14 @@
 description = 'cpp cmf api'
 
+project(":cmf-bus-api") {
+    apply plugin: "cpp-lib"
+}
+
+project(":cmf-eventing-api") {
+    apply plugin: "cpp-lib"
+}
+
+
 
 task wrapper( type: Wrapper ) {
 	gradleVersion = '1.7-rc1'
