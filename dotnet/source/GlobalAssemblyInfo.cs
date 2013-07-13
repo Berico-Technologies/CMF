@@ -10,6 +10,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 
 // Global Versioning
+// When ready for release, remove the star.  For example, if you're releasing
+// version 3.2, this value should be 3.2.0.0.  While you're working towards
+// version 3.3, this value should be 3.2.0.*.  This way, snapshot versions
+// will be higher than 3.2.0.0, and look like 3.2.0.1257, which is the 
+// equivalent of 3.3.0-SNAPSHOT in java/maven terms
 [assembly: AssemblyVersion("3.2.0.*")]
 /* let MSBuild automatically update this:
  * [assembly: AssemblyFileVersion("3.0.0.0")]

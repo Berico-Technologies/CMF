@@ -14,7 +14,6 @@
 
     <groupId>${parent.groupId}</groupId>
     <artifactId>cmf.eventing</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
     <name>CMF Event Bus API</name>
     <packaging>jar</packaging>
 

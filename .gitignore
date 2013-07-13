@@ -82,6 +82,7 @@ Servers/
 *.pdb*
 *.opensdf
 *.unsuccessfulbuild
+*.userprefs
 !/dotnet/binaries/
 /dotnet/binaries/*
 !/dotnet/binaries/libraries/
