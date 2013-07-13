@@ -1,0 +1,6 @@
+description = 'cpp cmf api'
+
+
+task wrapper( type: Wrapper ) {
+	gradleVersion = '1.7-rc1'
+}
