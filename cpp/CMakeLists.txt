@@ -30,4 +30,6 @@ SET(CMF_LIB_SRCS
         #src/CMF/Example.cpp
 )
 add_library(CMF SHARED ${CMF_LIB_SRCS})
+        src/CMF/Example.cpp
+)
 target_link_libraries(CMF ${Boost_LIBRARIES})
