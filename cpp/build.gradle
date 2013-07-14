@@ -1,4 +1,4 @@
-description = 'cpp cmf api'
+description = 'CMF C++ client api'
 
 project(":cmf-bus-api") {
     apply plugin: "cpp-lib"
