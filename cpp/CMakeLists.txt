@@ -27,7 +27,7 @@ SET(CMF_LIB_SRCS
         include/CMF/Registration.h
         include/CMF/Envelope.h
         src/CMF/Envelope.cpp
-        src/CMF/Example.cpp
+        #src/CMF/Example.cpp
 )
-add_library(CMF ${CMF_LIB_SRCS})
+add_library(CMF SHARED ${CMF_LIB_SRCS})
 target_link_libraries(CMF ${Boost_LIBRARIES})
