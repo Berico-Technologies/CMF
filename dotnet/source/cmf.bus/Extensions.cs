@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using cmf.bus;
-
 namespace cmf.bus
 {
     public static class Extensions
@@ -341,14 +339,13 @@ namespace cmf.bus
 
         public static DateTime GetCreationTime(this Envelope env)
         {
-            string createTicks = null;
-
             if (env.Headers.ContainsKey(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME))
             {
-                createTicks = env.Headers[EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME];
+                string createTicks = env.Headers[EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME];
+                return new DateTime(long.Parse(createTicks));
             }
+            return DateTime.MinValue;
 
-            return new DateTime(long.Parse(createTicks));
         }
 
         public static void SetCreationTime(this Envelope env, DateTime date)
