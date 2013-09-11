@@ -1,10 +1,12 @@
 package cmf.eventing;
 
+import cmf.bus.IDisposable;
+
 /**
  * An interface to define the methods by which an client may register to receive
  * messages of a particular type.
  */
-public interface IEventConsumer {
+public interface IEventConsumer extends IDisposable {
 
 	/**
 	 * This method is used register an {link IEventHandler} to handle all 

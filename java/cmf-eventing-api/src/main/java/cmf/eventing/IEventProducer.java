@@ -1,9 +1,11 @@
 package cmf.eventing;
 
+import cmf.bus.IDisposable;
+
 /**
  * An interface defining the methods by which an client may publish events.
  */
-public interface IEventProducer {
+public interface IEventProducer extends IDisposable {
 
 	/**
 	 * Publishes an event.
