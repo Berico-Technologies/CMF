@@ -1,6 +1,7 @@
 package cmf.eventing;
 
 import cmf.bus.IDisposable;
+import cmf.bus.IEnvelopeFilterPredicate;
 
 /**
  * An interface to define the methods by which an client may register to receive
@@ -28,5 +29,5 @@ public interface IEventConsumer extends IDisposable {
 	 *
      * @throws Exception
      */
-    <TEVENT> void subscribe(IEventHandler<TEVENT> handler, IEventFilterPredicate eventFilterPredicate) throws Exception;
+    <TEVENT> void subscribe(IEventHandler<TEVENT> handler, IEnvelopeFilterPredicate eventFilterPredicate) throws Exception;
 }
