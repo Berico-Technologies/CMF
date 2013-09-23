@@ -8,11 +8,9 @@
         <groupId>cmf</groupId>
         <artifactId>cmf</artifactId>
         <relativePath>../pom.xml</relativePath>
-        <version>3.2.1-SNAPSHOT</version>
+        <version>3.3.0-SNAPSHOT</version>
     </parent>
 
-
-    <groupId>${parent.groupId}</groupId>
     <artifactId>cmf.eventing</artifactId>
     <name>CMF Event Bus API</name>
     <packaging>jar</packaging>
