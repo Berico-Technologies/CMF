@@ -1,5 +1,7 @@
 package cmf.eventing;
 
+import java.util.Map;
+
 import cmf.bus.IDisposable;
 
 /**
@@ -15,4 +17,15 @@ public interface IEventProducer extends IDisposable {
 	 * @throws Exception
 	 */
     void publish(Object event) throws Exception;
+
+
+    /**
+     * Publishes an event with the specified headers.
+     *
+     * @param event The event to publish.
+     * @param headers The custom headers to publish.
+     *
+     * @throws Exception
+     */
+    void publish(Object event, Map<String, String> headers) throws Exception;
 }
