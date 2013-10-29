@@ -7,7 +7,7 @@
     <!-- Information about this project -->
     <groupId>cmf</groupId>
     <artifactId>cmf</artifactId>
-    <version>3.2.1</version>
+    <version>3.2.2</version>
     <name>Common Messaging Framework</name>
     <packaging>pom</packaging>
 
