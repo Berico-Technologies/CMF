@@ -12,6 +12,10 @@ namespace cmf.eventing.patterns.streaming
     /// contain the necessary state that a subscriber would need including the 
     /// sequenceId, position, and whether this event is the last in the published
     /// sequence
+    /// 
+    /// <para>WARNING: The streaming event API and its accompanying implementation is deemed 
+    /// to be a proof of concept at this point and subject to change.  It should not be used 
+    /// in a production environment.</para>
     /// </summary>
     public class StreamingEventItem<TEvent>
     {

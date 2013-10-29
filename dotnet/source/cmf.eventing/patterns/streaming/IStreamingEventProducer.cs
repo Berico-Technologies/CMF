@@ -17,6 +17,10 @@ namespace cmf.eventing.patterns.streaming
     /// handle the results as opposed to potentially waiting a long time 
     /// before anything comes back.
     /// </para>
+    /// 
+    /// <para>WARNING: The streaming event API and its accompanying implementation is deemed 
+    /// to be a proof of concept at this point and subject to change.  It should not be used 
+    /// in a production environment.</para>
     /// </summary>
     public interface IStreamingEventProducer : IEventProducer
     {

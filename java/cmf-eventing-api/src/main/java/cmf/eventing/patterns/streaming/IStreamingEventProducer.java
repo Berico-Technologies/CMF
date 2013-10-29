@@ -19,6 +19,10 @@ import java.util.Collection;
  *     include some latency in getting everything packaged up in a single
  *     response.
  * </p>
+ * 
+ * WARNING: The streaming event API and its accompanying implementation is deemed 
+ * to be a proof of concept at this point and subject to change.  It should not be used 
+ * in a production environment. 
  */
 public interface IStreamingEventProducer extends IEventProducer {
 

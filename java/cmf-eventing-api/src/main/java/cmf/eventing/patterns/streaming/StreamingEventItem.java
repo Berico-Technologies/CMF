@@ -9,6 +9,10 @@ import static cmf.eventing.patterns.streaming.StreamingEnvelopeConstants.*;
  * This is a wrapper class that wraps each event received as part of an event stream
  * In addition to providing access to the wrapped event, it also provides access to 
  * additional stream specific meta data. 
+ * 
+ * WARNING: The streaming event API and its accompanying implementation is deemed 
+ * to be a proof of concept at this point and subject to change.  It should not be used 
+ * in a production environment. 
  */
 public class StreamingEventItem<TEVENT>  {
     private final TEVENT event;

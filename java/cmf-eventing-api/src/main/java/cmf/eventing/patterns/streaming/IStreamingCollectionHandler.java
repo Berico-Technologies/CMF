@@ -19,6 +19,10 @@ import java.util.Collection;
  *     on the position flag set in each event header. The position along with each event's own headers
  *     can be obtained through the {@link StreamingEventItem}
  * </p>
+ * 
+ * WARNING: The streaming event API and its accompanying implementation is deemed 
+ * to be a proof of concept at this point and subject to change.  It should not be used 
+ * in a production environment. 
  */
 public interface IStreamingCollectionHandler<TEVENT> {
     /**

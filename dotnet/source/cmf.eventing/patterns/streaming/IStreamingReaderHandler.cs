@@ -10,6 +10,10 @@ namespace cmf.eventing.patterns.streaming
     /// <summary>
     /// Adds behavior to the <see cref="cmf.eventing.IEventHandler"/> allowing it to process 
     /// a stream of events sent via the <see cref="IStreamingEventBus"/>
+    /// 
+    /// <para>WARNING: The streaming event API and its accompanying implementation is deemed 
+    /// to be a proof of concept at this point and subject to change.  It should not be used 
+    /// in a production environment.</para>
     /// </summary>
     /// <remarks>
     /// Streams all events of type TEvent as they are received from the bus and places them into an 
