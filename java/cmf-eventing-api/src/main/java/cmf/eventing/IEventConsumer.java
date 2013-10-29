@@ -19,6 +19,8 @@ public interface IEventConsumer extends IDisposable {
 	 */
     <TEVENT> void subscribe(IEventHandler<TEVENT> handler) throws Exception;
 
+    //TODO: At the envelope level the predicate is specified as part of the registration interface.
+    //Why are we not following the same patter here and putting a getPredicate() method on the IEventHandler?
     /**
 	 * This method is used register an {link IEventHandler} to handle only 
 	 * select events of a particular type based on a predicate filter.

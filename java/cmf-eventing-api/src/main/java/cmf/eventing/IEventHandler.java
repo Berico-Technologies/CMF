@@ -40,4 +40,5 @@ public interface IEventHandler<TEVENT> {
      * @return An object indicating the outcome of handling the envelope.
      */
     Object handleFailed(Envelope envelope, Exception e);
+    //TODO: This method is never called by the underlying implementation.
 }

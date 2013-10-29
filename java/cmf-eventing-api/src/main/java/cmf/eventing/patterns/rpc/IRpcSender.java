@@ -5,6 +5,7 @@ import java.util.Map;
 /**
  * An interface defining the methods by which a client responds to RPC calls.
  */
+//TODO: Consider renaming to IRpcResponder
 public interface IRpcSender {
 
 	/**

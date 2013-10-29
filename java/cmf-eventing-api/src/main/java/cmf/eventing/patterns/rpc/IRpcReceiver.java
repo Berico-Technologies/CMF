@@ -8,6 +8,7 @@ import org.joda.time.Duration;
  * An interface to define the methods by which an client may sent RPC messages and 
  * receive responses to the same.
  */
+//TODO: Consider renaming to IRpcCaller
 public interface IRpcReceiver {
 
 	/**
@@ -32,6 +33,7 @@ public interface IRpcReceiver {
 	 * 
 	 * @return Returns the collection of response messages received prior to the timeout being reached.
 	 */
+    //TODO: Why must one specify the topics?
     @SuppressWarnings("rawtypes")
     Collection gatherResponsesTo(Object request, Duration timeout, String... expectedTopics);
 
@@ -56,5 +58,6 @@ public interface IRpcReceiver {
      * 
      * @return The first response message received.
      */
+    //TODO: Why must one specify the topic?
     Object getResponseTo(Object request, Duration timeout, String expectedTopic);
 }
