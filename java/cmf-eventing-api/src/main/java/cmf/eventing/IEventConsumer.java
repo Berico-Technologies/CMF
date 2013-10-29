@@ -5,12 +5,12 @@ import cmf.bus.IEnvelopeFilterPredicate;
 
 /**
  * An interface to define the methods by which an client may register to receive
- * messages of a particular type.
+ * events of a particular type.
  */
 public interface IEventConsumer extends IDisposable {
 
 	/**
-	 * This method is used register an {link IEventHandler} to handle all 
+	 * This method is used register an {@link IEventHandler} to handle all 
 	 * received events of a particular type.
 	 * 
 	 * @param handler The event handler that will handle the received events.
@@ -20,7 +20,7 @@ public interface IEventConsumer extends IDisposable {
     <TEVENT> void subscribe(IEventHandler<TEVENT> handler) throws Exception;
 
     /**
-	 * This method is used register an {link IEventHandler} to handle only 
+	 * This method is used register an {@link IEventHandler} to handle only 
 	 * select events of a particular type based on a predicate filter.
      * 
 	 * @param handler The event handler that will handle the received events.

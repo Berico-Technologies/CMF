@@ -6,13 +6,9 @@ import java.util.UUID;
 import static cmf.eventing.patterns.streaming.StreamingEnvelopeConstants.*;
 
 /**
- * Contains the elements needed to receive an event from an event stream.
- * This allows each discrete event pulled from a subscribed event stream to
- * contain the necessary state that a subscriber would need including the
- * sequenceId, position, and whether this event is the last in the published
- * sequence.
- * User: jholmberg
- * Date: 6/7/13
+ * This is a wrapper class that wraps each event received as part of an event stream
+ * In addition to providing access to the wrapped event, it also provides access to 
+ * additional stream specific meta data. 
  */
 public class StreamingEventItem<TEVENT>  {
     private final TEVENT event;
@@ -24,15 +20,15 @@ public class StreamingEventItem<TEVENT>  {
     }
 
     /**
-     * Get the event received from the published stream
-     * @return
+     * Gets the event received from the published stream
+     * @return The received event.
      */
     public TEVENT getEvent() {
         return event;
     }
 
     /**
-     * Helper method that extracts the unique sequenceId from the event headers
+     * Gets the sequenceId value which is common to all events in the same stream.
      * @return
      */
     public UUID getSequenceId() {
@@ -40,7 +36,7 @@ public class StreamingEventItem<TEVENT>  {
     }
 
     /**
-     * Helper method that returns the position of this event in the event sequence
+     * Gets the ordinal position of this event within the event stream.
      * @return
      */
     public int getPosition() {
@@ -48,7 +44,7 @@ public class StreamingEventItem<TEVENT>  {
     }
 
     /**
-     * Returns all headers associated with the event
+     * Returns all headers associated with the received event.
      * @return
      */
     public Map<String, String> getEventHeaders() {

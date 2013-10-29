@@ -2,28 +2,35 @@ package cmf.eventing.patterns.streaming;
 
 import cmf.bus.IDisposable;
 
-
+/**
+ * An interface representing an single event stream and defining the methods needed 
+ * to publish events individually into that stream.  
+ */
 public interface IEventStream extends IDisposable {
     /**
-     * Publishes messages on the {@link IStreamingEventBus} after the numberOfEvents limit has been met.
+     * Determines the number of events that must be {@link #publish}ed to the stream buffer 
+     * before the buffer is actually flushed to the underlying transport.
      * @param numberOfEvents
      */
     void setBatchLimit(int numberOfEvents);
 
     /**
-     * Called by the {@link IStreamingEventBus} to publish each element in the Iterator in a searializable format.
-      * @param event
+     * Publishes an event into the event stream.  Depending on the values assigned via
+     * {@link #setBatchLimit(int)}, the event may be buffered prior to being send on the 
+     * underlying transport.
+     * @param event The event to publish.
      */
     void publish(Object event) throws Exception;
 
     /**
-     * Indicates what message topic to which all events on this stream will be published
-     * @return
+     * Gets the message topic upon which the events will be published.
+     * @return The message topic.
      */
     String getTopic();
 
     /**
-     * Indicates the unique sequence identifier that all messages will be linked to in this stream.
+     * Gets the unique sequence identifier that all messages published in this stream 
+     * will be tagged with.
      * @return
      */
     String getSequenceId();

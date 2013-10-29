@@ -4,7 +4,7 @@ package cmf.bus;
  * An interface to be implemented by any types that need to execute resource clean-up 
  * code prior to being garbage collected.  Any code that creates an instance of a type
  * that implements IDisposable is responsible for ensuring that its {@link IDisposable#dispose} 
- * method is called prior to the instance goes out of scope.
+ * method is called prior to the instance going out of scope.
  */
 public interface IDisposable {
 

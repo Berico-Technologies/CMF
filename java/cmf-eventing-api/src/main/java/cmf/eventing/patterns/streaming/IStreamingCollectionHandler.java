@@ -1,46 +1,53 @@
 package cmf.eventing.patterns.streaming;
 
-import cmf.eventing.IEventHandler;
-
 import java.util.Collection;
-import java.util.Map;
 
 /**
- * Allows the streaming API gather events received into one collection to be handled by user code.
+ * Defines an interface to be implemented by types that wish to process each received event stream  
+ * as a complete collection, all at once, after all events in the stream are received.
+ * <p>
+ *     This provides a way to gather all events belonging to a particular stream and deliver them
+ *     as a cohesive collection.
+ * </p>
+ * <p>
+ *     A drawback, however, is that because it's holding the collection until all events in the stream
+ *     have been received, it introduces a higher degree of latency into the process.
+ *     This can be especially apparent the larger the sequence becomes.
+ * </p>
  * <p>
  *     The generic {@link java.util.Collection} is of type {@link StreamingEventItem} comes sorted based
  *     on the position flag set in each event header. The position along with each event's own headers
  *     can be obtained through the {@link StreamingEventItem}
  * </p>
- * User: jholmberg
- * Date: 6/4/13
  */
 public interface IStreamingCollectionHandler<TEVENT> {
     /**
+     * This method is invoked after all event in a particular stream of the handled type is received.  
+     * It is the method that should handle the received stream of events.
      * Aggregates all events of type TEVENT and stores them into a {@link java.util.Collection}
      * when the last event was received with the message header "isLast" set to true.
-     * <p>
-     *     This provides a way to gather all events belonging to a particular sequence and deliver them
-     *     and a cohesive collection.
-     * </p>
-     * <p>
-     *     A drawback, however, is that because it's holding the collection until all events in the stream
-     *     have been received, it introduces a higher degree of latency into the process.
-     *     This can be especially apparent the larger the sequence becomes.
-     * </p>
-     * @param events The collections of events that all belong to the same sequence
-     * @return
+     * @param events The collections of events that all belong to the same stream.
+     * @return An object indicating the outcome of handling the event stream.  How the return
+     * value is interpreted is dependent upon the {@link IStreamingEventConsumer} implementation.
      */
     void handleCollection(Collection<StreamingEventItem<TEVENT>> events);
 
     /**
-     * Enables subscribers with the ability to know how many events have
-     * been processed to date.
+     * Provides subscribers with the ability to know how many events have
+     * been received to date into the collection, prior to {@link #handleCollection} 
+     * being called.
      * @param percent Percent of events processed so far.
      * @return
      */
     void onPercentCollectionReceived(double percent);
 
-
-    Class<TEVENT> getEventType();
+	/**
+	 * Gets the type of the event which the handler is intended to receive collection of.  
+	 * Must be a non-abstract,  non-generic type.  Only events of the exact type
+	 * will be received. I.e. events that are sub-types of the returned type 
+ 	 * will not be received.
+	 * 
+	 * @return The Class of the event to be handled.
+	 */
+     Class<TEVENT> getEventType();
 }

@@ -3,15 +3,13 @@ package cmf.eventing.patterns.streaming;
 import cmf.bus.IDisposable;
 
 /**
- * Adds behavior to the {@link cmf.eventing.IEventHandler} allowing it to process
- * a stream of events sent via the {@link IStreamingEventBus}
- * User: jholmberg
- * Date: 6/5/13
+ * Defines an interface to be implemented by types that wish to process individual events
+ * from a stream as they are received with minimal latency. 
  */
 public interface IStreamingReaderHandler<TEVENT> extends IDisposable {
     /**
-     * Streams all events of type TEVENT as they are received from the bus and places them into an
-     * {@link StreamingEventItem} that can be returned immediately to the caller.
+     * This method is invoked each time an event is received from the stream.  It is the method 
+     * that should handle received events from the stream.
      * <p>
      *     This method will continue to be called until the last message is handled at which point
      *     the {@link cmf.eventing.patterns.streaming.IStreamingReaderHandler#dispose()} is called to
@@ -25,5 +23,13 @@ public interface IStreamingReaderHandler<TEVENT> extends IDisposable {
      */
     void onEventRead(StreamingEventItem<TEVENT> eventItem);
 
-    Class<TEVENT> getEventType();
+	/**
+	 * Gets the type of the event which the handler is intended to receive collection of.  
+	 * Must be a non-abstract,  non-generic type.  Only events of the exact type
+	 * will be received. I.e. events that are sub-types of the returned type 
+ 	 * will not be received.
+	 * 
+	 * @return The Class of the event to be handled.
+	 */
+   Class<TEVENT> getEventType();
 }

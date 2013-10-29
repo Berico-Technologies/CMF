@@ -7,9 +7,11 @@ package cmf.bus;
 public interface IEnvelopeFilterPredicate {
 
     /**
-     * Offers an opportunity to filter out the envelope before it gets processed.
+     * Indicates if the particular envelope should be processed by the envelope
+     * processing change and ultimately handed to the {@link IRegistration}s 
+     * handler method for handling.
      * 
-     * @param envelope The envelope that has been received.
+     * @param envelope The raw envelope that has been received.
      * @return True if the envelope should be processed by the handler,
      * otherwise false.
      */

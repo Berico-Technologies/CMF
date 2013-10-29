@@ -20,10 +20,13 @@ public interface IEventProducer extends IDisposable {
 
 
     /**
-     * Publishes an event with the specified headers.
+     * Publishes an event and specifies a set of custom headers to send with it.
+     * Normally the headers to be sent with an event are computed by the 
+     * IEventProducer implementation.  If custom headers are provided, how they 
+     * are combined with any computed headers is implementation dependent.
      *
      * @param event The event to publish.
-     * @param headers The custom headers to publish.
+     * @param headers The custom headers to publish with it.
      *
      * @throws Exception
      */

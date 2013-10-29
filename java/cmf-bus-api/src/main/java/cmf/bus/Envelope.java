@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents a discreet message sent across the bus.
+ * Represents a discreet message sent across the bus.  Envelopes consist of two 
+ * parts, payload represented as an array of bytes and optionally a set of headers 
+ * represented as string/string map of key/value pairs.  Together they comprise 
+ * the message and any appropriate meta-data pertaining to it respectively.
  */
 public class Envelope {
 
@@ -39,8 +42,8 @@ public class Envelope {
     }
 
     /**
-     * Get the header value for the key specified.
-     * @param key  The header key of the header value to return.
+     * Gets the header value for the key specified.
+     * @param key  The key that identifies the header value to return.
      * @return The value of the specified header.
      */
     public String getHeader(String key) {
@@ -48,7 +51,7 @@ public class Envelope {
     }
 
     /**
-     * Get the envelope headers as a key-value map.  Caution: modifying the returned map
+     * Gets all the envelope headers as a key-value map.  Caution: modifying the returned map
      * will modify the envelopes headers. 
      * @return A key/value map of headers.
      */
@@ -57,7 +60,7 @@ public class Envelope {
     }
 
     /**
-     * Get the payload (i.e. the actual content) of the envelope.
+     * Gets the payload (i.e. the actual content) of the envelope.
      * @return The content of the envelope as a byte array.
      */
     public byte[] getPayload() {
@@ -66,7 +69,7 @@ public class Envelope {
 
     /**
      * Sets a header value for the specified key.
-     * @param key The key of the header to be set.
+     * @param key The key that identifies the header value to set.
      * @param value The value to set the header to.
      */
     public void setHeader(String key, String value) {
