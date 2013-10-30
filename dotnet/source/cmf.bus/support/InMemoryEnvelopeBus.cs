@@ -49,6 +49,7 @@ namespace cmf.bus.support
         }
 
 
+        /// <inheritdoc />
         public virtual void Send(Envelope env)
         {
             IEnumerable<IRegistration> handlerList = null;
@@ -63,6 +64,7 @@ namespace cmf.bus.support
             this.Dispatch(env, handlerList);
         }
 
+        /// <inheritdoc />
         public virtual void Register(IRegistration registration)
         {
             lock (_registrationListLock)
@@ -71,6 +73,7 @@ namespace cmf.bus.support
             }
         }
 
+        /// <inheritdoc />
         public virtual void Unregister(IRegistration registration)
         {
             lock (_registrationListLock)
@@ -104,6 +107,7 @@ namespace cmf.bus.support
             dispatchThread.Start();
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             // nothing to dispose
