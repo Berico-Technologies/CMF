@@ -13,6 +13,7 @@ namespace cmf.eventing.patterns.streaming
     /// to be a proof of concept at this point and subject to change.  It should not be used 
     /// in a production environment.</para>
     /// </summary>
+    /// <typeparam name="TEvent">The type of the wrapped event.</typeparam>
     public class StreamingEventItem<TEvent>
     {
         private readonly TEvent _streamEvent;

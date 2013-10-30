@@ -12,13 +12,13 @@
     {
         /// <summary>
         /// Subscribe to a stream of events that will be collected into a <see cref="System.Collections.Generic.IEnumerable{T}"/> 
-        /// and handed to an IStreamingCollectionHandler implementation for handling once all are received. 
+        /// and handed to an <see cref="IStreamingCollectionHandler"/> implementation for handling once all are received. 
         /// <para>
         /// See <see cref="IStreamingCollectionHandler{TEvent}.OnPercentCollectionReceived"/> as a way to 
         /// get a progress check on how many events have been processed.
         /// </para>
         /// <para>
-        /// This offers the subscriber a simpler API than <see cref=".SubscribeToReader"/>
+        /// This offers the subscriber a simpler API than <see cref="SubscribeToReader{TEvent}"/>
         /// allowing them to get the entire collection of events once the last one has been received from the producer.
         /// </para>
         /// </summary>

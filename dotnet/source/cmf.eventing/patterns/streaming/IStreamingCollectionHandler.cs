@@ -11,6 +11,7 @@ namespace cmf.eventing.patterns.streaming
     /// to be a proof of concept at this point and subject to change.  It should not be used 
     /// in a production environment.</para>
     /// </summary>
+    /// <typeparam name="TEvent">The type of event which the handler is intended to handle.</typeparam>
     /// <remarks>
     /// This provides a way to gather all events belonging to a particular stream and deliver them as a cohesive collection.
     /// <para>
