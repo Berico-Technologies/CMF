@@ -24,12 +24,12 @@ namespace cmf.eventing.patterns.streaming
     {
         /// <summary>
         /// Creates an event stream that can be used to publish to a stream of events. 
-        /// <see cref="IEventStream">IEventStream</see>s are useful when there is a 
+        /// <see cref="IEventStream" />s are useful when there is a 
         /// need to publish an unknown number of events into a stream or there may be 
         /// significant latency in preparing individual events.
         /// </summary>
         /// <param name="topic">The topic to which events in the stream should be published.</param>
-        /// <returns>The <see cref="IEventStream">IEventStream</see> that was created.</returns>
+        /// <returns>The <see cref="IEventStream" /> that was created.</returns>
         IEventStream CreateStream(string topic);
 
         /// <summary>

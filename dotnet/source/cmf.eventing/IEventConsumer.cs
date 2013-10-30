@@ -11,7 +11,7 @@ namespace cmf.eventing
     public interface IEventConsumer : IDisposable
     {
         /// <summary>
-        /// Registers an <see cref="IEventHandler">IEventHandler</see> to handle 
+        /// Registers an <see cref="IEventHandler" /> to handle 
         /// a specific type of event (TEVENT) from the bus and further filters 
         /// the events received based on a predicate filter.
         /// </summary>        
@@ -23,7 +23,7 @@ namespace cmf.eventing
         void Subscribe(IEventHandler handler, Predicate<Envelope> envelopeFilter);
 
         /// <summary>
-        /// Registers a handler via an <see cref="Action">Action</see> to handle 
+        /// Registers a handler via an <see cref="Action" /> to handle 
         /// a specific type of event (TEVENT) from the bus and further filters 
         /// the events received based on a predicate filter.
         /// </summary>
@@ -47,7 +47,7 @@ namespace cmf.eventing
     public static class EventConsumerExtensions
     {
         /// <summary>
-        /// Registers an <see cref="IEventHandler">IEventHandler</see> to handle 
+        /// Registers an <see cref="IEventHandler" /> to handle 
         /// all events of a specific type of event (TEVENT) received by the bus.
         /// </summary>
         /// <param name="consumer"></param>
@@ -60,7 +60,7 @@ namespace cmf.eventing
         }
 
         /// <summary>
-        /// Registers a handler via an <see cref="Action">Action</see> to handle 
+        /// Registers a handler via an <see cref="Action" /> to handle 
         /// all events of a specific type of event (TEVENT) received by the bus.
         /// </summary>
         /// <param name="consumer"></param>

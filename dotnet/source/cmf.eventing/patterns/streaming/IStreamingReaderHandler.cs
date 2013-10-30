@@ -11,7 +11,7 @@ namespace cmf.eventing.patterns.streaming
     /// in a production environment.</para>
     /// </summary>
     /// <remarks>The core functionality of this interface is inherited from 
-    /// <see cref="System.IObserver{T}">IObserver</see> whose methods should be implemented to 
+    /// <see cref="System.IObserver{T}" /> whose methods should be implemented to 
     /// receive the streamed events as they arrive.</remarks>
     /// <typeparam name="TEvent">The type of event which the handler is intended to handle.</typeparam>
     public interface IStreamingReaderHandler<TEvent> : IDisposable, IObserver<StreamingEventItem<TEvent>>

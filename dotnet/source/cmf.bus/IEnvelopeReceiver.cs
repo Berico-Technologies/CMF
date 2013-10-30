@@ -11,7 +11,7 @@ namespace cmf.bus
         /// <summary>
         ///  Registers a handler to receive envelopes of a particular kind.
         /// </summary>
-        /// <param name="registration">The <see cref="IRegistration">IRegistration</see> object 
+        /// <param name="registration">The <see cref="IRegistration" /> object 
         /// that describes the kind of envelopes to be received and provides that handler 
         /// method that will receive them. </param>
         /// <exception cref="System.Exception">May throw an exception.</exception>
@@ -20,7 +20,7 @@ namespace cmf.bus
         /// <summary>
         /// Unregisters a handler previously registered.
         /// </summary>
-        /// <param name="registration">The <see cref="IRegistration">IRegistration</see>
+        /// <param name="registration">The <see cref="IRegistration" />
         /// instance previously used to register handler.</param>
         /// <remarks>Any messages already received will continue to be processed.</remarks>
         /// <exception cref="System.Exception">May throw an exception.</exception>

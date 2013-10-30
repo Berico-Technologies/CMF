@@ -3,8 +3,8 @@
 namespace cmf.eventing.patterns.rpc
 {
     /// <summary>
-    /// A convenience interface that combines the <see cref="IEventBus">IEventBus</see>, 
-    /// <see cref="IRpcRequestor">IRpcRequestor</see> and <see cref="IRpcResponder">IRpcResponder</see> 
+    /// A convenience interface that combines the <see cref="IEventBus" />, 
+    /// <see cref="IRpcRequestor" /> and <see cref="IRpcResponder" /> 
     /// interfaces together because they are most typically implemented 
     /// and referenced together when performing RPC type eventing.
     /// </summary>

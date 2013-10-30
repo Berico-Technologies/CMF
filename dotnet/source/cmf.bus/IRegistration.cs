@@ -5,7 +5,7 @@ namespace cmf.bus
 {
     /// <summary>
     /// Defines the interface that must be implemented by types that wish to 
-    /// <see cref="IEnvelopeReceiver">IEnvelopeReceiver.Register</see>. to receive envelopes.
+    /// <see cref="IEnvelopeReceiver.Register" />. to receive envelopes.
     /// </summary>
     public interface IRegistration
     {
@@ -22,7 +22,7 @@ namespace cmf.bus
 
         /// <summary>
         /// A key/value set of properties that describe the envelopes to be received. The meaning of 
-        /// these values are dependent upon the <see cref="IEnvelopeReceiver">IEnvelopeReceiver</see> 
+        /// these values are dependent upon the <see cref="IEnvelopeReceiver" /> 
         /// implementation.
         /// </summary>
         IDictionary<string, string> Info { get; }
@@ -33,7 +33,7 @@ namespace cmf.bus
         /// </summary>
         /// <param name="env">The envelope to be handled.</param>
         /// <returns>An object indicating the outcome of handling the envelope. How the return value is 
-        /// interpreted is dependent upon the <see cref="IEnvelopeReceiver">IEnvelopeReceiver</see> 
+        /// interpreted is dependent upon the <see cref="IEnvelopeReceiver" /> 
         /// implementation.</returns>
         /// <exception cref="System.Exception">May throw an exception.</exception>
         object Handle(Envelope env);
@@ -45,7 +45,7 @@ namespace cmf.bus
         /// <param name="env">The envelope that failed</param>
         /// <param name="ex">The exception that caused the envelope to fail</param>
         /// <returns>An object indicating the outcome of handling the envelope. How the return value is 
-        /// interpreted is dependent upon the <see cref="IEnvelopeReceiver">IEnvelopeReceiver</see> 
+        /// interpreted is dependent upon the <see cref="IEnvelopeReceiver" /> 
         /// implementation.</returns>
         /// <exception cref="System.Exception">May throw an exception.</exception>
         object HandleFailed(Envelope env, Exception ex);

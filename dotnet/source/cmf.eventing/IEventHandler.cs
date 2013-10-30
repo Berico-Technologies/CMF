@@ -24,7 +24,7 @@ namespace cmf.eventing
         /// <param name="headers"></param>
         /// <returns>An object indicating the outcome of handling the event.</returns>
         /// <remarks>How the return value is interpreted is dependent upon the 
-        /// <see cref="IEventConsumer">IEventConsumer</see> implementation</remarks>
+        /// <see cref="IEventConsumer" /> implementation</remarks>
         object Handle(object ev, IDictionary<string, string> headers);
 
         /// <summary>
@@ -35,9 +35,9 @@ namespace cmf.eventing
         /// <param name="ex"></param>
         /// <returns>An object indicating the outcome of handling the event.</returns>
         /// <remarks><para>How the return value is interpreted is dependent upon the 
-        /// <see cref="IEventConsumer">IEventConsumer</see> implementation.</para>
+        /// <see cref="IEventConsumer" /> implementation.</para>
         /// <para>The relationship between this method and the 
-        /// <see cref="cmf.bus.IRegistration">IRegistration.HandleFailed</see>
+        /// <see cref="IRegistration.HandleFailed" />
         /// method is implementation dependent.</para></remarks>
         object HandleFailed(Envelope env, Exception ex);
     }
