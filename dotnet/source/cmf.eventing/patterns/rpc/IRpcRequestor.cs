@@ -15,7 +15,7 @@ namespace cmf.eventing.patterns.rpc
         /// </summary>
         /// <param name="request">The request to be published</param>
         /// <param name="timeout">The span of time to wait for a response</param>
-        /// <param name="expectedTopics">The expected topic on which the response will arive</param>
+        /// <param name="expectedTopic">The expected topic on which the response will arive</param>
         /// <returns>The response object, or null if the specified amount of time elapses without receiving a response</returns>
         object GetResponseTo(object request, TimeSpan timeout, string expectedTopic);
 

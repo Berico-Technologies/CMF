@@ -62,6 +62,11 @@ namespace cmf.eventing.patterns.streaming
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of StreamingEventItem with the specified event and headers.
+        /// </summary>
+        /// <param name="streamEvent">The event to wrap</param>
+        /// <param name="eventHeaders">The headers received with the event.</param>
         public StreamingEventItem(TEvent streamEvent, IDictionary<string, string> eventHeaders)
         {
             _streamEvent = streamEvent;

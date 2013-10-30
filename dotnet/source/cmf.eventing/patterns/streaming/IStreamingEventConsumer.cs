@@ -11,14 +11,14 @@
     public interface IStreamingEventConsumer : IEventConsumer
     {
         /// <summary>
-        /// Subscribe to a stream of events that will be collected into a <see cref="System.Collections.Generic.IEnumerable"/> 
+        /// Subscribe to a stream of events that will be collected into a <see cref="System.Collections.Generic.IEnumerable{T}"/> 
         /// and handed to an IStreamingCollectionHandler implementation for handling once all are received. 
         /// <para>
-        /// See <see cref="IStreamingCollectionHandler.OnPercentCollectionReceived"/> as a way to 
+        /// See <see cref="IStreamingCollectionHandler{TEvent}.OnPercentCollectionReceived"/> as a way to 
         /// get a progress check on how many events have been processed.
         /// </para>
         /// <para>
-        /// This offers the subscriber a simpler API than <see cref="IStreamingEventConsumer.SubscribeToReader"/>
+        /// This offers the subscriber a simpler API than <see cref=".SubscribeToReader"/>
         /// allowing them to get the entire collection of events once the last one has been received from the producer.
         /// </para>
         /// </summary>
@@ -28,7 +28,7 @@
         void SubscribeToCollection<TEvent>(IStreamingCollectionHandler<TEvent> handler);
 
         /// <summary>
-        /// Subscribe to a stream of events that will get handled by a <see cref="IStreamingReaderHandler"/>.
+        /// Subscribe to a stream of events that will get handled by a <see cref="IStreamingReaderHandler{TEvent}"/>.
         /// <para>
         /// This offers the subscriber a lower latency API to immediately pull events from a 
         /// stream as they arrive.

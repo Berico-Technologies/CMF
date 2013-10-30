@@ -7,6 +7,7 @@ namespace cmf.bus.support
 {
     /// <summary>
     /// An in-memory implementation of the envelope bus interface.
+    /// </summary>
     /// <remarks>
     /// <para>
     /// All registrations are held in-memory and all sent envelopes are
@@ -29,14 +30,19 @@ namespace cmf.bus.support
     /// override the Dispatch method to do whatever you want.
     /// </para>
     /// </remarks>
-    /// </summary>
     public class InMemoryEnvelopeBus : IEnvelopeBus
     {
+        /// <summary>
+        /// A list of the registrations that have been registered using <see cref="Register"/> 
+        /// and not unregistered with <see cref="Unregister"/>.
+        /// </summary>
         protected List<IRegistration> _registrationList;
 
         private object _registrationListLock = new object();
 
-
+        /// <summary>
+        /// Initializes a new instance of the in-memory bus.
+        /// </summary>
         public InMemoryEnvelopeBus()
         {
             _registrationList = new List<IRegistration>();
@@ -73,7 +79,12 @@ namespace cmf.bus.support
             }
         }
 
-
+        /// <summary>
+        /// Dispatches a sent envelop to a set of <see cref="IRegistration"/> handlers 
+        /// sequentially on a background thread.
+        /// </summary>
+        /// <param name="env">The envelope to dispatch</param>
+        /// <param name="handlerList">The set of handlers to dispatch it to.</param>
         protected virtual void Dispatch(Envelope env, IEnumerable<IRegistration> handlerList)
         {
             Thread dispatchThread = new Thread(new ThreadStart(delegate () {

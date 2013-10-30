@@ -22,12 +22,19 @@ namespace cmf.bus
         /// </summary>
         public byte[] Payload { get; set; }
 
-
+        /// <summary>
+        /// Initializes a new instance of the Envelope class.
+        /// </summary>
         public Envelope()
         {
             this.Headers = new Dictionary<string, string>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the Envelope class with specific headers and payload.
+        /// </summary>
+        /// <param name="headers">The headers for the envelope.</param>
+        /// <param name="payload">The payload of the envelope.</param>
         public Envelope(IDictionary<string, string> headers, byte[] payload)
         {
             this.Headers = headers;

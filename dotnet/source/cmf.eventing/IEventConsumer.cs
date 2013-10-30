@@ -4,6 +4,10 @@ using cmf.bus;
 
 namespace cmf.eventing
 {
+    /// <summary>
+    /// An interface to define the methods by which an client may register to receive
+    /// of a particular type.
+    /// </summary>
     public interface IEventConsumer : IDisposable
     {
         /// <summary>
@@ -13,7 +17,8 @@ namespace cmf.eventing
         /// </summary>        
         /// <param name="handler">The IEventHandler implementation that will 
         /// handle the event.</param>
-        /// <param name="envelopeFilter"></param>
+        /// <param name="envelopeFilter">The filter predicate to use in selecting 
+        /// the events which will be forwarded to the handler for processing.</param>
         /// <exception cref="System.Exception">May throw an exception.</exception>
         void Subscribe(IEventHandler handler, Predicate<Envelope> envelopeFilter);
 
@@ -25,6 +30,8 @@ namespace cmf.eventing
         /// <typeparam name="TEvent">The specified type of event to listen for.</typeparam>
         /// <param name="handler">Action that handles for the TEvent type. The 
         /// IDictionary received are the message headers sent with the event.</param>
+        /// <param name="envelopeFilter">The filter predicate to use in selecting 
+        /// the events which will be forwarded to the handler for processing.</param>
         /// <exception cref="System.Exception">May throw an exception.</exception>
         void Subscribe<TEvent>(Action<TEvent, IDictionary<string, string>> handler, Predicate<Envelope> envelopeFilter) where TEvent : class;
     }
