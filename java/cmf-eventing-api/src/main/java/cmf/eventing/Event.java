@@ -15,13 +15,11 @@ public @interface Event {
 	
 	/**
 	 * Gets the topic of the event.
-	 * @return
 	 */
 	String topic();
 	
 	/**
 	 * Gets the type of the event.
-	 * @return
 	 */
 	String type();
 }

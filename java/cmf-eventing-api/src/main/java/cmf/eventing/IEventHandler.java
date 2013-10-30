@@ -39,8 +39,8 @@ public interface IEventHandler<TEVENT> {
      * between this method and the {@link cmf.bus.IRegistration#handleFailed} method 
      * is implementation dependent.
      * 
-     * @param env The envelope in which the event was received.
-     * @param ex The exception that occurred.
+     * @param envelope The envelope in which the event was received.
+     * @param e The exception that occurred.
      * 
      * @return An object indicating the outcome of handling the envelope.  How the return
      * value is interpreted is dependent upon the {@link IEventConsumer} implementation.

@@ -28,14 +28,12 @@ public interface IEventStream extends IDisposable {
 
     /**
      * Gets the message topic upon which the events will be published.
-     * @return The message topic.
      */
     String getTopic();
 
     /**
      * Gets the unique sequence identifier that all messages published in this stream 
      * will be tagged with.
-     * @return
      */
     String getSequenceId();
 }

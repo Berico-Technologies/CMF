@@ -4,7 +4,7 @@ import java.util.Map;
 
 /**
  * Defines the interface that must be implemented by types that wish to 
- * {@link IEnvelopeReceiver#Register} to receive envelopes.
+ * {@link IEnvelopeReceiver#register} to receive envelopes.
  */public interface IRegistration {
 
 	/**
@@ -19,9 +19,8 @@ import java.util.Map;
     IEnvelopeFilterPredicate getFilterPredicate();
 
     /**
-     * A key/value set of properties that describe the envelopes to be received.  The meaning of
+     * Gets the key/value set of properties that describe the envelopes to be received.  The meaning of
      * these values are dependent upon the {@link IEnvelopeReceiver} implementation.
-     * @return
      */
     Map<String, String> getRegistrationInfo();
 

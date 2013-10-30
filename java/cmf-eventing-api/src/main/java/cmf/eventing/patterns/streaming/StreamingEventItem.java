@@ -33,7 +33,6 @@ public class StreamingEventItem<TEVENT>  {
 
     /**
      * Gets the sequenceId value which is common to all events in the same stream.
-     * @return
      */
     public UUID getSequenceId() {
         return UUID.fromString(eventHeaders.get(SEQUENCE_ID));
@@ -41,7 +40,6 @@ public class StreamingEventItem<TEVENT>  {
 
     /**
      * Gets the ordinal position of this event within the event stream.
-     * @return
      */
     public int getPosition() {
         return Integer.parseInt(eventHeaders.get(POSITION));
@@ -49,7 +47,6 @@ public class StreamingEventItem<TEVENT>  {
 
     /**
      * Returns all headers associated with the received event.
-     * @return
      */
     public Map<String, String> getEventHeaders() {
         return eventHeaders;

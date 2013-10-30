@@ -31,18 +31,18 @@ public class EnvelopeHeaderConstants {
     
     /**
      * Indicates the particular messaging pattern being used to deliver the message.  Valid values
-     * are {@link Envelope#MESSAGE_PATTERN_PUBSUB} and {@link Envelope#MESSAGE_PATTERN_RPC}
+     * are {@link EnvelopeHeaderConstants#MESSAGE_PATTERN_PUBSUB} and {@link EnvelopeHeaderConstants#MESSAGE_PATTERN_RPC}
      */
     public static final String MESSAGE_PATTERN = "cmf.bus.message.pattern";
     
     /**
-     * The value to which the {@link Envelope#MESSAGE_PATTERN} header is set to indicate 
+     * The value to which the {@link EnvelopeHeaderConstants#MESSAGE_PATTERN} header is set to indicate 
      * that the message is participating in a pub-sub messaging pattern.
      */
     public static final String MESSAGE_PATTERN_PUBSUB = "cmf.bus.message.pattern#pub_sub";
  
     /**
-     * The value to which the {@link Envelope#MESSAGE_PATTERN} header is set to indicate 
+     * The value to which the {@link EnvelopeHeaderConstants#MESSAGE_PATTERN} header is set to indicate 
      * that the message is participating in a RPC messaging pattern.
      */
     public static final String MESSAGE_PATTERN_RPC = "cmf.bus.message.pattern#rpc";
