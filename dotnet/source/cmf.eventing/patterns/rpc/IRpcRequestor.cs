@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace cmf.eventing.patterns.rpc
 {
+    /// <summary>
+    /// An interface to define the methods by which an client may send 
+    /// RPC messages and receive responses to the same.
+    /// </summary>
 	public interface IRpcRequestor : IDisposable
 	{
         /// <summary>
-        /// Gets a response to the given request, waiting for a specified span of time.
+        /// Sends an RPC message and returns the first response of any type that is received on the specified topic.
         /// </summary>
         /// <param name="request">The request to be published</param>
         /// <param name="timeout">The span of time to wait for a response</param>
@@ -19,7 +21,7 @@ namespace cmf.eventing.patterns.rpc
 
         
         /// <summary>
-        /// Gets a response to the given request, waiting for a specified span of time.
+        /// Sends an RPC message and returns the first response received of an expected type.
         /// </summary>
         /// <typeparam name="TResponse">The Type of response to expect</typeparam>
         /// <param name="request">The request to be published</param>
@@ -29,7 +31,7 @@ namespace cmf.eventing.patterns.rpc
 
 
         /// <summary>
-        /// Gathers zero or more responses to a request.
+        /// Sends an RPC message and returns all responses of any types that are received on a list of topics within a given time period.
         /// </summary>
         /// <param name="request">The request to publish</param>
         /// <param name="timeout">The amount of time to wait for responses</param>
@@ -38,7 +40,7 @@ namespace cmf.eventing.patterns.rpc
         IEnumerable GatherResponsesTo(object request, TimeSpan timeout, params string[] expectedTopics);
 
         /// <summary>
-        /// Gathers zero or more responses to a request.
+        /// Sends an RPC message and returns all responses of an expected type that are received within a given time period.
         /// </summary>
         /// <typeparam name="TResponse">The Type of responses to expect</typeparam>
         /// <param name="request">The request to publish</param>

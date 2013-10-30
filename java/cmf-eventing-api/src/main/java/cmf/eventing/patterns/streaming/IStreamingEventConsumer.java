@@ -25,8 +25,8 @@ public interface IStreamingEventConsumer extends IEventConsumer {
      *     allowing them to get the entire collection of events once the last one has been received 
      *     from the producer.
      * </p>
-     * @param handler
-     * @param <TEVENT>
+     * @param handler The streaming event handler that will handle the collection of events.
+     * @param <TEVENT> The type of event to be received.
      * @throws Exception
      */
     <TEVENT> void subscribeToCollection(IStreamingCollectionHandler<TEVENT> handler) throws Exception;
@@ -37,8 +37,8 @@ public interface IStreamingEventConsumer extends IEventConsumer {
      *     This offers the subscriber a lower latency API to immediately pull and handle events from 
      *     a stream as they arrive.
      * </p>
-     * @param handler
-     * @param <TEVENT>
+     * @param handler The streaming event handler that will handle the received events.
+     * @param <TEVENT> The type of event to be received.
      * @throws Exception
      */
     <TEVENT> void subscribeToReader(IStreamingReaderHandler<TEVENT> handler) throws Exception;

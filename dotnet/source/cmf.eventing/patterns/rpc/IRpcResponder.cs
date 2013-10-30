@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace cmf.eventing.patterns.rpc
 {
+    /// <summary>
+    /// An interface defining the methods by which a client responds to RPC calls.
+    /// </summary>
     public interface IRpcResponder : IDisposable
     {
         /// <summary>
-        /// Responds to an event.
+        /// Sends a response to a specific RPC request.
         /// </summary>
-        /// <param name="headers">The headers of the request to which we are responding.</param>
-        /// <param name="response">The response to publish.</param>
+        /// <param name="headers">The headers from the received event that contained the RPC 
+	    /// request. (Used to route the response back to the appropriate caller.)</param>
+        /// <param name="response">The response to sent.</param>
         void RespondTo(IDictionary<string, string> headers, object response);
     }
 }

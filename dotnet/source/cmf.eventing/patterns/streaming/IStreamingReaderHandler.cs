@@ -1,31 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using cmf.eventing;
 
 namespace cmf.eventing.patterns.streaming
 {
     /// <summary>
-    /// Adds behavior to the <see cref="cmf.eventing.IEventHandler"/> allowing it to process 
-    /// a stream of events sent via the <see cref="IStreamingEventBus"/>
+    /// Defines an interface to be implemented by types that wish to process 
+    /// individual events from a stream as they are received with minimal latency. 
     /// 
     /// <para>WARNING: The streaming event API and its accompanying implementation is deemed 
     /// to be a proof of concept at this point and subject to change.  It should not be used 
     /// in a production environment.</para>
     /// </summary>
-    /// <remarks>
-    /// Streams all events of type TEvent as they are received from the bus and places them into an 
-    /// <see cref="IStreamingEventItem"/> that can be returned immediately to the caller.
-    /// <para>
-    /// This implementation reduces the latency of the collection based option.
-    /// </para>
-    /// </remarks>
-    /// <typeparam name="TEvent"></typeparam>
+    /// <remarks>The core functionality of this interface is inherited from 
+    /// <see cref="IObserver">IObserver</see> whose methods should be implemented to 
+    /// receive the streamed events as they arive.</remarks>
+    /// <typeparam name="TEvent">The type of event which the handler is intended to handle.</typeparam>
     public interface IStreamingReaderHandler<TEvent> : IDisposable, IObserver<StreamingEventItem<TEvent>>
     {
-
+        /// <summary>
+        /// The type of the event which the handler is intended to receive collection of. 
+        /// Must be a non-abstract, non-generic type. Only events of the exact type will be
+        /// received. I.e. events that are sub-types of the returned type will not be received.
+        /// </summary>
         Type EventType { get; }
     }
 }

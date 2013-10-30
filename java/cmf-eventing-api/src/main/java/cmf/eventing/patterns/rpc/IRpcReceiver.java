@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.joda.time.Duration;
 
 /**
- * An interface to define the methods by which an client may sent RPC messages and 
+ * An interface to define the methods by which an client may send RPC messages and 
  * receive responses to the same.
  */
 public interface IRpcReceiver {

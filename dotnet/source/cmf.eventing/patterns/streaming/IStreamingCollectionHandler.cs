@@ -1,37 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using cmf.eventing;
 
 namespace cmf.eventing.patterns.streaming
 {
     /// <summary>
-    /// Adds behavior to the <see cref="cmf.eventing.IEventHandler"/> allowing it to process
-    /// a stream of events sent via the <see cref="IStreamingEventBus"/>
+    /// Defines an interface to be implemented by types that wish to process each received event stream 
+    /// as a complete collection, all at once, after all events in the stream are received.
     /// 
     /// <para>WARNING: The streaming event API and its accompanying implementation is deemed 
     /// to be a proof of concept at this point and subject to change.  It should not be used 
     /// in a production environment.</para>
     /// </summary>
+    /// <remarks>
+    /// This provides a way to gather all events belonging to a particular stream and deliver them as a cohesive collection.
+    /// <para>
+    /// A drawback, however, is that because it's holding the collection until all events 
+    /// in the stream have been received, it introduces a higher degree of latency into 
+    /// the process. This can be especially apparent the larger the sequence becomes.
+    /// </para>
+    /// <para>
+    /// The generic IEnumerable is of type StreamingEventItem comes sorted based on the 
+    /// position flag set in each event header. The position along with each event's own
+    /// headers can be obtained through the StreamingEventItem.
+    /// </para>
+    /// </remarks>
     public interface IStreamingCollectionHandler<TEvent>
     {
         /// <summary>
-        /// Aggregates all events of type TEvent and stores them into a <see cref="System.Collections.Generic.IEnumerable"/>
-        /// when the last event was received with the message header "isLast" set to true.
-        /// <para>
-        /// This provides a way to gather all events belonging to a particular sequence and deliver them 
-        /// in one cohesive collection.
-        /// </para>
-        /// <para>
-        /// One drawback, however, is that because it's holding the collection until all events in the stream
-        /// have been received, it introduces a higher degree of latency into the process.
-        /// This can be especially apparent the larger the sequence becomes.
-        /// </para>
+        /// This method is invoked after all event in a particular stream of the handled type is received. 
+        /// It is the method that should handle the received stream of events. 
         /// </summary>
         /// <param name="events">The collection of events that all belong to the same sequence</param>
-        /// <returns></returns>
         void HandleCollection(IEnumerable<StreamingEventItem<TEvent>> events);
 
         /// <summary>
@@ -40,6 +39,12 @@ namespace cmf.eventing.patterns.streaming
         /// <param name="percent">Percent of events processed so far.</param>
         void OnPercentCollectionReceived(double percent);
 
+        /// <summary>
+        /// The type of the event which the handler is intended to receive collection of.  
+        /// Must be a non-abstract,  non-generic type.  Only events of the exact type
+        /// will be received. I.e. events that are sub-types of the returned type 
+        /// will not be received.
+        /// </summary>
         Type EventType { get; }
     }
 }

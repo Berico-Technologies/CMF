@@ -1,13 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace cmf.bus
 {
+    /// <summary>
+    /// Represents a discreet message sent across the bus. Envelopes consist of two parts, 
+    /// payload represented as an array of bytes and optionally a set of headers represented 
+    /// as string/string map of key/value pairs. Together they comprise the message and any 
+    /// appropriate meta-data pertaining to it respectively.
+    /// </summary>
     public sealed class Envelope
     {
+        /// <summary>
+        ///  The envelope's set of headers.
+        /// </summary>
         public IDictionary<string, string> Headers { get; set; }
+
+        /// <summary>
+        /// The envelope's payload.
+        /// </summary>
         public byte[] Payload { get; set; }
 
 
@@ -22,7 +34,10 @@ namespace cmf.bus
             this.Payload = payload;
         }
 
-
+        /// <summary>
+        /// Returns a string representation of the envelope that lists the key/value pairs contained in the envelope's headers.
+        /// </summary>
+        /// <returns>A string representation of the envelope.</returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder("{");

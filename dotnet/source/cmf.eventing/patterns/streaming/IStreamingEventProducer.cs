@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using cmf.eventing;
+﻿using System.Collections.Generic;
 
 namespace cmf.eventing.patterns.streaming
 {
     /// <summary>
-    /// Adds behavior to the <see cref="cmf.eventing.IEventProducer"/> with the ability
-    /// to publish events to a stream.
+    /// Adds behavior to the <see cref="cmf.eventing.IEventProducer"/> that enables 
+    /// publishing events to a stream.
     /// <para>
-    /// This can be useful in scenarios where data is being processed as a response 
-    /// to a request event but the end of that response is not yet known.
-    /// By publishing a respone to a stream, the consumer can start to 
-    /// handle the results as opposed to potentially waiting a long time 
-    /// before anything comes back.
+    /// This can be useful in scenarios where data becomes available incrementally
+    /// and/or the total amount of data to be send is not known ahead of time.
+    /// By publishing a data to a stream, the consumer can start to receive and
+    /// handle the results as they arrive.
     /// </para>
-    /// 
+    /// <para>
+    /// Generally, this pattern is useful for larger responses that could
+    /// include some latency in getting everything packaged up in a single
+    /// response.
+    /// </para>
     /// <para>WARNING: The streaming event API and its accompanying implementation is deemed 
     /// to be a proof of concept at this point and subject to change.  It should not be used 
     /// in a production environment.</para>
@@ -25,31 +23,23 @@ namespace cmf.eventing.patterns.streaming
     public interface IStreamingEventProducer : IEventProducer
     {
         /// <summary>
-        /// Generate an evnt stream that can be used to publish to the <see cref="IStreamingEventBus"/>
+        /// Creates an event stream that can be used to publish to a stream of events. 
+        /// <see cref="IEventStream">IEventStream</see>s are useful when there is a 
+        /// need to publish an unknown number of events into a stream or there may be 
+        /// significant latency in preparing individual events.
         /// </summary>
-        /// <param name="topic"></param>
-        /// <returns></returns>
+        /// <param name="topic">The topic to which events in the stream should be published.</param>
+        /// <returns>The <see cref="IEventStream">IEventStream</see> that was created.</returns>
         IEventStream CreateStream(string topic);
 
         /// <summary>
-        /// Enumerates on the dataSet and publishes the elements to the bus.
-        /// <para>
-        /// In addition 2 new headers will be added to each event that is published:
-        /// <list type="number">
-        ///   <item>
-        ///     <term>cmf.bus.message.patterns#streaming.sequenceId</term>
-        ///     <description>A Guid that ties this event to a particular sequence. this is the unique identifier that
-        ///     indicates the message is part of a larger data set.
-        ///     </description>
-        ///   </item>
-        ///   <item>
-        ///     <term>cmf.bus.message.patterns#streaming.position</term>
-        ///     <description>An integer that indicates what position in the sequence this is.</description>
-        ///   </item>
-        /// </para>
+        /// Publishes a collection of events as a stream of known length. Useful when the 
+        /// complete set of events is available immediately but the total size of the dat
+        /// a could make publishing it all as a single event prohibitive.
         /// </summary>
-        /// <typeparam name="TEvent"></typeparam>
-        /// <param name="dataSet"></param>
+        /// <typeparam name="TEvent">The type of the events being published.</typeparam>
+        /// <param name="dataSet">The collection of events to publish.</param>
+        /// <exception cref="System.Exception">May throw an exception.</exception>
         void PublishChunkedSequence<TEvent>(ICollection<TEvent> dataSet);
 
     }

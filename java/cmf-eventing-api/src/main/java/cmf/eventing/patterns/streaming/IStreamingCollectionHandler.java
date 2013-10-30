@@ -28,20 +28,13 @@ public interface IStreamingCollectionHandler<TEVENT> {
     /**
      * This method is invoked after all event in a particular stream of the handled type is received.  
      * It is the method that should handle the received stream of events.
-     * Aggregates all events of type TEVENT and stores them into a {@link java.util.Collection}
-     * when the last event was received with the message header "isLast" set to true.
      * @param events The collections of events that all belong to the same stream.
-     * @return An object indicating the outcome of handling the event stream.  How the return
-     * value is interpreted is dependent upon the {@link IStreamingEventConsumer} implementation.
      */
     void handleCollection(Collection<StreamingEventItem<TEVENT>> events);
 
     /**
-     * Provides subscribers with the ability to know how many events have
-     * been received to date into the collection, prior to {@link #handleCollection} 
-     * being called.
+     * Enables subscribers with the ability to know how many events have been processed to date.
      * @param percent Percent of events processed so far.
-     * @return
      */
     void onPercentCollectionReceived(double percent);
 

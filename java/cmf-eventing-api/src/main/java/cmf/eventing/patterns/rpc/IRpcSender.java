@@ -8,7 +8,7 @@ import java.util.Map;
 public interface IRpcSender {
 
 	/**
-	 * Called to respond to an RPC request.
+	 * Sends a response to a specific RPC request.
 	 * 
 	 * @param headers The headers from the received event that contained the RPC 
 	 * request. (Used to route the response back to the appropriate caller.)

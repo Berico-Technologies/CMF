@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SEC = cmf.eventing.patterns.streaming.StreamingEnvelopeConstants;
 
 namespace cmf.eventing.patterns.streaming
 {
     /// <summary>
-    /// Contains the elements needed to receive an event from an event stream.
-    /// This allows each disrete event pulled from a subscribed event stream to 
-    /// contain the necessary state that a subscriber would need including the 
-    /// sequenceId, position, and whether this event is the last in the published
-    /// sequence
+    /// This is a wrapper class that wraps each event received as part of an event stream 
+    /// in addition to providing access to the wrapped event, it also provides access to 
+    /// additional stream specific meta data.
     /// 
     /// <para>WARNING: The streaming event API and its accompanying implementation is deemed 
     /// to be a proof of concept at this point and subject to change.  It should not be used 
@@ -22,6 +18,9 @@ namespace cmf.eventing.patterns.streaming
         private readonly TEvent _streamEvent;
         private readonly IDictionary<string, string> _eventHeaders;
 
+        /// <summary>
+        /// The event received from the published stream
+        /// </summary>
         public TEvent Event
         {
             get
@@ -30,6 +29,9 @@ namespace cmf.eventing.patterns.streaming
             }
         }
 
+        /// <summary>
+        /// The sequenceId value which is common to all events in the same stream.
+        /// </summary>
         public Guid SequenceId
         {
             get
@@ -38,6 +40,9 @@ namespace cmf.eventing.patterns.streaming
             }
         }
 
+        /// <summary>
+        /// The ordinal position of this event within the event stream.
+        /// </summary>
         public int Position
         {
             get
@@ -46,7 +51,9 @@ namespace cmf.eventing.patterns.streaming
             }
         }
 
-
+        /// <summary>
+        /// The headers associated with the received event.
+        /// </summary>
         public IDictionary<string, string> EventHeaders
         {
             get

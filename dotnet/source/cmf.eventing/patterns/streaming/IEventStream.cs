@@ -1,35 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace cmf.eventing.patterns.streaming
 {
     /// <summary>
-    /// WARNING: The streaming event API and its accompanying implementation is deemed 
+    /// An interface representing an single event stream and defining the methods 
+    /// needed to publish events individually into that stream.
+    /// <para>WARNING: The streaming event API and its accompanying implementation is deemed 
     /// to be a proof of concept at this point and subject to change.  It should not be used 
-    /// in a production environment. 
+    /// in a production environment.</para> 
     /// </summary>
     public interface IEventStream : IDisposable
     {
         /// <summary>
-        /// Publishes messages on the <see cref="IStreamingEventBus"/> after the batch limit has been met.
+        /// Determines the number of events that must be publish to the stream buffer 
+        /// before the buffer is actually flushed to the underlying transport.
         /// </summary>
         int BatchLimit { set; }
 
         /// <summary>
-        /// Called by the <see cref="IStreamingEventBus"/> to publish each element in a serializable format.
+        /// Publishes an event into the event stream. Depending on the value of BatchLimit,
+        /// the event may be buffered prior to being send on the underlying transport.
         /// </summary>
         /// <param name="evt"></param>
         void Publish(object evt);
 
         /// <summary>
-        /// Indicates what message topic to which all events on this stream will be published.
+        /// The message topic upon which the events will be published.
         /// </summary>
         string Topic { get; }
 
         /// <summary>
-        /// Indicates the unique sequence identifier that all messages will be linked to in this stream.
+        /// The unique sequence identifier that all messages published in this stream will be tagged with.
         /// </summary>
         string SequenceId { get; }
     }

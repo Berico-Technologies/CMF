@@ -35,14 +35,15 @@ public interface IEventHandler<TEVENT> {
 
     /**
      * This method is invoked when an exception occurs attempting to handle an 
-     * envelope that meets the registration and filter criteria.  The relationship 
-     * between this method and the {@link cmf.bus.IEnvelopeHandler#handleFailed} method 
+     * envelope that meets the criteria to be handled by this handler.  The relationship 
+     * between this method and the {@link cmf.bus.IRegistration#handleFailed} method 
      * is implementation dependent.
      * 
      * @param env The envelope in which the event was received.
      * @param ex The exception that occurred.
      * 
-     * @return An object indicating the outcome of handling the envelope.
+     * @return An object indicating the outcome of handling the envelope.  How the return
+     * value is interpreted is dependent upon the {@link IEventConsumer} implementation.
      */
     Object handleFailed(Envelope envelope, Exception e);
 }

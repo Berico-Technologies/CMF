@@ -1,28 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace cmf.eventing
 {
 	/// <summary>
-	/// The interface for a component that can produce events.
+    /// An interface defining the methods by which an client may publish events.
 	/// </summary>
     public interface IEventProducer : IDisposable
     {
 		/// <summary>
-		/// Publish the specified event.
+        /// Publishes an event.
 		/// </summary>
 		/// <param name="ev">The event to publish</param>
 		/// <exception cref="System.Exception">May throw an exception.</exception>
         void Publish(object ev);
+        //TODO: Consider moving Publish(object ev) to an extension method as per the pattern in IEventConsumer.
 
 		/// <summary>
-		/// Publish the specified event with the given headers.
+        /// Publishes an event and specifies a set of custom headers to send with it. 
 		/// </summary>
 		/// <param name="ev">The event to publish</param>
-		/// <param name="headers">The headers to add to the event.</param>
+        /// <param name="headers">The custom headers to publish with it.</param>
 		/// <exception cref="System.Exception">May throw an exception.</exception>
+        /// <remarks>Normally the headers to be sent with an event are computed by the 
+        /// IEventProducer implementation. If custom headers are provided, how they 
+        /// are combined with any computed headers is implementation dependent.</remarks>
 		void Publish(object ev, IDictionary<string, string> headers);
     }
 }

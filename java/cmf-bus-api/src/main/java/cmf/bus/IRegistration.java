@@ -9,7 +9,7 @@ import java.util.Map;
 
 	/**
 	 * Specifies a filter predicate, if any, that should be used to select which received 
-	 * envelopes should be forwarded to the handler for processing.  Filtering occurs before
+	 * envelopes should be forwarded to the handle method for processing.  Filtering occurs before
 	 * the envelope processing chain is invoked.  Its judicious use can therefore eliminate
 	 * unnecessary processing of unwanted messages and improve performance.
 	 * @return The {@link IEnvelopeFilterPredicate} instance to use to as a filter or null.
@@ -42,7 +42,7 @@ import java.util.Map;
      * This method will be invoked when an exception occurs attempting to handle an 
      * envelope that meets the registration and filter criteria.
      * 
-     * @param env The envelope that was received.
+     * @param env The envelope to be handled.
      * @param ex The exception that occurred.
      * 
      * @return An object indicating the outcome of handling the envelope.  How the return

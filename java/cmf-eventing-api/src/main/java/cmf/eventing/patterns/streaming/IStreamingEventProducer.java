@@ -8,11 +8,10 @@ import java.util.Collection;
  * Adds behavior to the {@link cmf.eventing.IEventProducer} that enables publishing
  * events as a stream.
  * <p>
- *     This can be useful in scenarios where data is being processed as a response
- *     to a request event but the end of that response is not yet known.
- *     By publishing a response to a stream, the consumer can start to
- *     handle the results as opposed to potentially waiting a long time
- *     before anything comes back.
+ *     This can be useful in scenarios where data becomes available incrementally
+ *     and/or the total amount of data to be send is not known ahead of time.
+ *     By publishing a data to a stream, the consumer can start to receive and
+ *     handle the results as they arrive.
  * </p>
  * <p>
  *     Generally, this pattern is useful for larger responses that could
@@ -28,12 +27,13 @@ public interface IStreamingEventProducer extends IEventProducer {
 
     /**
      * Creates an event stream that can be used to publish to a stream of events.
-     * {@IEventStream}s are useful when there is a need to publish an unknown number
+     * {@link IEventStream}s are useful when there is a need to publish an unknown number
      * of events into a stream or there may be significant latency in preparing 
      * individual events.
-     * @param topic The topic upon which events in the stream should be published.
-     * @return
+     * @param topic The topic to which events in the stream should be published.
+     * @return The {@link IEventStream} that was created.
      */
+	//TODO: should this not be type based vs topic based?
     IEventStream createStream(String topic);
 
 
