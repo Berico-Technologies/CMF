@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{FB5A93
 		source\GlobalAssemblyInfo.cs = source\GlobalAssemblyInfo.cs
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{71F34024-2718-44E6-970E-2C17041C8B65}"
+EndProject
+Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "cmf.docs", "docs\cmf.docs.shfbproj", "{E72C9F29-3F91-417D-BE98-274394D47B38}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,12 +46,22 @@ Global
 		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8}.Release|x86.ActiveCfg = Release|Any CPU
+		{E72C9F29-3F91-417D-BE98-274394D47B38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E72C9F29-3F91-417D-BE98-274394D47B38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E72C9F29-3F91-417D-BE98-274394D47B38}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E72C9F29-3F91-417D-BE98-274394D47B38}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E72C9F29-3F91-417D-BE98-274394D47B38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E72C9F29-3F91-417D-BE98-274394D47B38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E72C9F29-3F91-417D-BE98-274394D47B38}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E72C9F29-3F91-417D-BE98-274394D47B38}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E72C9F29-3F91-417D-BE98-274394D47B38}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{5386254B-6A77-4244-9364-1013899A2B11} = {FB5A9321-0ECC-431E-A880-2CA57DC9EA26}
 		{F468DDBA-2E1A-49F7-8A36-F362AC1A90F8} = {FB5A9321-0ECC-431E-A880-2CA57DC9EA26}
+		{5386254B-6A77-4244-9364-1013899A2B11} = {FB5A9321-0ECC-431E-A880-2CA57DC9EA26}
+		{E72C9F29-3F91-417D-BE98-274394D47B38} = {71F34024-2718-44E6-970E-2C17041C8B65}
 	EndGlobalSection
 EndGlobal
