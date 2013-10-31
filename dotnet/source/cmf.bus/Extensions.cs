@@ -14,7 +14,7 @@ namespace cmf.bus
         /// </summary>
         /// <param name="hash">The dictionary to format.</param>
         /// <param name="separator">The separator to be used between key/value pairs.  The default is a comma.</param>
-        /// <returns></returns>
+        /// <returns>A string representation of the dictionary.</returns>
         public static string Flatten(this IDictionary<string, string> hash, string separator = ",")
         {
             StringBuilder sb = new StringBuilder();

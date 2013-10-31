@@ -52,7 +52,7 @@ namespace cmf.eventing
         /// Registers an <see cref="IEventHandler" /> to handle 
         /// all events of a specific type of event (TEVENT) received by the bus.
         /// </summary>
-        /// <param name="consumer"></param>
+        /// <param name="consumer">The consumer that will manage the subscription.</param>
         /// <param name="handler">The IEventHandler implementation that will 
         /// handle the event.</param>
         /// <exception cref="System.Exception">May throw an exception.</exception>
@@ -65,7 +65,7 @@ namespace cmf.eventing
         /// Registers a handler via an <see cref="Action" /> to handle 
         /// all events of a specific type of event (TEVENT) received by the bus.
         /// </summary>
-        /// <param name="consumer"></param>
+        /// <param name="consumer">The consumer that will manage the subscription.</param>
         /// <typeparam name="TEvent">The specified type of event to listen for.</typeparam>
         /// <param name="handler">Action that handles for the TEvent type. The 
         /// IDictionary received are the message headers sent with the event.</param>

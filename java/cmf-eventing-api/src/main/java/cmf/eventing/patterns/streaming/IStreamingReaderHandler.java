@@ -6,9 +6,11 @@ import cmf.bus.IDisposable;
  * Defines an interface to be implemented by types that wish to process individual events
  * from a stream as they are received with minimal latency. 
  * 
- * WARNING: The streaming event API and its accompanying implementation is deemed 
- * to be a proof of concept at this point and subject to change.  It should not be used 
- * in a production environment. 
+ * <p>
+ *     WARNING: The streaming event API and its accompanying implementation is deemed 
+ *     to be a proof of concept at this point and subject to change.  It should not be used 
+ *     in a production environment.
+ * </p>
  * @see IStreamingEventConsumer#subscribeToReader(IStreamingReaderHandler)
  */
 public interface IStreamingReaderHandler<TEVENT> extends IDisposable {

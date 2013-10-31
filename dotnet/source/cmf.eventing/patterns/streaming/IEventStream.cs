@@ -22,7 +22,7 @@ namespace cmf.eventing.patterns.streaming
         /// Publishes an event into the event stream. Depending on the value of BatchLimit,
         /// the event may be buffered prior to being send on the underlying transport.
         /// </summary>
-        /// <param name="evt"></param>
+        /// <param name="evt">The event to publish into the stream.</param>
         /// <seealso cref="IStreamingEventConsumer.SubscribeToReader{TEvent}"/>
         void Publish(object evt);
 

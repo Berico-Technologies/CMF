@@ -20,9 +20,11 @@ import java.util.Collection;
  *     can be obtained through the {@link StreamingEventItem}
  * </p>
  * 
- * WARNING: The streaming event API and its accompanying implementation is deemed 
- * to be a proof of concept at this point and subject to change.  It should not be used 
- * in a production environment. 
+ * <p>
+ *     WARNING: The streaming event API and its accompanying implementation is deemed 
+ *     to be a proof of concept at this point and subject to change.  It should not be used 
+ *     in a production environment.
+ * </p>
  * @see IStreamingEventConsumer#subscribeToCollection(IStreamingCollectionHandler)
  */
 public interface IStreamingCollectionHandler<TEVENT> {

@@ -10,9 +10,11 @@ import static cmf.eventing.patterns.streaming.StreamingEnvelopeConstants.*;
  * In addition to providing access to the wrapped event, it also provides access to 
  * additional stream specific meta data. 
  * 
- * WARNING: The streaming event API and its accompanying implementation is deemed 
- * to be a proof of concept at this point and subject to change.  It should not be used 
- * in a production environment. 
+ * <p>
+ *     WARNING: The streaming event API and its accompanying implementation is deemed 
+ *     to be a proof of concept at this point and subject to change.  It should not be used 
+ *     in a production environment.
+ * </p>
  * @see IStreamingCollectionHandler#handleCollection(java.util.Collection)
  * @see IStreamingReaderHandler#onEventRead(StreamingEventItem)
  */

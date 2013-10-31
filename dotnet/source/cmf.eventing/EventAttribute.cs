@@ -30,6 +30,8 @@ namespace cmf.eventing
         /// <summary>
         /// Initializes a new instance of the EventAttribute class with a specific topic and event type.
         /// </summary>
+        /// <param name="eventTopic">The topic of the event.</param>
+        /// <param name="eventType">The type of the event.</param>
         public EventAttribute(string eventTopic = null, string eventType = null)
         {
             this.EventType = eventType;

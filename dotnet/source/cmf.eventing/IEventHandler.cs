@@ -21,8 +21,9 @@ namespace cmf.eventing
         /// This method is invoked when an event of handled type is received. 
         /// It is the method that should handle the received event.
         /// </summary>
-        /// <param name="ev"></param>
-        /// <param name="headers"></param>
+        /// <param name="ev">The event to process.</param>
+        /// <param name="headers">The <see cref="Envelope"/> headers of the envelope in which
+        /// the event arrived. </param>
         /// <returns>An object indicating the outcome of handling the event.</returns>
         /// <remarks>How the return value is interpreted is dependent upon the 
         /// <see cref="IEventConsumer" /> implementation</remarks>
@@ -32,8 +33,8 @@ namespace cmf.eventing
         /// This method is invoked when an exception occurs attempting to handle 
         /// an envelope that meets the criteria to be handled by this handler. 
         /// </summary>
-        /// <param name="env"></param>
-        /// <param name="ex"></param>
+        /// <param name="env">The envelope in which the event was received.</param>
+        /// <param name="ex">The exception that occurred.</param>
         /// <returns>An object indicating the outcome of handling the event.</returns>
         /// <remarks><para>How the return value is interpreted is dependent upon the 
         /// <see cref="IEventConsumer" /> implementation.</para>

@@ -4,9 +4,11 @@ package cmf.eventing.patterns.streaming;
  * Defines several constants that are used as {@link cmf.bus.Envelope} 
  * header keys for headers that provide stream specific metadata.
  * 
- * WARNING: The streaming event API and its accompanying implementation is deemed 
- * to be a proof of concept at this point and subject to change.  It should not be used 
- * in a production environment. 
+ * <p>
+ *     WARNING: The streaming event API and its accompanying implementation is deemed 
+ *     to be a proof of concept at this point and subject to change.  It should not be used 
+ *     in a production environment.
+ * </p>
  */
 public class StreamingEnvelopeConstants {
 	/**

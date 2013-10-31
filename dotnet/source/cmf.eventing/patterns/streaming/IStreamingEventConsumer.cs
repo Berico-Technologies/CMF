@@ -14,7 +14,7 @@
     {
         /// <summary>
         /// Subscribe to a stream of events that will be collected into a <see cref="System.Collections.Generic.IEnumerable{T}"/> 
-        /// and handed to an <see cref="IStreamingCollectionHandler"/> implementation for handling once all are received. 
+        /// and handed to an <see cref="IStreamingCollectionHandler{TEvent}"/> implementation for handling once all are received. 
         /// <para>
         /// See <see cref="IStreamingCollectionHandler{TEvent}.OnPercentCollectionReceived"/> as a way to 
         /// get a progress check on how many events have been processed.

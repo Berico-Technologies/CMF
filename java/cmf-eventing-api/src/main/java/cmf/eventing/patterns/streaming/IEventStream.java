@@ -6,9 +6,11 @@ import cmf.bus.IDisposable;
  * An interface representing an single event stream and defining the methods needed 
  * to publish events individually into that stream.  
  * 
- * WARNING: The streaming event API and its accompanying implementation is deemed 
- * to be a proof of concept at this point and subject to change.  It should not be used 
- * in a production environment. 
+ * <p>
+ *     WARNING: The streaming event API and its accompanying implementation is deemed 
+ *     to be a proof of concept at this point and subject to change.  It should not be used 
+ *     in a production environment.
+ * </p>
  * @see IStreamingEventProducer#createStream(String)
  */
 public interface IEventStream extends IDisposable {

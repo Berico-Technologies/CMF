@@ -14,7 +14,6 @@ public interface IEnvelopeFilterPredicate {
      * @param envelope The raw envelope that has been received.
      * @return True if the envelope should be processed by the handler,
      * otherwise false.
-     * @see Envelope
      */
     boolean filter(Envelope envelope);
 }

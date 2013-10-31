@@ -19,9 +19,11 @@ import java.util.Collection;
  *     response.
  * </p>
  * 
- * WARNING: The streaming event API and its accompanying implementation is deemed 
- * to be a proof of concept at this point and subject to change.  It should not be used 
- * in a production environment. 
+ * <p>
+ *     WARNING: The streaming event API and its accompanying implementation is deemed 
+ *     to be a proof of concept at this point and subject to change.  It should not be used 
+ *     in a production environment.
+ * </p>
  * @see IStreamingEventBus
  * @see IStreamingEventConsumer
  */
