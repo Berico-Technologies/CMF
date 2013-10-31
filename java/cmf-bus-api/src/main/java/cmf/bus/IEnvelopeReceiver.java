@@ -3,6 +3,7 @@ package cmf.bus;
 /**
  * An interface defining the methods by which a client may register to receive
  * envelopes and unregister for the same.
+ * @see IEnvelopeBus
  */
 public interface IEnvelopeReceiver extends IDisposable {
 

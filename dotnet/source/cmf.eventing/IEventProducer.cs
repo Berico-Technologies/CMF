@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using cmf.bus;
 
 namespace cmf.eventing
 {
 	/// <summary>
     /// An interface defining the methods by which an client may publish events.
 	/// </summary>
+    /// <seealso cref="IEventBus"/>
     public interface IEventProducer : IDisposable
     {
 		/// <summary>
@@ -25,6 +27,7 @@ namespace cmf.eventing
         /// <remarks>Normally the headers to be sent with an event are computed by the 
         /// IEventProducer implementation. If custom headers are provided, how they 
         /// are combined with any computed headers is implementation dependent.</remarks>
+        /// <seealso cref="Envelope.Headers"/>
 		void Publish(object ev, IDictionary<string, string> headers);
     }
 }

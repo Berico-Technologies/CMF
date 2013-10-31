@@ -13,6 +13,8 @@ import static cmf.eventing.patterns.streaming.StreamingEnvelopeConstants.*;
  * WARNING: The streaming event API and its accompanying implementation is deemed 
  * to be a proof of concept at this point and subject to change.  It should not be used 
  * in a production environment. 
+ * @see IStreamingCollectionHandler#handleCollection(java.util.Collection)
+ * @see IStreamingReaderHandler#onEventRead(StreamingEventItem)
  */
 public class StreamingEventItem<TEVENT>  {
     private final TEVENT event;

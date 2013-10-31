@@ -8,6 +8,7 @@ namespace cmf.eventing
     /// <summary>
     /// Defines an interface to be implemented by types that wish to process received events.
     /// </summary>
+    /// <seealso cref="IEventConsumer.Subscribe"/>
     public interface IEventHandler
     {
         /// <summary>

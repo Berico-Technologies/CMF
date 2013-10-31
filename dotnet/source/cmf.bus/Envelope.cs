@@ -10,6 +10,8 @@ namespace cmf.bus
     /// as string/string map of key/value pairs. Together they comprise the message and any 
     /// appropriate meta-data pertaining to it respectively.
     /// </summary>
+    /// <seealso cref="IEnvelopeSender.Send"/>
+    /// <seealso cref="IRegistration.Handle"/>
     public sealed class Envelope
     {
         /// <summary>

@@ -25,6 +25,7 @@ namespace cmf.eventing.patterns.streaming
     /// headers can be obtained through the StreamingEventItem.
     /// </para>
     /// </remarks>
+    /// <seealso cref="IStreamingEventConsumer.SubscribeToCollection{TEvent}"/>
     public interface IStreamingCollectionHandler<TEvent>
     {
         /// <summary>

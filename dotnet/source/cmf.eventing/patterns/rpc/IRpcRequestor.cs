@@ -8,6 +8,8 @@ namespace cmf.eventing.patterns.rpc
     /// An interface to define the methods by which an client may send 
     /// RPC messages and receive responses to the same.
     /// </summary>
+    /// <seealso cref="IRpcEventBus"/>
+    /// <seealso cref="IRpcResponder"/>
 	public interface IRpcRequestor : IDisposable
 	{
         /// <summary>

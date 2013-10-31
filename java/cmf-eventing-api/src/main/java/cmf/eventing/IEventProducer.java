@@ -6,6 +6,7 @@ import cmf.bus.IDisposable;
 
 /**
  * An interface defining the methods by which an client may publish events.
+ * @see IEventBus
  */
 public interface IEventProducer extends IDisposable {
 
@@ -29,6 +30,7 @@ public interface IEventProducer extends IDisposable {
      * @param headers The custom headers to publish with it.
      *
      * @throws Exception
+     * @see cmf.bus.Envelope#getHeaders()
      */
     void publish(Object event, Map<String, String> headers) throws Exception;
 }

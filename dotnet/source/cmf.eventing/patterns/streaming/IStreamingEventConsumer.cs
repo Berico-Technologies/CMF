@@ -8,6 +8,8 @@
     /// to be a proof of concept at this point and subject to change.  It should not be used 
     /// in a production environment.</para>
     /// </summary>
+    /// <seealso cref="IStreamingEventBus"/>
+    /// <seealso cref="IStreamingEventProducer"/>
     public interface IStreamingEventConsumer : IEventConsumer
     {
         /// <summary>
@@ -25,6 +27,7 @@
         /// <typeparam name="TEvent">The type of event to be received.</typeparam>
         /// <param name="handler">The streaming event handler that will handle the collection of events.</param>
         /// <exception cref="System.Exception">May throw an exception.</exception>
+        /// <seealso cref="IStreamingEventProducer.PublishChunkedSequence{TEvent}"/>
         void SubscribeToCollection<TEvent>(IStreamingCollectionHandler<TEvent> handler);
 
         /// <summary>
@@ -37,6 +40,8 @@
         /// <typeparam name="TEvent">The type of event to be received.</typeparam>
         /// <param name="handler">The streaming event handler that will handle the received events.</param>
         /// <exception cref="System.Exception">May throw an exception.</exception>
+        /// <seealso cref="IEventStream.Publish"/>
+        /// <seealso cref="IStreamingEventProducer.CreateStream"/>
         void SubscribeToReader<TEvent>(IStreamingReaderHandler<TEvent> handler);
     }
 }

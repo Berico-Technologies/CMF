@@ -5,6 +5,7 @@ namespace cmf.bus
     /// <summary>
     /// An interface defining the methods by which an client may send envelopes.
     /// </summary>
+    /// <seealso cref="IEnvelopeBus"/>
     public interface IEnvelopeSender : IDisposable
     {
         /// <summary>

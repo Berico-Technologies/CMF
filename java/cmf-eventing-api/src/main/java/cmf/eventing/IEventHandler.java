@@ -3,10 +3,10 @@ package cmf.eventing;
 import java.util.Map;
 
 import cmf.bus.Envelope;
-import cmf.bus.IEnvelopeReceiver;
 
 /**
  * Defines an interface to be implemented by types that wish to process received events. 
+ * @see IEventConsumer#subscribe(IEventHandler)
  */
 public interface IEventHandler<TEVENT> {
 

@@ -14,6 +14,8 @@ namespace cmf.eventing.patterns.streaming
     /// in a production environment.</para>
     /// </summary>
     /// <typeparam name="TEvent">The type of the wrapped event.</typeparam>
+    /// <seealso cref="IStreamingCollectionHandler{TEvent}.HandleCollection"/>
+    /// <seealso cref="IStreamingReaderHandler{TEvent}">IStreamingReaderHandler.OnNext (Inherited from System.Observer)</seealso>
     public class StreamingEventItem<TEvent>
     {
         private readonly TEvent _streamEvent;

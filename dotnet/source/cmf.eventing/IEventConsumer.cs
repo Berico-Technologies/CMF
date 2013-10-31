@@ -8,6 +8,7 @@ namespace cmf.eventing
     /// An interface to define the methods by which an client may register to receive
     /// of a particular type.
     /// </summary>
+    /// <seealso cref="IEventBus"/>
     public interface IEventConsumer : IDisposable
     {
         /// <summary>
@@ -44,6 +45,7 @@ namespace cmf.eventing
     /// it simplified the job of implementing the interface.  Second it ensures 
     /// that all implementations behave in the same manner with respects to the
     /// the overloads.  </remarks>
+    /// <seealso cref="IEventConsumer"/>
     public static class EventConsumerExtensions
     {
         /// <summary>

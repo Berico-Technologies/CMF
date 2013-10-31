@@ -9,6 +9,7 @@ namespace cmf.eventing.patterns.streaming
     /// to be a proof of concept at this point and subject to change.  It should not be used 
     /// in a production environment.</para> 
     /// </summary>
+    /// <seealso cref="IStreamingEventProducer.CreateStream"/>
     public interface IEventStream : IDisposable
     {
         /// <summary>
@@ -22,11 +23,13 @@ namespace cmf.eventing.patterns.streaming
         /// the event may be buffered prior to being send on the underlying transport.
         /// </summary>
         /// <param name="evt"></param>
+        /// <seealso cref="IStreamingEventConsumer.SubscribeToReader{TEvent}"/>
         void Publish(object evt);
 
         /// <summary>
         /// The message topic upon which the events will be published.
         /// </summary>
+        /// <remarks>This is the topic provided to <see cref="IStreamingEventProducer.CreateStream"/>.</remarks>
         string Topic { get; }
 
         /// <summary>

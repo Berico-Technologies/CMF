@@ -20,6 +20,8 @@ namespace cmf.eventing.patterns.streaming
     /// to be a proof of concept at this point and subject to change.  It should not be used 
     /// in a production environment.</para>
     /// </summary>
+    /// <seealso cref="IStreamingEventBus"/>
+    /// <seealso cref="IStreamingEventConsumer"/>
     public interface IStreamingEventProducer : IEventProducer
     {
         /// <summary>
@@ -30,6 +32,7 @@ namespace cmf.eventing.patterns.streaming
         /// </summary>
         /// <param name="topic">The topic to which events in the stream should be published.</param>
         /// <returns>The <see cref="IEventStream" /> that was created.</returns>
+        /// <seealso cref="IStreamingEventConsumer.SubscribeToReader{TEvent}"/>
         IEventStream CreateStream(string topic);
 
         /// <summary>
@@ -40,6 +43,7 @@ namespace cmf.eventing.patterns.streaming
         /// <typeparam name="TEvent">The type of the events being published.</typeparam>
         /// <param name="dataSet">The collection of events to publish.</param>
         /// <exception cref="System.Exception">May throw an exception.</exception>
+        /// <seealso cref="IStreamingEventConsumer.SubscribeToCollection{TEvent}"/>
         void PublishChunkedSequence<TEvent>(ICollection<TEvent> dataSet);
 
     }

@@ -7,6 +7,8 @@ import org.joda.time.Duration;
 /**
  * An interface to define the methods by which an client may send RPC messages and 
  * receive responses to the same.
+ * @see IRpcEventBus
+ * @see IRpcSender
  */
 public interface IRpcReceiver {
 

@@ -10,6 +10,8 @@ import cmf.eventing.IEventConsumer;
  * WARNING: The streaming event API and its accompanying implementation is deemed 
  * to be a proof of concept at this point and subject to change.  It should not be used 
  * in a production environment. 
+ * @see IStreamingEventBus
+ * @see IStreamingEventProducer
  */
 public interface IStreamingEventConsumer extends IEventConsumer {
 
@@ -28,6 +30,7 @@ public interface IStreamingEventConsumer extends IEventConsumer {
      * @param handler The streaming event handler that will handle the collection of events.
      * @param <TEVENT> The type of event to be received.
      * @throws Exception
+     * @see IStreamingEventProducer#publishChunkedSequence(java.util.Collection)
      */
     <TEVENT> void subscribeToCollection(IStreamingCollectionHandler<TEVENT> handler) throws Exception;
 
@@ -40,6 +43,8 @@ public interface IStreamingEventConsumer extends IEventConsumer {
      * @param handler The streaming event handler that will handle the received events.
      * @param <TEVENT> The type of event to be received.
      * @throws Exception
+     * @see IEventStream#publish(Object)
+     * @see IStreamingEventProducer#createStream(String)
      */
     <TEVENT> void subscribeToReader(IStreamingReaderHandler<TEVENT> handler) throws Exception;
 

@@ -6,6 +6,7 @@ namespace cmf.bus
     /// An interface defining the methods by which a client may register to receive 
     /// envelopes and unregister for the same.
     /// </summary>
+    /// <seealso cref="IEnvelopeBus"/>
     public interface IEnvelopeReceiver : IDisposable
     {
         /// <summary>

@@ -22,6 +22,8 @@ import java.util.Collection;
  * WARNING: The streaming event API and its accompanying implementation is deemed 
  * to be a proof of concept at this point and subject to change.  It should not be used 
  * in a production environment. 
+ * @see IStreamingEventBus
+ * @see IStreamingEventConsumer
  */
 public interface IStreamingEventProducer extends IEventProducer {
 
@@ -32,6 +34,7 @@ public interface IStreamingEventProducer extends IEventProducer {
      * individual events.
      * @param topic The topic to which events in the stream should be published.
      * @return The {@link IEventStream} that was created.
+     * @see IStreamingEventConsumer#subscribeToReader(IStreamingReaderHandler)
      */
 	//TODO: should this not be type based vs topic based?
     IEventStream createStream(String topic);
@@ -43,6 +46,7 @@ public interface IStreamingEventProducer extends IEventProducer {
      * could make publishing it all as a single event prohibitive.
      * @param dataSet The collection of events to publish.
      * @throws Exception
+     * @see IStreamingEventConsumer#subscribeToCollection(IStreamingCollectionHandler)
      */
     public <TEVENT> void publishChunkedSequence(Collection<TEVENT> dataSet) throws Exception;
 

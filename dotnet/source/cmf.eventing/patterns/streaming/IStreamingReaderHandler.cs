@@ -14,6 +14,7 @@ namespace cmf.eventing.patterns.streaming
     /// <see cref="System.IObserver{T}" /> whose methods should be implemented to 
     /// receive the streamed events as they arrive.</remarks>
     /// <typeparam name="TEvent">The type of event which the handler is intended to handle.</typeparam>
+    /// <seealso cref="IStreamingEventConsumer.SubscribeToReader{TEvent}"/>
     public interface IStreamingReaderHandler<TEvent> : IDisposable, IObserver<StreamingEventItem<TEvent>>
     {
         /// <summary>

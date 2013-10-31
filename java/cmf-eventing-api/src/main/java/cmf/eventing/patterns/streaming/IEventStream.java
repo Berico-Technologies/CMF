@@ -9,6 +9,7 @@ import cmf.bus.IDisposable;
  * WARNING: The streaming event API and its accompanying implementation is deemed 
  * to be a proof of concept at this point and subject to change.  It should not be used 
  * in a production environment. 
+ * @see IStreamingEventProducer#createStream(String)
  */
 public interface IEventStream extends IDisposable {
     /**
@@ -23,11 +24,13 @@ public interface IEventStream extends IDisposable {
      * {@link #setBatchLimit(int)}, the event may be buffered prior to being send on the 
      * underlying transport.
      * @param event The event to publish.
+     * @see IStreamingEventConsumer#subscribeToReader(IStreamingReaderHandler)
      */
     void publish(Object event) throws Exception;
 
     /**
-     * Gets the message topic upon which the events will be published.
+     * <p>Gets the message topic upon which the events will be published.</p>
+     * <p>This is the same topic provided to {@link IStreamingEventProducer#createStream(String)}.</p>
      */
     String getTopic();
 

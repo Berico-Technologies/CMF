@@ -7,6 +7,7 @@ namespace cmf.bus
     /// Defines the interface that must be implemented by types that wish to 
     /// <see cref="IEnvelopeReceiver.Register" />. to receive envelopes.
     /// </summary>
+    /// <seealso cref="IEnvelopeReceiver.Unregister"/>
     public interface IRegistration
     {
         /// <summary>

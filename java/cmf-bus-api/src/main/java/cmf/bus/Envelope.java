@@ -10,6 +10,8 @@ import java.util.Map;
  * parts, payload represented as an array of bytes and optionally a set of headers 
  * represented as string/string map of key/value pairs.  Together they comprise 
  * the message and any appropriate meta-data pertaining to it respectively.
+ * @see IEnvelopeSender#send(Envelope)
+ * @see IRegistration#handle(Envelope)
  */
 public class Envelope {
 

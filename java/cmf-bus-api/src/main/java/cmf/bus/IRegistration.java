@@ -5,6 +5,7 @@ import java.util.Map;
 /**
  * Defines the interface that must be implemented by types that wish to 
  * {@link IEnvelopeReceiver#register} to receive envelopes.
+ * @see IEnvelopeReceiver#unregister(IRegistration)
  */public interface IRegistration {
 
 	/**

@@ -6,6 +6,7 @@ import cmf.bus.IEnvelopeFilterPredicate;
 /**
  * An interface to define the methods by which an client may register to receive
  * events of a particular type.
+ * @see IEventBus
  */
 public interface IEventConsumer extends IDisposable {
 
