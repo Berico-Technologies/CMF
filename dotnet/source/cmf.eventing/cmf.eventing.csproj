@@ -68,15 +68,21 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cmf.eventing.snk" />
+    <None Include="packages.config" />
+    <None Include="Scripts\jquery-2.0.3.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\jquery-2.0.3.intellisense.js" />
+    <Content Include="Scripts\jquery-2.0.3.js" />
+    <Content Include="Scripts\jquery-2.0.3.min.js" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\cmf.bus\cmf.bus.csproj">
-      <Project>{5386254B-6A77-4244-9364-1013899A2B11}</Project>
+      <Project>{5386254b-6a77-4244-9364-1013899a2b11}</Project>
       <Name>cmf.bus</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="cmf.eventing.snk" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF NOT EXIST "$(SolutionDir)binaries" MKDIR "$(SolutionDir)binaries"

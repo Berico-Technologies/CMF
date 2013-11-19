@@ -104,3 +104,6 @@ java/examples/lib/jgoodies-src/
 java/examples/lib/net/miginfocom/
 java/cmf.bus.iml
 java/examples/cmf.examples.iml
+
+#Ignore nuget package files: those should be built as needed
+*.nupkg
