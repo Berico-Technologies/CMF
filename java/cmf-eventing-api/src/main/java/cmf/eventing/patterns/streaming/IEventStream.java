@@ -26,5 +26,6 @@ public interface IEventStream extends IDisposable {
      * Indicates the unique sequence identifier that all messages will be linked to in this stream.
      * @return
      */
+    //TODO: Rename this to getStreamId?
     String getSequenceId();
 }
