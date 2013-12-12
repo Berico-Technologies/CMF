@@ -13,7 +13,7 @@
 // version 3.3, this value should be 3.2.0.*.  This way, snapshot versions
 // will be higher than 3.2.0.0, and look like 3.2.0.1257, which is the 
 // equivalent of 3.3.0-SNAPSHOT in java/maven terms
-[assembly: AssemblyVersion("3.3.0.*")]
+[assembly: AssemblyVersion("3.2.1.0")]
 /* let MSBuild automatically update this:
  * [assembly: AssemblyFileVersion("3.0.0.0")]
  * see: 

@@ -37,6 +37,10 @@
     <AssemblyOriginatorKeyFile>cmf.eventing.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="cmf.bus, Version=3.2.1.0, Culture=neutral, PublicKeyToken=bbbef7830e900844, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\cmf.bus.3.2.1.0\lib\net40\cmf.bus.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -70,18 +74,6 @@
   <ItemGroup>
     <None Include="cmf.eventing.snk" />
     <None Include="packages.config" />
-    <None Include="Scripts\jquery-2.0.3.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scripts\jquery-2.0.3.intellisense.js" />
-    <Content Include="Scripts\jquery-2.0.3.js" />
-    <Content Include="Scripts\jquery-2.0.3.min.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\cmf.bus\cmf.bus.csproj">
-      <Project>{5386254b-6a77-4244-9364-1013899a2b11}</Project>
-      <Name>cmf.bus</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
