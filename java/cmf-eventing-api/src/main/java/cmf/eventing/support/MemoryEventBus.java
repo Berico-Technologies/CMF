@@ -114,6 +114,9 @@ public class MemoryEventBus implements IRpcEventBus {
                         @SuppressWarnings("rawtypes")
                         IEventHandler handler = handlers.get(request.getClass());
                         Map<String, String> context = new HashMap<String, String>();
+                        // TODO Determine how we intend to handle switching
+                        // identities in the future.
+                        context.put("cmf.bus.message.sender.identity", "cn=me");
                         // System.err.println(":) " + handler + " " + context);
 
                         handler.handle(request, context);
