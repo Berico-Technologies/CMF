@@ -127,7 +127,7 @@ public class MemoryEventBus implements IRpcEventBus {
         } catch (InterruptedException e) {
             System.err.println(e);
             throw new RuntimeException(e);
-	} catch (ExecutionException e) {
+        } catch (ExecutionException e) {
             System.err.println(e);
             throw new RuntimeException(e);
         }
