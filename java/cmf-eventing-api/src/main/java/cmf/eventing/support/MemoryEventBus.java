@@ -36,12 +36,18 @@ public class MemoryEventBus implements IRpcEventBus {
 
     };
 
+    public MemoryEventBus() {
+    }
+
     public MemoryEventBus(List<IEventHandler> register) {
         for (IEventHandler handler : register) {
-            queues.put(handler.getEventType(),
-                    Executors.newSingleThreadExecutor());
-            handlers.put(handler.getEventType(), handler);
+            addHandler(handler);
         }
+    }
+
+    public void addHandler(IEventHandler handler) {
+        queues.put(handler.getEventType(), Executors.newSingleThreadExecutor());
+        handlers.put(handler.getEventType(), handler);
     }
 
     @Override
