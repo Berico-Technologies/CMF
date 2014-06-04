@@ -110,8 +110,12 @@ public class MemoryEventBus implements IRpcEventBus {
     @Override
     public <TResponse> TResponse getResponseTo(final Object request,
             Duration duration, Class<TResponse> arg2) {
-        // System.err.println(":) " + request + " -> ");
-        Future<TResponse> response = queues.get(request.getClass()).submit(
+        final Class<?> requestKey = request.getClass();
+        if (!queues.containsKey(requestKey)) {
+            throw new IllegalStateException("No Handler Registered for: "
+                    + requestKey);
+        }
+        final Future<TResponse> response = queues.get(requestKey).submit(
                 new Callable<TResponse>() {
 
                     @SuppressWarnings("unchecked")
