@@ -122,7 +122,7 @@ public class MemoryEventBus implements IRpcEventBus {
                         Map<String, String> context = new HashMap<String, String>();
                         // TODO Determine how we intend to handle switching
                         // identities in the future.
-                        context.put("cmf.bus.message.sender.identity", "cn=me");
+                        context.put("cmf.bus.message.sender.identity", "CN=me");
                         // System.err.println(":) " + handler + " " + context);
 
                         handler.handle(request, context);
