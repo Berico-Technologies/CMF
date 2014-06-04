@@ -71,12 +71,6 @@ public class MemoryEventBus implements IRpcEventBus {
     }
 
     @Override
-    public void dispose() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public <TEVENT> void subscribe(IEventHandler<TEVENT> arg0) throws Exception {
         // TODO Auto-generated method stub
 
@@ -152,6 +146,12 @@ public class MemoryEventBus implements IRpcEventBus {
             String arg2) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void dispose() {
+        // TODO Auto-generated method stub
+
     }
 
 }
