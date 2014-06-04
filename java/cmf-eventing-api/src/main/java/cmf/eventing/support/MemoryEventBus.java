@@ -21,9 +21,9 @@ import cmf.eventing.patterns.rpc.IRpcEventBus;
 
 public class MemoryEventBus implements IRpcEventBus {
 
-    final Map<Class<?>, IEventHandler<?>> handlers = new HashMap<Class<?>, IEventHandler<?>>();
+    final Map<Class<?>, IEventHandler<?>> handlers = new HashMap<>();
 
-    final Map<Class<?>, ExecutorService> queues = new HashMap<Class<?>, ExecutorService>();
+    final Map<Class<?>, ExecutorService> queues = new HashMap<>();
 
     final Map<Map<String, String>, Object> temporaryQueues = new LinkedHashMap<Map<String, String>, Object>() {
 
