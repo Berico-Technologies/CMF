@@ -46,6 +46,7 @@ public class MemoryEventBus implements IRpcEventBus {
     }
 
     public void addHandler(IEventHandler handler) {
+        // TODO We should be able to handle multiple handlers for a single type.
         queues.put(handler.getEventType(), Executors.newSingleThreadExecutor());
         handlers.put(handler.getEventType(), handler);
     }
