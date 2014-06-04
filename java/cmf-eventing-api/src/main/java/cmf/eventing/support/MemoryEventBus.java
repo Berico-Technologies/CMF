@@ -42,16 +42,10 @@ public class MemoryEventBus implements IRpcEventBus {
     public MemoryEventBus() {
     }
 
-    public MemoryEventBus(List<IEventHandler> register) {
+    public MemoryEventBus(List<IEventHandler> register) throws Exception {
         for (IEventHandler handler : register) {
-            addHandler(handler);
+            subscribe(handler);
         }
-    }
-
-    public void addHandler(IEventHandler handler) {
-        // TODO We should be able to handle multiple handlers for a single type.
-        queues.put(handler.getEventType(), Executors.newSingleThreadExecutor());
-        handlers.put(handler.getEventType(), handler);
     }
 
     @Override
@@ -74,13 +68,14 @@ public class MemoryEventBus implements IRpcEventBus {
     }
 
     @Override
-    public <TEVENT> void subscribe(IEventHandler<TEVENT> arg0) throws Exception {
-        // TODO Auto-generated method stub
-
+    public <TEVENT> void subscribe(IEventHandler<TEVENT> handler)
+            throws Exception {
+        queues.put(handler.getEventType(), Executors.newSingleThreadExecutor());
+        handlers.put(handler.getEventType(), handler);
     }
 
     @Override
-    public <TEVENT> void subscribe(IEventHandler<TEVENT> arg0,
+    public <TEVENT> void subscribe(IEventHandler<TEVENT> handler,
             IEnvelopeFilterPredicate arg1) throws Exception {
         // TODO Auto-generated method stub
 
