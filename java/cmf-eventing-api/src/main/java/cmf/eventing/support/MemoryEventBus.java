@@ -25,6 +25,7 @@ public class MemoryEventBus implements IRpcEventBus {
 
     final Map<Class<?>, ExecutorService> queues = new HashMap<>();
 
+    // This is a simple LRU for handling response routing for RPC requests.
     final Map<Map<String, String>, Object> temporaryQueues = new LinkedHashMap<Map<String, String>, Object>() {
 
         /**
