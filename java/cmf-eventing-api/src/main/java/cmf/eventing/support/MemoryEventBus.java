@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.joda.time.Duration;
 
@@ -131,11 +133,8 @@ public class MemoryEventBus implements IRpcEventBus {
                 });
 
         try {
-            return response.get();
-        } catch (InterruptedException e) {
-            System.err.println(e);
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+            return response.get(duration.getMillis(), TimeUnit.MILLISECONDS);
+        } catch (TimeoutException | ExecutionException | InterruptedException e) {
             System.err.println(e);
             throw new RuntimeException(e);
         }
